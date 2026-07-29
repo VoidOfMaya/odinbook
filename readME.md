@@ -1,4 +1,4 @@
-# odin book 
+# odin book {work in progress}
 odin book is the final project in the odinbooks node.js course
 and is a social media clone!
 
