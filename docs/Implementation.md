@@ -14,27 +14,34 @@
 ## Database(PrismaORM)
 ## Routes
 -   **authRouter**
+```
     []  POST/auth/login/{method}        >log in with username and password
     []  POST/auth/Register              >register a local user
     []  POST/auth/refresh               >refresh user authenticaiton
     []  POST/auth/logout                > logout user from session
-
+```
 -   **feedRouter**
+```
     []  GET/feed?limit={}               >get users feed posts with a set quantity
-    []  GET/feed                        >get latest feed
-
+    []  GET/feed?cursor={}              >get users feed posts from the cursor point   
+    []  GET/feed/latest                 >get users feed newest posts
+```
 -   **userRouter**
+```
     []  GET/user/me                     >get current users profile
     []  PATCH/user/me                   >edit current users profile
     []  GET/user/{id}                   >get other users profile, if not private
     []  GET/user/{id}/posts             >get users posts
     []  GET/user?search={user}          >get a list of matching users
+```
 -   **networkRouter**
+```
     []  GET/network/friends             >get a list of current users friends
     []  POST/network/request            >creates a friendship record set to PENDING
     []  PATCH/network/request/{reqId}   >set friendship status{"ACTIVE","DECLINE","BLOCKED"}
-
+```
 -   **postRouter**
+```
     []  POST/post                       >create post where current user is author
     []  PATCH/post/{id}                 >edit post at id  where current user is author
     []  GET/post/{id}                   >get post by id
@@ -44,10 +51,12 @@
     -   nested comments resource
     []  POST/post/{id}/comment          >create comment on a post by id
     []  GET/post/{id}/comments          >get post comments
-
+```
 -   **commentRouter**
+```
     []  PATCH/comment{id}               >edit comment by id
     []  delete/comment{id}              >delete comment by id  
+```
 ## MiddleWare
     []  isAuthenticated()
     []  isAuthorized()
