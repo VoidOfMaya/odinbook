@@ -54,17 +54,18 @@ and is a social media clone!
 4- make it pretty<br/>
 
 ## entity data model:
-|user       |Friendship |post       |comments   | status (enum) |refreshTpken   |
+|user       |Friendship |post       |comments   | status (enum) |refreshToken   |
 |-----------|-----------|-----------|-----------|---------------|---------------|
 |id         |id         |id         |id         |PENDING        |id             |
 |email      |status     |content    |content    |ACTIVE         |threadId       |
 |password   |userId     |photo      |author     |BLOCKED        |token          |
-|name       |friendId   |author     |createdAt  |               |expiresAt      |
+|name       |friendId   |author     |createdAt  |DECLINED       |expiresAt      |
 |bio ?      |           |createdAt  |likes      |               |createdAt      |
 |photo?     |           |likes      |parentId?  |               |revoked        |
 |isOnline   |           |comments   |postId     |               |revokedAt      |
-|createdAt  |           |visibility |           |               |graceUntill    |
-|token      |           |           |           |               |userId         |
+|createdAt  |           |visibility |editedAt   |               |graceUntill    |
+|token      |           |editedAt   |           |               |userId         |
+|isPrivate  |           |           |           |               |               |
 ## authentication:-
 authentication system is based off of the RTR authentication system implemented in [chatter app](https://github.com/VoidOfMaya/Chatter-front),additionally implements the callApi fetch wrapper to handle reauthentication and centralizing fetch data that works with the RTR system
 ## socket.io and live data:-
