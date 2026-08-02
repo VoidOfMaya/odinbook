@@ -70,6 +70,7 @@
     []  PATCH/comment{id}               >edit comment by id
     []  delete/comment{id}              >delete comment by id  
 ```
+## Socket Events 
 ## MiddleWare
     []  isAuthenticated()
     []  isAuthorized()
