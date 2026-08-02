@@ -6,7 +6,7 @@
   "type": "module",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest" 
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.9.1",
@@ -27,10 +27,13 @@
     "socket.io": "^4.8.3"
   },
   "devDependencies": {
-    "prisma": "^7.9.1"
+    "jest": "^30.4.2",
+    "prisma": "^7.9.1",
+    "supertest": "^7.2.2"
   },
   "allowScripts": {
     "prisma@7.9.1": true,
-    "@prisma/engines@7.9.1": true
+    "@prisma/engines@7.9.1": true,
+    "unrs-resolver@1.12.2": true
   }
 }

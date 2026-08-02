@@ -98,3 +98,7 @@ server.listen(PORT, (err)=>{
     if(err) throw new err ;
     console.log(`Server running on port: ${PORT} (${process.env.NODE_ENV})`);
 })
+//export app for testing
+export{
+    app
+}

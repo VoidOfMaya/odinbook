@@ -1,6 +1,6 @@
 import{Router} from 'express';
 import { validate } from './inputValidations.js';
-//import {controller} from './authControllers.js'
+import {controller} from './authControllers.js'
 import { isAuthenticated, validateRtoken } from './authMiddleware.js';
 const authRouter = Router()
 authRouter.post('/register', validate.NewAccount, controller.newUser);

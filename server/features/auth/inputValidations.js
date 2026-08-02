@@ -33,8 +33,8 @@ const Login =[
 const validate ={
     NewAccount,
     Login,
-    userId,
-    userEdit
+    //userId,
+    //userEdit
 }
 
 export{
