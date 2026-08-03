@@ -76,7 +76,7 @@
     []  isAuthorized()
 ## Error handelling
 Error handling is globalized to the following code:
-```
+```js
 app.use((err, req, res, next) => {
     const logErr = !(err instanceof ApiError) || err.log
     if(logErr){
@@ -98,7 +98,7 @@ app.use((err, req, res, next) => {
 
 ```
 to stanardize the error body an `ApiError`function is utilized that enherits/extends the `Error` object: 
-```
+```js
 export class ApiError extends Error {
     constructor(status, message, details = null,log = false) {
         super(message);
@@ -110,7 +110,7 @@ export class ApiError extends Error {
 
 ```
 api error is called when wanting to pass on an error object to the global error catcher on app.js, usage example:
-```
+```js
 if(dataExists){
     //do something
 }else{
