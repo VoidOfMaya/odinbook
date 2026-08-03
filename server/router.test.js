@@ -13,6 +13,39 @@ describe('GET/health',()=>{
 describe('/auth router',()=>{
     //endpoints to test:-
     //- POST/auth/Register      >registration
+    describe('user registeration',()=>{
+        const user = {
+            email:'example@email.com',
+            name: 'john doe',
+            password:'testing@123',
+            confirmPassword: 'testing@123'
+        }
+        test('on  success', async()=>{
+            const response = await request(app).post('/auth/register')
+            .send(user)
+            expect(response.status).toBe(201)
+            expect(response.body).toEqual({
+                message: "User  registered successfully"
+            })            
+        })
+
+        test('on incomplete data',async ()=>{
+            const response = await request(app).post('/auth/register')
+            .send({...user, confirmPassword:"different password"})
+            expect(response.status).toBe(400)
+            expect(response.body).toEqual({
+                error: {
+                    message: "validation Error",
+                    details: [{
+                            location: "body", 
+                            msg: "passwords do not match", 
+                            path: "confirmPassword", 
+                            type: "field", 
+                            value: "different password"
+                        }]}
+            })                
+        })
+    })
     //- POST/auth/login/local   >local strategy log in 
     //- POST/auth/login/google  >oauth strategy log in
     //- POST/auth/refresh       >token refresh

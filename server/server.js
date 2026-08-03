@@ -3,6 +3,12 @@ import { app } from "./app";
 import { corsOpts } from "./cors";
 //server wrapper & socket.io implementation
 const server = createServer(app)
+
+// clean up methods:- 
+tokenCleaner(); //runs auto db cleaning function every week!
+resetSocketData();//clears volitile socket managed data
+
+
 const io = new Server(server,{
   //defining CORS
   cors:corsOpts

@@ -1,27 +1,7 @@
 import { validationResult, matchedData } from "express-validator";
 import {service} from "./authServices.js";
 import { ApiError } from "../../errorhelper.js";
-/*
-const newUser = async (req, res, next) =>{
-    //validation handler
-    
-    const errors = validationResult(req);
-    if(!errors.isEmpty()) return res.status(400).json({errors : errors.array()})
-    const data = matchedData(req);
-    //register user
-    try{
-        await service.register(data)
-    }catch(err){
-        console.error({
-            message: err.message,
-            method: req.method,
-            path: req.originalUrl,
-            stack: err.stack,
-        });
-        return res.status(500).json({error: err.message || 'Internal Server Error'})
-    }
-    res.status(201).json({message:'User  registered successfully'})
-}*/
+
 const newUser = async (req, res, next) =>{
     //validation handler
     try{    
@@ -32,7 +12,7 @@ const newUser = async (req, res, next) =>{
     await service.register(data)
     res.status(201).json({message:'User  registered successfully'})
     }catch(err){
-        nex(err)
+        next(err)
     }
     
 }

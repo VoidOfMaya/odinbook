@@ -4,42 +4,23 @@ import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import 'dotenv/config'
 import { threadId } from 'worker_threads';
-/*
-implementing an access and refresh + token rotation on each refresh
- this will have a few componenets!
- 1-access token: used to allow user access on a successfull login(short lifespan)
-        -token must be stored in memory  to prevent  Xss theft
-        -on expiry prompt/check for a valid refresh token
-        -is JWT
-2-refresh token: generated on  user access(longer lived lifespan)
-        - token is stored in httpOnly cookies
-        - use inactive lifetime as a limit on  access 
-        - is opaque random generated string!
-3- detects reused refresh tokens
-        -requirs tracking and storage in db
-        -on reuse detect remove all tokens  and revoke access(require user log in)
-*keynote this approach for auth builds on the simpler token bearer approach!
 
-*/
 //A basic register and  login!
 //takes {email, password, name}
 const register = async (data) =>{
     //creates user
+    try{
     const user = await prisma.user.create({
         data:{
             email: data.email,
             name: data.name,
             password: await bcrypt.hash(data.password,10) //hashes and encrypts pasword!
         }
-    })
-    //grants access to global chat
-    await prisma.channelMember.create({
-        data:{
-            channelId: 1,
-            userId: user.id,
-            isMember: true
-        }
-    })
+    })        
+    }catch(err){
+        next(err)
+    }
+
 }
 const login = async (data) =>{
     const {email, password} = data
