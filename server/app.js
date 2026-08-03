@@ -11,6 +11,7 @@ import { corsOpts } from './cors.js';
 
 //cron token cleaner
 import { tokenCleaner,resetSocketData } from './tasks/dbTasks.js';
+import { ApiError } from './errorhelper.js';
 //import { setOnlineStatus } from './features/sockets/onlineStatus.js';
 //import { authenticateConnection } from './features/sockets/middleware.js';
 //import { channelEventHandler } from './features/sockets/channelRoom.js';
@@ -58,12 +59,23 @@ app.use((req, res, next)=>{
   error.status = 404;
   next(error);
 })
-//500
 app.use((err, req, res, next) => {
-  console.error(err);
-  console.log(req.method, req.originalUrl);
-  return res.status(err.status || 500).json({
-    message: err.message || 'Internal Server Error'
+    //
+    const logErr = !(err instanceof ApiError) || err.log
+    if(logErr){
+        console.error({
+            message: err.message,
+            method: req.method,
+            path: req.originalUrl,
+            stack: err.stack,
+        });
+    }
+
+    return res.status(err.status || 500).json({
+        error:{
+            message: err.message || "Internal Server Error",
+            details: err.details ?? null
+        }
   });
 });
 

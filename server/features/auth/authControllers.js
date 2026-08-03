@@ -1,13 +1,14 @@
 import { validationResult, matchedData } from "express-validator";
 import {service} from "./authServices.js";
-
-const newUser = async (req, res) =>{
+import { ApiError } from "../../errorhelper.js";
+/*
+const newUser = async (req, res, next) =>{
     //validation handler
     
     const errors = validationResult(req);
     if(!errors.isEmpty()) return res.status(400).json({errors : errors.array()})
     const data = matchedData(req);
-    //logic
+    //register user
     try{
         await service.register(data)
     }catch(err){
@@ -20,8 +21,22 @@ const newUser = async (req, res) =>{
         return res.status(500).json({error: err.message || 'Internal Server Error'})
     }
     res.status(201).json({message:'User  registered successfully'})
+}*/
+const newUser = async (req, res, next) =>{
+    //validation handler
+    try{    
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) throw new ApiError(400,"validation Error",errors.array())
+    const data = matchedData(req);
+    //register user to db
+    await service.register(data)
+    res.status(201).json({message:'User  registered successfully'})
+    }catch(err){
+        nex(err)
+    }
+    
 }
-const login = async (req, res)=>{
+const login = async (req, res, next)=>{
     //validation handler
     const errors = validationResult(req);
     if(!errors.isEmpty()) return res.status(400).json({errors : errors.array()})
@@ -59,7 +74,7 @@ const login = async (req, res)=>{
     }
 }
 // accepts Refresh token string,if valid derives user by token string
-const token = async (req, res)=>{
+const token = async (req, res, next)=>{
     //if refresh token valid  create new access token & refresh token
     //if refresh token invalid return error
     try{
@@ -80,7 +95,7 @@ const token = async (req, res)=>{
         if(refreshToken.grace){
             //get last known valid token for thread id
             newRToken = await service.getUpdatedtoken(refreshToken.threadId)
-            if(!newRToken) return res.status(500).json({msg: 'no token head was found!'});
+            if(!newRToken) return res.status(500).json({error: {messag: 'no token head was found!'}});
         }else{
             newRToken = await service.createRToken(refreshToken.userId,threadId,oldToken)
         }
@@ -134,7 +149,7 @@ const token = async (req, res)=>{
     }
 }
 //requires a token thread uuid
-const logout = async (req, res) =>{
+const logout = async (req, res, next) =>{
     try{
         const threadId = req.cookies.threadId;
         const result = await service.removeTokenThread(threadId);
