@@ -7,6 +7,7 @@ import passport from 'passport';
 import{ createServer} from 'http';
 import { Server } from 'socket.io';
 import cookieParser from 'cookie-parser';
+import { corsOpts } from './cors.js';
 
 //cron token cleaner
 //import { tokenCleaner,resetSocketData } from './tasks/dbCleaner.js';
@@ -16,18 +17,8 @@ import cookieParser from 'cookie-parser';
 //import { requestsInbox } from './features/sockets/inbox.js';
 
 const app = express();
-const allowedOrigins =
-    process.env.NODE_ENV === "production"
-        ? [process.env.CLIENT_URL]
-        : [
-            "http://localhost:5173",
-            "http://localhost:4173",
-        ];
 
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true,
-}));
+app.use(cors(corsOpts));
 //debugging:
 console.log({
     NODE_ENV: process.env.NODE_ENV,
@@ -38,17 +29,23 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 //passport setup goes here:-
-//midware.passportConfig();
-//app.use(passport.initialize());
+midware.passportConfig();
+app.use(passport.initialize());
 
 //parse cookies
 app.use(cookieParser());
+
 // clean up methods:- 
 //tokenCleaner(); //runs auto db cleaning function every week!
 //resetSocketData();//clears volitile socket managed data
 
 //INSERT SERVER ENDPOINTS HERE: 
-
+app.use('/auth',pipe.authRouter)
+app.use('/feed',midware.isAuthenticated,/*feed router here*/)
+app.use('/user',midware.isAuthenticated, /*user router*/)
+app.use('/network',midware.isAuthenticated, /*fetwork router*/)
+app.use('/post', midware.isAuthenticated,/*post router*/)
+app.use('/comment',midware.isAuthenticated,/*comment router*/)
 //server health endpoint:
 app.get("/health", (req, res) => {
     console.log("Health endpoint hit");
@@ -70,34 +67,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-//server wrapper & socket.io implementation
-const server = createServer(app)
-const io = new Server(server,{
-  //defining CORS
-  cors:{
-    origin:allowedOrigins,
-    //credentials: true,
-  }
-});
-//authenticate socket
-//authenticateConnection(io);
-
-//server & socket connection
-io.on('connection',(socket)=>{
-  console.log('socket running')
-  //create root
-  socket.join(`user:${socket.user.id}`);
-  //setOnlineStatus(socket, io)
-  //channelEventHandler(socket, io)
-  //requestsInbox(socket, io)
-})
-
-//http connection
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, (err)=>{
-    if(err) throw new err ;
-    console.log(`Server running on port: ${PORT} (${process.env.NODE_ENV})`);
-})
 //export app for testing
 export{
     app

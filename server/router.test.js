@@ -1,6 +1,6 @@
 import request from "supertest";
 import { app } from "./app.js";
-import { response } from "express";
+
 
 describe('check server health',()=>{
     test('checks server health endpoint', async()=>{
