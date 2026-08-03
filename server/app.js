@@ -36,8 +36,8 @@ app.use(passport.initialize());
 app.use(cookieParser());
 
 // clean up methods:- 
-//tokenCleaner(); //runs auto db cleaning function every week!
-//resetSocketData();//clears volitile socket managed data
+tokenCleaner(); //runs auto db cleaning function every week!
+resetSocketData();//clears volitile socket managed data
 
 //INSERT SERVER ENDPOINTS HERE: 
 app.use('/auth',pipe.authRouter)
