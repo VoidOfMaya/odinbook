@@ -75,6 +75,53 @@
     []  isAuthenticated()
     []  isAuthorized()
 ## Error handelling
+Error handling is globalized to the following code:
+```
+app.use((err, req, res, next) => {
+    const logErr = !(err instanceof ApiError) || err.log
+    if(logErr){
+        console.error({
+            message: err.message,
+            method: req.method,
+            path: req.originalUrl,
+            stack: err.stack,
+        });
+    }
+
+    return res.status(err.status || 500).json({
+        error:{
+            message: err.message || "Internal Server Error",
+            details: err.details ?? null
+        }
+  });
+});
+
+```
+to stanardize the error body an `ApiError`function is utilized that enherits/extends the `Error` object: 
+```
+export class ApiError extends Error {
+    constructor(status, message, details = null,log = false) {
+        super(message);
+        this.status = status;
+        this.details = details;
+        this.log = log;
+    }
+}
+
+```
+api error is called when wanting to pass on an error object to the global error catcher on app.js, usage example:
+```
+if(dataExists){
+    //do something
+}else{
+    //implementation:-
+    throw new ApiError(
+        500,                //statusCode
+        "error message",    //error message
+        errors.array(),     //error details
+    )
+}
+```
 ## Authentication
 ## Controllers
 ## Services
