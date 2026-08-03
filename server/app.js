@@ -10,7 +10,7 @@ import cookieParser from 'cookie-parser';
 import { corsOpts } from './cors.js';
 
 //cron token cleaner
-//import { tokenCleaner,resetSocketData } from './tasks/dbCleaner.js';
+import { tokenCleaner,resetSocketData } from './tasks/dbTasks.js';
 //import { setOnlineStatus } from './features/sockets/onlineStatus.js';
 //import { authenticateConnection } from './features/sockets/middleware.js';
 //import { channelEventHandler } from './features/sockets/channelRoom.js';
