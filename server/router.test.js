@@ -1,6 +1,18 @@
 import request from "supertest";
 import { app } from "./app.js";
-
+import {prisma} from './lib/prisma.js'
+//handle clearing testing database befor each test
+beforeAll(async()=>{
+    console.log('initiall db clearing:- in progress')
+    await prisma.$transaction([
+        prisma.user.deleteMany(),
+        prisma.refreshToken.deleteMany(),
+        prisma.post.deleteMany(),
+        prisma.comment.deleteMany(),
+        prisma.userFriends.deleteMany(),
+    ]);
+    console.log('initiall db clearing:- Complete')
+});
 
 describe('GET/health',()=>{
     test('checks server health endpoint', async()=>{
@@ -14,6 +26,9 @@ describe('/auth router',()=>{
     //endpoints to test:-
     //- POST/auth/Register      >registration
     describe('user registeration',()=>{
+        beforeEach(async()=>{
+            await prisma.user.deleteMany()
+        })
         const user = {
             email:'example@email.com',
             name: 'john doe',
