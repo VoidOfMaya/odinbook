@@ -6,6 +6,7 @@
   "type": "module",
   "main": "app.js",
   "scripts": {
+    "dev" : "bode app.js",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest" 
   },
   "dependencies": {
