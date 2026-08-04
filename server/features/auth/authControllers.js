@@ -16,7 +16,7 @@ const newUser = async (req, res, next) =>{
     }
     
 }
-const login = async (req, res, next)=>{
+const localLogin = async (req, res, next)=>{
     //validation handler
     const errors = validationResult(req);
     if(!errors.isEmpty()) return res.status(400).json({errors : errors.array()})
@@ -160,7 +160,7 @@ const logout = async (req, res, next) =>{
 }
 const controller ={
     newUser,
-    login,
+    localLogin,
     token,
     logout
 }

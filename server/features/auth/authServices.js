@@ -4,12 +4,16 @@ import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import 'dotenv/config'
 import { threadId } from 'worker_threads';
+import { ApiError } from '../../errorhelper.js';
 
 //A basic register and  login!
 //takes {email, password, name}
 const register = async (data) =>{
     //creates user
-    try{
+    const emailExists = await prisma.user.findUnique({
+        where:{email: data.email}
+    })
+    if(emailExists) throw new ApiError(409, "Email is already registered.")
     const user = await prisma.user.create({
         data:{
             email: data.email,
@@ -17,9 +21,6 @@ const register = async (data) =>{
             password: await bcrypt.hash(data.password,10) //hashes and encrypts pasword!
         }
     })        
-    }catch(err){
-        next(err)
-    }
 
 }
 const login = async (data) =>{
@@ -31,6 +32,13 @@ const login = async (data) =>{
 
     const match = await bcrypt.compare(password, user.password);
     if(!match) throw new Error("invalid login");
+    //update last online date
+    await prisma.user.update({
+        where:{id: user.id},
+        data:{
+            lastOnline: new Date()
+        }
+    })
     //access token:-
     const accessToken = await createAToken(user.id);
     
