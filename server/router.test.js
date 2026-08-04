@@ -59,30 +59,32 @@ describe('/auth router',()=>{
                 expect(match).toBe(true)
             })          
         })
+        describe('on faulty input',()=>{
+            test('on incomplete data',async ()=>{
+                const response = await request(app).post('/auth/register')
+                .send({...user, confirmPassword:"different password"})
+                expect(response.status).toBe(400)
+                expect(response.body).toEqual({
+                    error: {
+                        message: "validation Error",
+                        details: [{
+                                location: "body", 
+                                msg: "passwords do not match", 
+                                path: "confirmPassword", 
+                                type: "field", 
+                                value: "different password"
+                            }]}
+                })                
+            })
+            test('on registering with a duplicate email',async ()=>{
+                //first send
+                await request(app).post('/auth/register').send(user)
+                //duplicate send
+                const response = await request(app).post('/auth/register').send(user)
+                expect(response.status).toBe(409)
+            })            
+        })
 
-        test('on incomplete data',async ()=>{
-            const response = await request(app).post('/auth/register')
-            .send({...user, confirmPassword:"different password"})
-            expect(response.status).toBe(400)
-            expect(response.body).toEqual({
-                error: {
-                    message: "validation Error",
-                    details: [{
-                            location: "body", 
-                            msg: "passwords do not match", 
-                            path: "confirmPassword", 
-                            type: "field", 
-                            value: "different password"
-                        }]}
-            })                
-        })
-        test('on registering with a duplicate email',async ()=>{
-            //first send
-            await request(app).post('/auth/register').send(user)
-            //duplicate send
-            const response = await request(app).post('/auth/register').send(user)
-            expect(response.status).toBe(409)
-        })
     })
     //- POST/auth/login/local   >local strategy log in 
     describe('/login/local ',()=>{
@@ -154,23 +156,136 @@ describe('/auth router',()=>{
                 expect(validDate).toBe(true);
             })          
         })
-        test('on wrong credintials',async()=>{})
-        test('on empty request',async ()=>{})
+        describe('on faulty input',()=>{
+            beforeEach(async()=>{
+                await request(app).post('/auth/register')
+                .send(user)                
+            })
+            test('on wrong credintials',async()=>{
+                const response = await request(app).post('/auth/login/local')
+                .send({
+                    email: 'userDoesnoeExist@gmail.com',
+                    password: 'completelyFakePassword'
+                })
+
+                expect(response.status).toBe(401)
+                expect(response.body.error).toEqual('invalid login')
+            })
+            test('on empty request',async ()=>{
+                const response = await request(app).post('/auth/login/local')
+                expect(response.status).toBe(400)
+            })            
+        })
+
     })
     //- POST/auth/login/google  >oauth strategy log in
-    describe('/login/local ',()=>{
+    describe('/login/google ',()=>{
         describe('on success',()=>{
+            test('route exists',async()=>{
+                const response = (await request(app).post('/auth/login/google'))
+                expect(response.status).not.toBe(404)
+            })
             //access token exists
             //req.user exists
             //refresh token and threadId cookies set
             //refreshtoken exists in db
             //last login updated            
         })
-        test('on wrong user input', async()=>{})
-        test('on empty request', async ()=>{})
+        describe('on faulty input',()=>{
+            test('on wrong user input', async()=>{})
+            test('on empty request', async ()=>{})            
+        })
+
     })
     //- POST/auth/refresh       >token refresh
     describe('/refresh', ()=>{
+        let cookies;
+        beforeEach(async()=>{
+            await prisma.refreshToken.deleteMany();
+            //register user
+            await request(app).post('/auth/register')
+            .send(user)
+            //login as user
+            const login = await request(app).post('/auth/login/local')
+            .send({
+                    email:user.email, 
+                    password: user.password
+                }) 
+            // Extracting login cookies
+            cookies = login.headers["set-cookie"];
+        })
+        describe('on 1 refresh success',()=>{
+            let response;
+            beforeEach(async()=>{
+                response = await request(app).post('/auth/refresh')
+                .set('Cookie',cookies);
+                cookies = response.headers["set-cookie"]
+            })
+            test('path is valid',()=>{
+                expect(response.status).toBe(201);
+            })  
+            test('access token returned',()=>{
+                expect(response.body.accessToken).toBeDefined()
+            })
+            test('refresh token and threadId Cookies set',()=>{
+                expect(response.headers["set-cookie"]).toEqual(
+                    expect.arrayContaining([
+                        expect.stringContaining("refreshToken="),
+                        expect.stringContaining("threadId="),
+                    ])
+                )
+            })
+            //refreshtoken exists in db
+            test('a valid refresh token exists in database',async()=>{
+                //parsing cookeis from request
+                const refreshCookie =cookies.find(c=>c.startsWith('refreshToken='));
+                const threadCookie =cookies.find(c=>c.startsWith('threadId='));
+                //isolating cookie variables
+                const refreshtoken = refreshCookie.split(";")[0].split("=")[1];
+                const threadId = threadCookie.split(";")[0].split("=")[1];
+
+                //get from db
+                const token = await prisma.refreshToken.findUnique({
+                    where:{token: refreshtoken}
+                })
+                const tokens = await prisma.refreshToken.findMany({
+                    where:{threadId: threadId}
+                })
+                const isRevoked = token.revoked
+                expect(token).toBeDefined()
+                expect(isRevoked).toBe(false)
+                expect(token.threadId).toEqual(threadId)
+            })        
+        })
+        describe('on multiple refreshes success',()=>{
+            let response;
+            beforeEach(async()=>{
+                for(let i = 0; i <= 3; i++){
+                    response = await request(app).post('/auth/refresh')
+                    .set('Cookie',cookies);
+                    cookies = response.headers["set-cookie"]                    
+                }
+            })
+            test('only 1 valid token exists per threadId',async()=>{
+                //parse current token from cookies
+                //parsing cookeis from request
+                const refreshCookie =cookies.find(c=>c.startsWith('refreshToken='));
+                const threadCookie =cookies.find(c=>c.startsWith('threadId='));
+                //isolating cookie variables
+                const refreshtoken = refreshCookie.split(";")[0].split("=")[1];
+                const threadId = threadCookie.split(";")[0].split("=")[1];
+                //get all cookies
+                const allTokens = await prisma.refreshToken.findMany({
+                    where:{threadId: threadId}
+                });
+                const validTokensCount = allTokens.filter(token=>token.revoked === false)
+                console.log(allTokens)
+                expect(validTokensCount.length).toEqual(1)
+            })
+
+        })
+        describe('on conccurent refresh success',()=>{})
+
         //access token set
         //refresh token and threadId cookies set
         //refreshtoken exists in db

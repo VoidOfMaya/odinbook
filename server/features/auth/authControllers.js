@@ -50,7 +50,7 @@ const localLogin = async (req, res, next)=>{
             path: req.originalUrl,
             stack: err.stack,
         });
-        res.status(500).json({error: err.message || 'Internal Server Error'})  
+        res.status(401).json({error: err.message || 'Internal Server Error'})  
     }
 }
 // accepts Refresh token string,if valid derives user by token string
