@@ -2,7 +2,7 @@ import request from "supertest";
 import { app } from "./app.js";
 import {prisma} from './lib/prisma.js'
 import bcrypt from "bcryptjs";
-import { jest } from '@jest/globals'
+import { beforeEach, jest } from '@jest/globals'
 
 //handle clearing testing database befor each test
 beforeAll(async()=>{
@@ -326,7 +326,6 @@ describe('/auth router',()=>{
             const response = await request(app).post('/auth/refresh')
                 .set('Cookie',cookies);
 
-            console.log(response)
             const record = await prisma.user.findUnique({
                 where:{email: user.email}
             })
@@ -339,6 +338,46 @@ describe('/auth router',()=>{
         });
     })
     //- POST/auth/logout        >logout
+    describe('/logout',()=>{
+        let cookies;
+        beforeEach(async()=>{
+            await prisma.refreshToken.deleteMany();
+            //register user
+            await request(app).post('/auth/register')
+            .send(user)
+            //login as user
+            const login = await request(app).post('/auth/login/local')
+            .send({
+                    email:user.email, 
+                    password: user.password
+                }) 
+            // Extracting login cookies
+            cookies = login.headers["set-cookie"];
+        })
+        //check online status is offline
+        test('is_online status is false',async()=>{
+            const response = await request(app).delete('/auth/logout')
+            .set('Cookie',cookies)
+            cookies = response.headers["set-cookie"]
+            
+            console.log(response.body)
+            const userRecord = await prisma.user.findUnique({
+                where:{email: user.email}
+            })
+            expect(userRecord.isOnline).toBe(false)
+        })
+        //cookies empty
+        test('cookies are cleared from storage',async()=>{
+            const response = await request(app).delete('/auth/logout')
+            .set('Cookie',cookies)
+            cookies = response.headers["set-cookie"]
+            console.log(cookies)
+            expect(cookies).not.toBeDefined()
+        })
+
+    })
+
+    
 })
 describe('/feed',()=>{
     //endpoints to test:-
