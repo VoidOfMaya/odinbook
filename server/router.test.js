@@ -2,6 +2,8 @@ import request from "supertest";
 import { app } from "./app.js";
 import {prisma} from './lib/prisma.js'
 import bcrypt from "bcryptjs";
+import { jest } from '@jest/globals'
+
 //handle clearing testing database befor each test
 beforeAll(async()=>{
     console.log('initiall db clearing:- in progress')
@@ -240,10 +242,15 @@ describe('/auth router',()=>{
                 //parsing cookeis from request
                 const refreshCookie =cookies.find(c=>c.startsWith('refreshToken='));
                 const threadCookie =cookies.find(c=>c.startsWith('threadId='));
+
                 //isolating cookie variables
                 const refreshtoken = refreshCookie.split(";")[0].split("=")[1];
                 const threadId = threadCookie.split(";")[0].split("=")[1];
-
+                console.log(`UNALTERED COOKIES`)
+                console.log(cookies)
+                console.log(`PARSED COOKIES`)
+                console.log(refreshtoken)
+                console.log(threadId)
                 //get from db
                 const token = await prisma.refreshToken.findUnique({
                     where:{token: refreshtoken}
@@ -279,18 +286,57 @@ describe('/auth router',()=>{
                     where:{threadId: threadId}
                 });
                 const validTokensCount = allTokens.filter(token=>token.revoked === false)
-                console.log(allTokens)
                 expect(validTokensCount.length).toEqual(1)
             })
 
         })
-        describe('on conccurent refresh success',()=>{})
+        describe('on conccurent refresh success',()=>{
+            let response;
+            beforeEach(async()=>{
+                const requests = [];
+                for(let i = 0; i <= 3; i++){
+                    requests.push(
+                        request(app).post('/auth/refresh')
+                        .set('Cookie',cookies) 
+                    )                   
+                }
+                response= await Promise.all(requests)
+                
+                //cookies = response[-1].headers["set-cookies"]
+            })
+            test('only 1 valid token exists per threadId',async()=>{
+                const allTokens = await prisma.refreshToken.findMany();
+                const validTokensCount = allTokens.filter(token=>token.revoked === false)
+               response.forEach(res=>{
+                    expect(res.status).toBe(201)
+                })
+                
+                expect(allTokens.length).toEqual(2)
+                expect(validTokensCount.length).toEqual(1)
 
-        //access token set
-        //refresh token and threadId cookies set
-        //refreshtoken exists in db
+            })
+        })
         //last login updated
-        //if old token exists  becomes revoked
+        //helper time delay function
+        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        test('updated last login update', async()=>{  
+
+            await delay(3000)
+            const response = await request(app).post('/auth/refresh')
+                .set('Cookie',cookies);
+
+            console.log(response)
+            const record = await prisma.user.findUnique({
+                where:{email: user.email}
+            })
+            const now = new Date()
+            const validDate = 
+                record.lastOnline.getTime() >= now.getTime() - 1000&& 
+                record.lastOnline.getTime()  <= now.getTime() + 1000
+            expect(record.lastOnline).toBeDefined();
+            expect(validDate).toBe(true);
+        });
     })
     //- POST/auth/logout        >logout
 })

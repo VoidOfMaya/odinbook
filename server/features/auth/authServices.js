@@ -73,6 +73,15 @@ const createAToken = async (userId, threadId)=>{
     )
     return accessToken
 }
+//updates last login
+const lastLoginUpdate = async(userId)=>{
+    await prisma.user.update({
+        where:{ id: Number(userId)},
+        data:{
+            lastOnline:  new Date()
+        }
+    })
+}
 // requires user object
 const createRToken = async (userId,threadId, token=null)=>{
     //creates a new token
@@ -165,11 +174,14 @@ const validateRToken = async (tokenString)=>{
 const getUpdatedtoken = async (threadId)=>{
     const count = await prisma.refreshToken.count({
         where:{
-            revoked : true
+            AND: [
+            {threadId: threadId},
+            {revoked: false}
+            ]
         }
     })
     if(count > 1) throw new Error(`count exceeds 1 valid token per thread`);
-    const tokenHead = await prisma.refreshToken.findUnique({
+    const tokenHead = await prisma.refreshToken.findFirst({
         where:{
             AND: [
             {threadId: threadId},
@@ -184,11 +196,8 @@ const getUserById = async (id) =>{
 }
 const revokeRtoken = async (token)=>{
 
-
-
-
     const now = new Date()
-    const grace = new Date(Date.now()+ 15000);
+    const grace = new Date(Date.now()+ 30000);
     await prisma.refreshToken.update({
         where:{token: token},
         data:{
@@ -212,7 +221,8 @@ const service ={
     getUpdatedtoken,
     getUserById,
     revokeRtoken,
-    removeTokenThread 
+    removeTokenThread ,
+    lastLoginUpdate
 }
 export{
     service

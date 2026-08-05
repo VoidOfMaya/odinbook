@@ -81,6 +81,9 @@ const token = async (req, res, next)=>{
         }
         //create new accessToken
         const newAToken = await service.createAToken(refreshToken.userId )
+        //update login date+
+        await service.lastLoginUpdate(refreshToken.userId)
+        //set user
         const user = await service.getUserById(refreshToken.userId)
         //updates cookies
         // overwrite cookies automatically

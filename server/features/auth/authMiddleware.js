@@ -2,6 +2,7 @@ import passport from 'passport';
 import {ExtractJwt, Strategy} from 'passport-jwt';
 import {prisma} from '../../lib/prisma.js';
 import 'dotenv/config';
+import { ApiError } from '../../errorhelper.js';
 
 const passportConfig=()=>{
     const options = {
@@ -52,7 +53,7 @@ const validateRtoken = async(req, res, next)=>{
             const now = Date.now()
             if(dbToken.expiresAt < now) throw new Error('Token expired')
             //validates revoke status
-            if(dbToken.revoked){ 
+            if(dbToken.revoked && dbToken.graceUntill.getTime() < now){ 
                 await wipeTokenByUserId(dbToken.userId)
                 throw new Error ('invalid token use detected')
             }
@@ -62,9 +63,8 @@ const validateRtoken = async(req, res, next)=>{
         //handles session expiration
         res.clearCookie('refreshToken');
         res.clearCookie('threadId')
-        return res.status(401).json({
-            message: 'Session expired'
-        })
+
+        next(new ApiError(401, err))
     }
 }
 const wipeTokenByUserId = async(id)=>{
