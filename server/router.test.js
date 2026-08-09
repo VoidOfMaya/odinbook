@@ -180,18 +180,18 @@ describe('/auth router',()=>{
         })
 
     })
-    //- POST/auth/login/google  >oauth strategy log in
-    describe('/login/google ',()=>{
+    //- POST/auth/login/github  >oauth strategy log in
+    describe('/login/github ',()=>{
         describe('on success',()=>{
             test('route exists',async()=>{
-                const response = (await request(app).post('/auth/login/google'))
+                const response = (await request(app).post('/auth/login/github'))
                 expect(response.status).not.toBe(404)
             })
-            //access token exists
-            //req.user exists
-            //refresh token and threadId cookies set
-            //refreshtoken exists in db
-            //last login updated            
+            // status 201
+            // record entry for user with google email exists in db
+            // returns request user 
+            // returns a valid access token in request body
+            //sets valid refresh token with valid id in cookies
         })
         describe('on faulty input',()=>{
             test('on wrong user input', async()=>{})

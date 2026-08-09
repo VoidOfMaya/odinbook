@@ -4,13 +4,9 @@ import cors from 'cors';
 import { pipe, midware } from './features/toolManager.js';
 
 import passport from 'passport';
-import{ createServer} from 'http';
-import { Server } from 'socket.io';
 import cookieParser from 'cookie-parser';
 import { corsOpts } from './cors.js';
 
-//cron token cleaner
-import { tokenCleaner,resetSocketData } from './tasks/dbTasks.js';
 import { ApiError } from './errorhelper.js';
 //import { setOnlineStatus } from './features/sockets/onlineStatus.js';
 //import { authenticateConnection } from './features/sockets/middleware.js';

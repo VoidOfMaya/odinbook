@@ -1,12 +1,16 @@
 
-import { app } from "./app";
-import { corsOpts } from "./cors";
+import { app } from "./app.js";
+import { corsOpts } from "./cors.js";
+import{ createServer} from 'http';
+import { Server } from 'socket.io';
+//cron token cleaner
+import { tokenCleaner,resetSocketData } from './tasks/dbTasks.js';
 //server wrapper & socket.io implementation
 const server = createServer(app)
 
 // clean up methods:- 
-tokenCleaner(); //runs auto db cleaning function every week!
-resetSocketData();//clears volitile socket managed data
+//tokenCleaner(); //runs auto db cleaning function every week!
+//resetSocketData();//clears volitile socket managed data
 
 
 const io = new Server(server,{

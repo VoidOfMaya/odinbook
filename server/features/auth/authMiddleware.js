@@ -5,10 +5,12 @@ import 'dotenv/config';
 import { ApiError } from '../../errorhelper.js';
 
 const passportConfig=()=>{
+    //create jwt
     const options = {
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
         secretOrKey: process.env.APIKEY,
     }
+    //local strategy
     passport.use(new Strategy(options, async( payload, done)=>{
         try{
             const user = await prisma.user.findUnique({
