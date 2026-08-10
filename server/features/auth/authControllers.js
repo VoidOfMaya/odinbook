@@ -56,18 +56,13 @@ const localLogin = async (req, res, next)=>{
 const githubLogin =async (req,res,next)=>{
     console.log('oauth callback accessed')
     const {code} = req.query
-    console.log(`code: :${code}`)
-    const tokenQuery =
-    `client_id=${process.env.GH_CLIENT_ID}&client_secret=${process.env.GH_CLIENT_SECRET}&code=${code}`
-     const accessToken = await fetch(
-        `https://github.com/login/oauth/access_token?${tokenQuery}`,{
-        method: 'GET',
-        headers:{
-            'Accept': 'application/json'
-        }
-     })
-     const result = await accessToken.json()
-     console.log(result)
+    //retrive access token
+    const accessToken = await service.gitAccessToken(code)
+    //retrive user data+email
+    const userData = await service.gitUserData(accessToken.access_token)
+    //validate or create user
+    const userSession = await service.gitUserHandler(userData)
+    console.log(userSession)
 }
 // accepts Refresh token string,if valid derives user by token string
 const token = async (req, res, next)=>{
