@@ -122,8 +122,8 @@ const gitUserData = async (accessToken) =>{
     return user  
 }
 //  -create or get user from db
-const gitUserHandler = async (user)=>{
-    const gitId = String(user.id)
+const gitUserHandler = async (userId)=>{
+    const gitId = String(userId)
     let record = await prisma.user.findUnique({
         where: {githubId: gitId}
     })

@@ -53,16 +53,47 @@ const localLogin = async (req, res, next)=>{
         res.status(401).json({error: err.message || 'Internal Server Error'})  
     }
 }
-const githubLogin =async (req,res,next)=>{
+
+const githubUserManager =async (req,res,next)=>{
     console.log('oauth callback accessed')
     const {code} = req.query
     //retrive access token
     const accessToken = await service.gitAccessToken(code)
     //retrive user data+email
     const userData = await service.gitUserData(accessToken.access_token)
-    //validate or create user
-    const userSession = await service.gitUserHandler(userData)
-    console.log(userSession)
+    //http://localhost:3000/auth/login/github/${userData.id}
+    //
+    res.redirect(`http://localhost:5173/${userData.id}`)
+}
+//  -returns relevant user data with user.id!
+const githubLogin = async(req, res, next)=>{
+    console.log(`accessed main login sequence `)
+    const{userId}= req.params
+  try{
+        //validate or create user
+        const userSession = await service.gitUserHandler(userId)
+        //pushes threadID and refreshToken to cookies as an httpOnly 
+        const production = process.env.NODE_ENV === 'production'
+
+        res.cookie('refreshToken', userSession.refreshToken, {
+            httpOnly: true,
+            secure: production,
+            sameSite: production ? "none" : "lax",
+            path:'/',
+            maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+        });
+
+        res.cookie('threadId', userSession.threadId, {
+            httpOnly: true,
+            secure: production,
+            sameSite: production ? "none" : "lax",
+            path:'/',
+            maxAge: 1000 * 60 * 60 * 24 * 7,
+        });
+        res.status(200).json({user: userSession.user, accessToken: userSession.accessToken});
+    }catch(err){
+        next(err)
+    }
 }
 // accepts Refresh token string,if valid derives user by token string
 const token = async (req, res, next)=>{
@@ -177,6 +208,7 @@ const controller ={
     localLogin,
     token,
     logout,
+    githubUserManager,
     githubLogin
 }
 export{
