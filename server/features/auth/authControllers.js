@@ -24,7 +24,7 @@ const localLogin = async (req, res, next)=>{
     //logic
     try{
         const result = await service.login(data);
-        //pushes threadID and refreshToken to cookies as an httpOnly
+        //pushes threadID and refreshToken to cookies as an httpOnly 
         const production = process.env.NODE_ENV === 'production'
 
         res.cookie('refreshToken', result.refreshToken, {

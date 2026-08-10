@@ -1,4 +1,5 @@
 import passport from 'passport';
+import GitHubStrategy from 'passport-github'
 import {ExtractJwt, Strategy} from 'passport-jwt';
 import {prisma} from '../../lib/prisma.js';
 import 'dotenv/config';
@@ -38,8 +39,63 @@ const passportConfig=()=>{
             done(err)
         }
     }))
+    // GitHub OAuth Strategy
+    passport.use(new GitHubStrategy({
+        clientID: process.env.GH_CLIENT_ID,
+        clientSecret: process.env.GH_CLIENT_SECRET,
+        callbackURL: process.env.GH_CALLBACK_URL,
+    }, async (accessToken, refreshToken, profile, done) => {
+            try{
+                //find user if exists
+                let user = await prisma.user.findUnique({
+                    where: {githubId:profile.id},
+                    select:{
+                        id: true,
+                        email:true,
+                        name:true,
+                        bio:true,
+                        photo:true,
+                        lastOnline:true,
+                        isOnline: true,
+                        createdAt:true
+                    }
+                });  
+                if(!user) user = await prisma.create({
+                    data:{
+                        githubId:profile.id,
+                        email: profile.email,
+                        name: profile.name,
+                        photo: profile.avatar_url,
+                        bio: profile.bio,
+                    },
+                    select:{
+                        id: true,
+                        email:true,
+                        name:true,
+                        bio:true,
+                        photo:true,
+                        lastOnline:true,
+                        isOnline: true,
+                        createdAt:true
+                    }
+                })
+              
+            }catch(err){
+                console.error({
+                    message: err.message,
+                    method: req.method,
+                    path: req.originalUrl,
+                    stack: err.stack,
+                });
+                done(err)
+            }
+
+        return done(null, user);
+    }));
 }
 const isAuthenticated = passport.authenticate('jwt',{session:false});
+
+
 
 const validateRtoken = async(req, res, next)=>{
     const token = req.cookies.refreshToken;
