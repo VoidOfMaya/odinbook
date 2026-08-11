@@ -1,6 +1,7 @@
 import { validationResult, matchedData } from "express-validator";
 import {service} from "./authServices.js";
 import { ApiError } from "../../errorhelper.js";
+import  crypto  from 'crypto'
 
 let currentUserGitId;
 const newUser = async (req, res, next) =>{
@@ -54,17 +55,60 @@ const localLogin = async (req, res, next)=>{
         res.status(401).json({error: err.message || 'Internal Server Error'})  
     }
 }
-
+//GITHUB Oauth2 CONTROLLERs
+const generateState = async (req, res, next)=>{
+    //constructing state and authorization query string
+    const state = crypto.randomBytes(32).toString('hex');
+    const githubClient = {
+        clientId: process.env.GH_CLIENT_ID,
+        redirectUrl: process.env.GH_REDIRECT_URL,
+        scope: process.env.GH_SCOPE
+    }
+    const query = 
+    `client_id=${githubClient.clientId}&redirect_uri=${githubClient.redirectUrl}&state=${state}&scope=${githubClient.scope}`
+    //Setting state to a httpOnly cookie
+    const production = process.env.NODE_ENV === 'production'
+    res.cookie('state', state, {
+        httpOnly: true,
+        secure: production,
+        sameSite: production ? "none" : "lax",
+        path:'/',
+        maxAge: 1000 * 60 * 15, // 15 minute shortlived
+    });
+    res.status(200).json({query: query})
+}
+//  -manages creation or validation of user existance in database
 const githubUserManager =async (req,res,next)=>{
     console.log('oauth callback accessed')
-    const {code} = req.query
+    
+    const production = process.env.NODE_ENV === 'production'
+    const {code, state} = req.query
+    const cookieState = req.cookies.state
+    //validate  state 
+    if(!state === cookieState){
+        console.log(`state mismatch, untrusted source`)
+        res.clearCookie('state',{
+            httpOnly: true,
+            secure: production,
+            path:'/',
+            sameSite: production? 'none': 'lax',
+        })
+        throw new Error('Unauthorized state')
+    }
     //retrive access token
     const accessToken = await service.gitAccessToken(code)
-    //retrive user data+email
-    const userData = await service.gitUserData(accessToken.access_token)
+    // record or create user return users githubId
+    const githubId = await service.gitUserData(accessToken.access_token)
 
-    const production = process.env.NODE_ENV === 'production'
-    res.cookie('githubId', userData.id, {
+    //clear state cookie
+    res.clearCookie('state',{
+        httpOnly: true,
+        secure: production,
+        path:'/',
+        sameSite: production? 'none': 'lax',
+    })
+    // define temporary secure user id
+    res.cookie('githubId', githubId, {
         httpOnly: true,
         secure: production,
         sameSite: production ? "none" : "lax",
@@ -73,7 +117,7 @@ const githubUserManager =async (req,res,next)=>{
     });
     res.redirect(`http://localhost:5173/login/github`)
 }
-//  -returns relevant user data with user.id!
+//  - logs in user and returns relevant user data!
 const githubLogin = async(req, res, next)=>{
     console.log(`accessed main login sequence `)
     
@@ -107,6 +151,7 @@ const githubLogin = async(req, res, next)=>{
             path:'/',
             sameSite: production? 'none': 'lax',
         })
+            
         res.status(200).json({user: userSession.user, accessToken: userSession.accessToken});
     }catch(err){
         next(err)
@@ -225,6 +270,7 @@ const controller ={
     localLogin,
     token,
     logout,
+    generateState,
     githubUserManager,
     githubLogin
 }

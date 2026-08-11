@@ -112,17 +112,30 @@ const gitUserData = async (accessToken) =>{
         const userEmails= await  email.json();
         primaryEmail = userEmails.find(email=> email.primary === true)
     }
-    const user = {
-        id: result.id,
-        email: result.email || primaryEmail,
-        name: result.name,
-        photo: result.avatar_url,
-        bio: result.bio
+
+    // check if user already exists or create one
+    const githubId = String(result.id)
+    let record = await prisma.user.findUnique({
+        where: {githubId: githubId}
+    })
+    
+    if(!record){
+        record = await prisma.user.create({
+            data:{
+                githubId: githubId,
+                email: result.email || primaryEmail.email,
+                name: result.name,
+                photo: result.avatar_url,
+                bio: result.bio
+            },
+        })
     }
-    return user  
+    return result.id
+
 }
 //  -create or get user from db
 const gitUserHandler = async (userId)=>{
+    /*
     const gitId = String(userId)
     let record = await prisma.user.findUnique({
         where: {githubId: gitId}
@@ -148,7 +161,21 @@ const gitUserHandler = async (userId)=>{
 
         }
     })
-    }
+    }*/
+   const gitId = String(userId)
+    const record = await prisma.user.findUnique({
+        where:{githubId: gitId},
+        select:{
+            id: true,
+            email: true,
+            name:true,
+            bio: true,
+            photo: true,
+            createdAt: true,
+            lastOnline:true,
+
+        }
+    })
     //handele registry with the custom tokens system
     //access token:-
     const accessToken = await createAToken(record.id);
