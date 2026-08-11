@@ -9,6 +9,7 @@ const GitLogin= ({})=>{
         setAuthHandler
     } = useOutletContext();
     const[loading, setLoading]= useState(false);
+    
     //fetches user data 
     const fetchUser = async()=>{
     const response = await fetch(`http://localhost:3000/auth/login/github`,

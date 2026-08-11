@@ -12,26 +12,6 @@ function App() {
   const setAuthHandler =(data)=>{
     setAuth(data)
   }
-  /*
-  const fetchUser = async()=>{
-      const response = await fetch(`http://localhost:3000/auth/login/github`,
-        {
-          method: 'GET',
-          headers:{
-            'Content-Type': 'application/json'
-          }
-        }
-      )
-      const result = await response.json()
-      setAuth({user: result.user, accessToken: result.accessToken})
-  }
-  useEffect(()=>{
-    if(!auth){
-      if(initAuth){
-        const data = fetchUser();
-      } 
-    }
-  },[initAuth])*/
   return (
     <>
     <Outlet context={{
@@ -42,6 +22,7 @@ function App() {
     }}/>
       {auth? (
         <>
+          {console.log(auth.user)}
           <h1> welcome {auth.user.name}</h1>
           <img src={auth.user.photo} height='300px' width='300px'/>
         </>
