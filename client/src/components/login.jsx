@@ -1,4 +1,6 @@
-const Login = ()=>{
+import { useOutletContext } from "react-router-dom"
+const Login = ({})=>{
+  const{initAuthHandler} = useOutletContext();
   const gitOptions ={
     client_id: import.meta.env.VITE_GH_CLIENT_ID,
     redirect_uri: 'http://localhost:3000/auth/login/github/cb',
@@ -12,6 +14,7 @@ const Login = ()=>{
         <button type='button'
         onClick={async()=>{
           window.location.href=`https://github.com/login/oauth/authorize?${gitUrlQuery}`
+          initAuthHandler();
           }
         }
         >login with github</button>

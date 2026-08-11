@@ -4,13 +4,17 @@ import { Login } from './components/login.jsx'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [initAuth, setInitAuth] = useState(false)
   const [auth, setAuth] = useState(null)
-  const {gitId= null} = useParams()
-
-  const fetchUser = async(id)=>{
-      if(!id) return {message: 'no id provided'}
-      const response = await fetch(`http://localhost:3000/auth/login/github/${id}`,
+  const initAuthHandler =()=>{
+    setInitAuth(true)
+  }
+  const setAuthHandler =(data)=>{
+    setAuth(data)
+  }
+  /*
+  const fetchUser = async()=>{
+      const response = await fetch(`http://localhost:3000/auth/login/github`,
         {
           method: 'GET',
           headers:{
@@ -23,22 +27,26 @@ function App() {
   }
   useEffect(()=>{
     if(!auth){
-      if(gitId){
-        const data = fetchUser(gitId);
+      if(initAuth){
+        const data = fetchUser();
       } 
     }
-  },[gitId])
+  },[initAuth])*/
   return (
     <>
+    <Outlet context={{
+      auth,
+      initAuth,
+      initAuthHandler,
+      setAuthHandler,
+    }}/>
       {auth? (
         <>
           <h1> welcome {auth.user.name}</h1>
+          <img src={auth.user.photo} height='300px' width='300px'/>
         </>
       ):(
-        <>
-          <Login />
-          <div>
-          </div>        
+        <>       
         </>
       )}
 
