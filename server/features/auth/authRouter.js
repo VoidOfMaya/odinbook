@@ -7,7 +7,7 @@ const authRouter = Router()
 authRouter.post('/register', validate.NewAccount, controller.newUser);
 authRouter.post('/login/local', validate.Login, controller.localLogin);
 authRouter.get('/login/github/cb', controller.githubUserManager)
-authRouter.get('/login/github/:userId',controller.githubLogin)
+authRouter.get('/login/github',controller.githubLogin)
 
 //logout revokes token on backend, delets  access token from frontend
 authRouter.delete('/logout',isAuthenticated,controller.logout)

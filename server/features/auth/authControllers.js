@@ -2,6 +2,7 @@ import { validationResult, matchedData } from "express-validator";
 import {service} from "./authServices.js";
 import { ApiError } from "../../errorhelper.js";
 
+let currentUserGitId;
 const newUser = async (req, res, next) =>{
     //validation handler
     try{    
@@ -61,17 +62,26 @@ const githubUserManager =async (req,res,next)=>{
     const accessToken = await service.gitAccessToken(code)
     //retrive user data+email
     const userData = await service.gitUserData(accessToken.access_token)
-    //http://localhost:3000/auth/login/github/${userData.id}
-    //
-    res.redirect(`http://localhost:5173/${userData.id}`)
+
+    const production = process.env.NODE_ENV === 'production'
+    res.cookie('githubId', userData.id, {
+        httpOnly: true,
+        secure: production,
+        sameSite: production ? "none" : "lax",
+        path:'/',
+        maxAge: 1000 * 60 * 15, // 15 minute shortlived
+    });
+    res.redirect(`http://localhost:5173/login/github`)
 }
 //  -returns relevant user data with user.id!
 const githubLogin = async(req, res, next)=>{
     console.log(`accessed main login sequence `)
-    const{userId}= req.params
+    
   try{
+        const gitId = req.cookies.githubId
+        if(!gitId)throw new Error('Github user id not defined!')
         //validate or create user
-        const userSession = await service.gitUserHandler(userId)
+        const userSession = await service.gitUserHandler(gitId)
         //pushes threadID and refreshToken to cookies as an httpOnly 
         const production = process.env.NODE_ENV === 'production'
 
@@ -90,6 +100,13 @@ const githubLogin = async(req, res, next)=>{
             path:'/',
             maxAge: 1000 * 60 * 60 * 24 * 7,
         });
+        //remove temporary id token:
+        res.clearCookie('githubId',{
+            httpOnly: true,
+            secure: production,
+            path:'/',
+            sameSite: production? 'none': 'lax',
+        })
         res.status(200).json({user: userSession.user, accessToken: userSession.accessToken});
     }catch(err){
         next(err)
