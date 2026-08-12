@@ -135,33 +135,6 @@ const gitUserData = async (accessToken) =>{
 }
 //  -create or get user from db
 const gitUserHandler = async (userId)=>{
-    /*
-    const gitId = String(userId)
-    let record = await prisma.user.findUnique({
-        where: {githubId: gitId}
-    })
-    //update last login if record exists
-    if(!record){
-    record = await prisma.user.create({
-        data:{
-            githubId: gitId,
-            email: user.email.email,
-            name: user.name,
-            photo: user.photo,
-            bio: user.bio
-        },
-        select:{
-            id: true,
-            email: true,
-            name:true,
-            bio: true,
-            photo: true,
-            createdAt: true,
-            lastOnline:true,
-
-        }
-    })
-    }*/
    const gitId = String(userId)
     const record = await prisma.user.findUnique({
         where:{githubId: gitId},

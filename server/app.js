@@ -30,7 +30,8 @@ midware.passportConfig();
 app.use(passport.initialize());
 
 //parse cookies
-app.use(cookieParser());
+app.use(cookieParser(process.env.CRYPTKEY));
+//CRYPTKEY is a cryptographically generated 32byte hex string
 
 //INSERT SERVER ENDPOINTS HERE: 
 app.use('/auth',pipe.authRouter)

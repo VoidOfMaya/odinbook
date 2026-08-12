@@ -32,6 +32,7 @@ const localLogin = async (req, res, next)=>{
         res.cookie('refreshToken', result.refreshToken, {
             httpOnly: true,
             secure: production,
+            signed: true,
             sameSite: production ? "none" : "lax",
             path:'/',
             maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
@@ -40,6 +41,7 @@ const localLogin = async (req, res, next)=>{
         res.cookie('threadId', result.threadId, {
             httpOnly: true,
             secure: production,
+            signed: true,
             sameSite: production ? "none" : "lax",
             path:'/',
             maxAge: 1000 * 60 * 60 * 24 * 7,
@@ -72,6 +74,7 @@ const generateState = async (req, res, next)=>{
         httpOnly: true,
         secure: production,
         sameSite: production ? "none" : "lax",
+        signed: true,
         path:'/',
         maxAge: 1000 * 60 * 15, // 15 minute shortlived
     });
@@ -83,7 +86,7 @@ const githubUserManager =async (req,res,next)=>{
     
     const production = process.env.NODE_ENV === 'production'
     const {code, state} = req.query
-    const cookieState = req.cookies.state
+    const cookieState = req.signedCookies.state
     //validate  state 
     if(!state === cookieState){
         console.log(`state mismatch, untrusted source`)
@@ -98,8 +101,7 @@ const githubUserManager =async (req,res,next)=>{
     //retrive access token
     const accessToken = await service.gitAccessToken(code)
     // record or create user return users githubId
-    const githubId = await service.gitUserData(accessToken.access_token)
-
+    const githubId = await service.gitUserData(accessToken.access_token) 
     //clear state cookie
     res.clearCookie('state',{
         httpOnly: true,
@@ -111,18 +113,19 @@ const githubUserManager =async (req,res,next)=>{
     res.cookie('githubId', githubId, {
         httpOnly: true,
         secure: production,
+        signed: true,
         sameSite: production ? "none" : "lax",
         path:'/',
         maxAge: 1000 * 60 * 15, // 15 minute shortlived
     });
     res.redirect(`http://localhost:5173/login/github`)
 }
-//  - logs in user and returns relevant user data!
+//  - logs in user and returns relevant user data   !
 const githubLogin = async(req, res, next)=>{
     console.log(`accessed main login sequence `)
     
   try{
-        const gitId = req.cookies.githubId
+        const gitId = req.signedCookies.githubId
         if(!gitId)throw new Error('Github user id not defined!')
         //validate or create user
         const userSession = await service.gitUserHandler(gitId)
@@ -132,6 +135,7 @@ const githubLogin = async(req, res, next)=>{
         res.cookie('refreshToken', userSession.refreshToken, {
             httpOnly: true,
             secure: production,
+            signed: true,
             sameSite: production ? "none" : "lax",
             path:'/',
             maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
@@ -140,6 +144,7 @@ const githubLogin = async(req, res, next)=>{
         res.cookie('threadId', userSession.threadId, {
             httpOnly: true,
             secure: production,
+            signed: true,
             sameSite: production ? "none" : "lax",
             path:'/',
             maxAge: 1000 * 60 * 60 * 24 * 7,
@@ -163,8 +168,8 @@ const token = async (req, res, next)=>{
     //if refresh token invalid return error
     try{
         //validating that cookies exist
-        const oldToken = req.cookies.refreshToken
-        const threadId = req.cookies.threadId
+        const oldToken = req.signedCookies.refreshToken
+        const threadId = req.signedCookies.threadId
         if(!oldToken|| !threadId){
             return res.status(401).json({
                 code: 'Missing Credentials',
@@ -197,6 +202,7 @@ const token = async (req, res, next)=>{
             'refreshToken',newRToken,{
                 httpOnly: true,
                 secure: production,
+                signed: true,
                 sameSite: production ? "none" : "lax",
                 path:'/',
                 maxAge:1000 *60 *60 *24 *7,
@@ -206,6 +212,7 @@ const token = async (req, res, next)=>{
             'threadId',threadId,{
                 httpOnly: true,
                 secure: production,
+                signed: true,
                 sameSite: production ? "none" : "lax",
                 path:'/',
                 maxAge:1000 *60 *60 *24 *7,
@@ -238,7 +245,7 @@ const token = async (req, res, next)=>{
 //requires a token thread uuid
 const logout = async (req, res, next) =>{
     try{
-        const threadId = req.cookies.threadId;
+        const threadId = req.signedCookies.threadId;
         const result = await service.removeTokenThread(threadId);
 
         const production = process.env.NODE_ENV === 'production'
