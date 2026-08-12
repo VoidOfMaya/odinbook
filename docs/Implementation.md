@@ -28,10 +28,12 @@
 ## Routes
 -   **authRouter**
 ```
-    []  POST/auth/login/{method}        >log in with username and password
+    []  POST/auth/login/{method}        >log in with username and password or github
+    []  GET/auth/login/{method}/cb      >used to gain accsess to Oauth apis
     []  POST/auth/Register              >register a local user
     []  POST/auth/refresh               >refresh user authenticaiton
     []  POST/auth/logout                > logout user from session
+
 ```
 -   **feedRouter**
 ```
@@ -123,6 +125,12 @@ if(dataExists){
 }
 ```
 ## Authentication
+ this app uses both a local method to user authentication and 
+ githubs Oauth2.0 flow to authenticate users:-
+ <img src='../../../Downloads/secure git Oauth flow.jpg'/>
+ and a custom refresh token rotation system
+    - for security all cookies handeling authentication are signed with a cryptographically generated secret key
+
 ## Controllers
 ## Services
 ## Input Validation
