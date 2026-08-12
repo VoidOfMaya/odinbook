@@ -2,6 +2,7 @@ import { validationResult, matchedData } from "express-validator";
 import {service} from "./authServices.js";
 import { ApiError } from "../../errorhelper.js";
 import  crypto  from 'crypto'
+import { gitOauth } from "./gitOauthsevice.js";
 
 let currentUserGitId;
 const newUser = async (req, res, next) =>{
@@ -99,9 +100,9 @@ const githubUserManager =async (req,res,next)=>{
         throw new Error('Unauthorized state')
     }
     //retrive access token
-    const accessToken = await service.gitAccessToken(code)
+    const accessToken = await gitOauth.gitAccessToken(code)
     // record or create user return users internal id 
-    const userId = await service.gitUserData(accessToken.access_token) 
+    const userId = await gitOauth.gitUserData(accessToken.access_token) 
     //clear state cookie
     res.clearCookie('state',{
         httpOnly: true,
@@ -128,7 +129,7 @@ const githubLogin = async(req, res, next)=>{
         const gitId = req.signedCookies.userId
         if(!gitId)throw new Error('Github user id not defined!')
         //validate or create user
-        const userSession = await service.gitUserHandler(gitId)
+        const userSession = await gitOauth.gitUserHandler(gitId)
         //pushes threadID and refreshToken to cookies as an httpOnly 
         const production = process.env.NODE_ENV === 'production'
 
