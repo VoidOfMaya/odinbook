@@ -100,8 +100,8 @@ const githubUserManager =async (req,res,next)=>{
     }
     //retrive access token
     const accessToken = await service.gitAccessToken(code)
-    // record or create user return users githubId
-    const githubId = await service.gitUserData(accessToken.access_token) 
+    // record or create user return users internal id 
+    const userId = await service.gitUserData(accessToken.access_token) 
     //clear state cookie
     res.clearCookie('state',{
         httpOnly: true,
@@ -110,7 +110,7 @@ const githubUserManager =async (req,res,next)=>{
         sameSite: production? 'none': 'lax',
     })
     // define temporary secure user id
-    res.cookie('githubId', githubId, {
+    res.cookie('userId', userId, {
         httpOnly: true,
         secure: production,
         signed: true,
@@ -125,7 +125,7 @@ const githubLogin = async(req, res, next)=>{
     console.log(`accessed main login sequence `)
     
   try{
-        const gitId = req.signedCookies.githubId
+        const gitId = req.signedCookies.userId
         if(!gitId)throw new Error('Github user id not defined!')
         //validate or create user
         const userSession = await service.gitUserHandler(gitId)
@@ -150,7 +150,7 @@ const githubLogin = async(req, res, next)=>{
             maxAge: 1000 * 60 * 60 * 24 * 7,
         });
         //remove temporary id token:
-        res.clearCookie('githubId',{
+        res.clearCookie('userId',{
             httpOnly: true,
             secure: production,
             path:'/',
