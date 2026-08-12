@@ -28,11 +28,12 @@
 ## Routes
 -   **authRouter**
 ```
-    []  POST/auth/login/{method}        >log in with username and password or github
-    []  GET/auth/login/{method}/cb      >used to gain accsess to Oauth apis
-    []  POST/auth/Register              >register a local user
-    []  POST/auth/refresh               >refresh user authenticaiton
-    []  POST/auth/logout                > logout user from session
+    [X]  GET/authlogin/github/state      >generates unguesable state and creates authorizartion request query
+    [X]  GET/auth/login/github/cb        >gets github accesstoken, gets github user profile, finds or creates record of user
+    [X]  GET/auth/login/github           > gets user recordand forwards to client
+    [X]  POST/auth/Register              >register a local user
+    [X]  POST/auth/refresh               >refresh user authenticaiton
+    [X]  POST/auth/logout                > logout user from session
 
 ```
 -   **feedRouter**

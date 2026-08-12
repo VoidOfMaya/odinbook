@@ -39,6 +39,7 @@ const passportConfig=()=>{
             done(err)
         }
     }))
+    /*
     // GitHub OAuth Strategy
     passport.use(new GitHubStrategy({
         clientID: process.env.GH_CLIENT_ID,
@@ -92,9 +93,31 @@ const passportConfig=()=>{
 
         return done(null, user);
     }));
+    */
 }
 const isAuthenticated = passport.authenticate('jwt',{session:false});
 
+const isValidGitReq = async(req,res,next)=>{
+    try{
+        const {code, state} = req.query
+        const cookieState = req.signedCookies.state
+        //clear cookie
+        const production = process.env.NODE_ENV === 'production'
+        res.clearCookie('state',{
+            httpOnly: true,
+            secure: production,
+            path:'/',
+            sameSite: production? 'none': 'lax',
+        })
+        //validate  state 
+        if(state !== cookieState)throw new Error('Unauthorized state')   
+        
+        next()  
+    }catch(err){
+        next(err)
+    }
+
+}
 
 
 const validateRtoken = async(req, res, next)=>{
@@ -134,5 +157,6 @@ const wipeTokenByUserId = async(id)=>{
 export{
     passportConfig,
     isAuthenticated,
-    validateRtoken
+    validateRtoken,
+    isValidGitReq
 }

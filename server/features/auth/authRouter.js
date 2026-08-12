@@ -2,13 +2,13 @@ import{Router} from 'express';
 import { validate } from './inputValidations.js';
 import {controller} from './authControllers.js';
 import { github } from '../../utils/github.js';
-import { isAuthenticated, validateRtoken } from './authMiddleware.js';
+import { isAuthenticated, validateRtoken,isValidGitReq } from './authMiddleware.js';
 const authRouter = Router()
 authRouter.post('/register', validate.NewAccount, controller.newUser);
 authRouter.post('/login/local', validate.Login, controller.localLogin);
 //github Oauth2.0 flow
 authRouter.get('/login/github/state',controller.generateState)
-authRouter.get('/login/github/cb', controller.githubUserManager)
+authRouter.get('/login/github/cb', isValidGitReq, controller.githubUserManager)
 authRouter.get('/login/github',controller.githubLogin)
 
 //logout revokes token on backend, delets  access token from frontend

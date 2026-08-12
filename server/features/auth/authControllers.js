@@ -86,19 +86,7 @@ const githubUserManager =async (req,res,next)=>{
     console.log('oauth callback accessed')
     
     const production = process.env.NODE_ENV === 'production'
-    const {code, state} = req.query
-    const cookieState = req.signedCookies.state
-    //validate  state 
-    if(!state === cookieState){
-        console.log(`state mismatch, untrusted source`)
-        res.clearCookie('state',{
-            httpOnly: true,
-            secure: production,
-            path:'/',
-            sameSite: production? 'none': 'lax',
-        })
-        throw new Error('Unauthorized state')
-    }
+    const {code} = req.query
     //retrive access token
     const accessToken = await gitOauth.gitAccessToken(code)
     // record or create user return users internal id 
