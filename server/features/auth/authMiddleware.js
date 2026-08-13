@@ -121,7 +121,7 @@ const isValidGitReq = async(req,res,next)=>{
 
 
 const validateRtoken = async(req, res, next)=>{
-    const token = req.cookies.refreshToken;
+    const token = req.signedCookies.refreshToken;
     try{
         const dbToken = await  prisma.refreshToken.findUnique({
             where:{token: token}

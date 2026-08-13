@@ -2,7 +2,9 @@ import request from "supertest";
 import { app } from "./app.js";
 import {prisma} from './lib/prisma.js'
 import bcrypt from "bcryptjs";
-import { beforeEach, jest } from '@jest/globals'
+import { beforeEach, describe, jest } from '@jest/globals'
+import { testHelper } from "./utils/testHelpers.js";
+import cookieParser from "cookie-parser";
 
 //handle clearing testing database befor each test
 beforeAll(async()=>{
@@ -128,20 +130,18 @@ describe('/auth router',()=>{
             })
             //refreshtoken exists in db
             test('refresh token exists in database',async()=>{
-                const reqCookie = response.headers["set-cookie"];
-                //parsing cookeis from request
-                const refreshCookie =reqCookie.find(c=>c.startsWith('refreshToken='));
-                const threadCookie =reqCookie.find(c=>c.startsWith('threadId='));
-                //isolating cookie variables
-                const refreshtoken = refreshCookie.split(";")[0].split("=")[1];
-                const threadId = threadCookie.split(";")[0].split("=")[1];
+                //parsing signed cookie  from request
+                const setCookie = response.headers["set-cookie"];
 
+                const refreshCookie =setCookie.find(c=>c.startsWith('refreshToken='));
+                const threadCookie =setCookie.find(c=>c.startsWith('threadId='));
+               const refreshToken = testHelper.decodeSignedCookie(refreshCookie);
+               const threadId = testHelper.decodeSignedCookie(threadCookie);
                 //get from db
                 const token = await prisma.refreshToken.findUnique({
-                    where:{token: refreshtoken}
+                    where:{token: refreshToken}
                 })
-                console.log(`cookies:\n token:${refreshtoken}\nthreadId:${threadId}`)
-                console.log(token)
+                console.log(`cookies:\n token:${refreshToken}\nthreadId:${threadId}`)
                 expect(token).toBeDefined()
                 expect(token.threadId).toEqual(threadId)
             })
@@ -198,6 +198,14 @@ describe('/auth router',()=>{
             test('on empty request', async ()=>{})            
         })
 
+        describe('step1 generate unguessable state',()=>{
+            //generates 32 cryptographic state
+            //constructs query
+            //cookies are signed and httpOnly
+        })
+        describe('step2 callback ',()=>{})
+        describe('step3 login with github',()=>{})
+
     })
     //- POST/auth/refresh       >token refresh
     describe('/refresh', ()=>{
@@ -244,16 +252,11 @@ describe('/auth router',()=>{
                 const threadCookie =cookies.find(c=>c.startsWith('threadId='));
 
                 //isolating cookie variables
-                const refreshtoken = refreshCookie.split(";")[0].split("=")[1];
-                const threadId = threadCookie.split(";")[0].split("=")[1];
-                console.log(`UNALTERED COOKIES`)
-                console.log(cookies)
-                console.log(`PARSED COOKIES`)
-                console.log(refreshtoken)
-                console.log(threadId)
+                const refreshToken = testHelper.decodeSignedCookie(refreshCookie);
+                const threadId = testHelper.decodeSignedCookie(threadCookie)
                 //get from db
                 const token = await prisma.refreshToken.findUnique({
-                    where:{token: refreshtoken}
+                    where:{token: refreshToken}
                 })
                 const tokens = await prisma.refreshToken.findMany({
                     where:{threadId: threadId}
@@ -279,8 +282,8 @@ describe('/auth router',()=>{
                 const refreshCookie =cookies.find(c=>c.startsWith('refreshToken='));
                 const threadCookie =cookies.find(c=>c.startsWith('threadId='));
                 //isolating cookie variables
-                const refreshtoken = refreshCookie.split(";")[0].split("=")[1];
-                const threadId = threadCookie.split(";")[0].split("=")[1];
+                const refreshtoken = testHelper.decodeSignedCookie(refreshCookie)
+                const threadId = testHelper.decodeSignedCookie(threadCookie);
                 //get all cookies
                 const allTokens = await prisma.refreshToken.findMany({
                     where:{threadId: threadId}
