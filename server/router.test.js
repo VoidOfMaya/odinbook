@@ -2,7 +2,8 @@ import request from "supertest";
 import { app } from "./app.js";
 import {prisma} from './lib/prisma.js'
 import bcrypt from "bcryptjs";
-import { beforeEach, describe, jest } from '@jest/globals'
+import crypto from 'crypto'
+import { beforeEach, describe, expect, jest } from '@jest/globals'
 import { testHelper } from "./utils/testHelpers.js";
 import cookieParser from "cookie-parser";
 
@@ -184,14 +185,9 @@ describe('/auth router',()=>{
     describe('/login/github ',()=>{
         describe('on success',()=>{
             test('route exists',async()=>{
-                const response = (await request(app).post('/auth/login/github'))
+                const response = (await request(app).get('/auth/login/github'))
                 expect(response.status).not.toBe(404)
             })
-            // status 201
-            // record entry for user with google email exists in db
-            // returns request user 
-            // returns a valid access token in request body
-            //sets valid refresh token with valid id in cookies
         })
         describe('on faulty input',()=>{
             test('on wrong user input', async()=>{})
@@ -200,10 +196,67 @@ describe('/auth router',()=>{
 
         describe('step1 generate unguessable state',()=>{
             //generates 32 cryptographic state
+            let response;
+            let cookies;
+            beforeEach(async()=>{
+                response= await request(app).get('/auth/login/github/state')
+                cookies = response.headers["set-cookie"]
+                global.fetch = jest.fn();
+            })
+            test(`has state`,async()=>{
+                
+                const stateCookie = cookies.find(c=>c.startsWith('state='));
+                const state = testHelper.decodeSignedCookie(stateCookie);
+
+                expect(state).toBeDefined()
+                expect(state).toMatch(/^[0-9a-fA-F]{64}$/)
+                expect(Buffer.from(state, 'hex')).toHaveLength(32)
+            })
             //constructs query
+            test('has a valid query',async()=>{
+                const query = response.body.query
+
+                expect(query).toContain(`client_id=`);
+                expect(query).toContain(`redirect_uri=`);
+                expect(query).toContain(`state=`);
+                expect(query).toContain(`scope=`);
+            })
             //cookies are signed and httpOnly
+            test('state gets sent as a signed cookie',async()=>{})
         })
-        describe('step2 callback ',()=>{})
+        describe('step2 callback ',()=>{
+            let response;
+            let cookies;
+            let codeResponse;
+            beforeEach(async()=>{
+                //generates state strate:
+                const state = crypto.randomBytes(32).toString('hex')
+                global.fetch = jest.fn();
+                
+                testHelper.mockOauth({state: state});
+                response = await request(app).get('/auth/login/github/cb')
+                cookies = response.headers["set-cookie"]
+            })
+            test('validate user id in cookie',async()=>{
+                const userCookie = cookies.find(c=>c.startsWith('userId='));
+                const cleanUserId = testHelper.decodeSignedCookie(userCookie)
+
+                const result = await response
+
+                expect(userCookie).toContain("userId=s%3A")
+                expect(cleanUserId).toBeDefined()
+                expect(typeof cleanUserId).toBe('string')
+            })
+          test('validate redirect link',async()=>{
+                const userCookie = cookies.find(c=>c.startsWith('userId='));
+                const cleanUserId = testHelper.decodeSignedCookie(userCookie)
+                
+                const result = await response
+                console.log(userCookie)
+                expect(result.status).toBe(302)
+                expect(result.headers.location).toEqual('http://localhost:5173/login/github');
+          })
+        })
         describe('step3 login with github',()=>{})
 
     })
