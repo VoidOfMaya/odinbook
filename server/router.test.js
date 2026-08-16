@@ -237,7 +237,7 @@ describe('/auth router',()=>{
                 response = await request(app).get('/auth/login/github/cb')
                 cookies = response.headers["set-cookie"]
             })
-            test('validate user id in cookie',async()=>{
+            test('validate user id in signedCookie',async()=>{
                 const userCookie = cookies.find(c=>c.startsWith('userId='));
                 const cleanUserId = testHelper.decodeSignedCookie(userCookie)
 
@@ -255,6 +255,14 @@ describe('/auth router',()=>{
                 console.log(userCookie)
                 expect(result.status).toBe(302)
                 expect(result.headers.location).toEqual('http://localhost:5173/login/github');
+          })
+          test('user exists in the database',async()=>{
+                const userCookie = cookies.find(c=>c.startsWith('userId='));
+                const cleanUserId = testHelper.decodeSignedCookie(userCookie)
+
+                const user = await prisma.user.findUnique({where: {id: Number(cleanUserId)}});
+
+                expect(user).toBeDefined();
           })
         })
         describe('step3 login with github',()=>{})
