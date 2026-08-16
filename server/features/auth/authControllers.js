@@ -86,7 +86,7 @@ const githubUserManager =async (req,res,next)=>{
     console.log('oauth callback accessed')
     
     const production = process.env.NODE_ENV === 'production'
-    const {code} = req.query
+    const {code, state} = req.query
     //retrive access token
     const accessToken = await gitOauth.gitAccessToken(code)
     // record or create user return users internal id 

@@ -76,6 +76,7 @@
 ## Socket Events 
 ## MiddleWare
     []  isAuthenticated()
+    []  is cookieSigned()
     []  isAuthorized()
 ## Error handelling
 Error handling is globalized to the following code:

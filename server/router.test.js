@@ -3,7 +3,7 @@ import { app } from "./app.js";
 import {prisma} from './lib/prisma.js'
 import bcrypt from "bcryptjs";
 import crypto from 'crypto'
-import { beforeEach, describe, expect, jest } from '@jest/globals'
+import { afterAll, beforeEach, describe, expect, jest } from '@jest/globals'
 import { testHelper } from "./utils/testHelpers.js";
 import cookieParser from "cookie-parser";
 
@@ -514,12 +514,101 @@ describe('/auth router',()=>{
 })
 describe('/feed',()=>{
     //endpoints to test:-
+    let user;
+    let response;
+    //create test user
+    beforeAll(async()=>{
+        //create fake user
+        user = await prisma.user.create({
+            data:{
+                email: 'testing@email.com',
+                name: 'test user',
+                password: await bcrypt.hash('testing123',10) 
+            }
+        })
+        //login user
+        response = await request(app).post('/auth/login/local')
+        .send({
+            email:'testing@email.com', 
+            password: 'testing123'
+        })
+    })
+    //delete all users
+    afterAll(async()=>{
+        await prisma.$transaction([
+            prisma.refreshToken.deleteMany(),
+            prisma.userFriends.deleteMany(),
+            prisma.comment.deleteMany(),
+            prisma.post.deleteMany(),
+            prisma.user.deleteMany()
+        ]);
+    })
+    //- midware is endpoint protected
+    testHelper.checkAuthProtection('feed',response)
+
+    describe('feed endpoint content',()=>{
+        beforeEach(async()=>{
+            response = await request(app).get('/feed')
+            .send({accessToken: response.body.accessToken});
+        })
+        test('test',async()=>{
+
+        })
+    })
     //- GET/feed?limit={}               >get post feed with a set limit!
     //- GET/feed?cursor={}              >load new posts from last post number
     //- GET/feed/latest                 >get the most uptodate posts
 })
 describe('/user',()=>{
     //endpoints to test:-
+    let user;
+    let response;
+    //create mock user
+    beforeAll(async()=>{
+        //create fake user
+        user = await prisma.user.create({
+            data:{
+                email: 'testing@email.com',
+                name: 'test user',
+                password: await bcrypt.hash('testing123',10) 
+            }
+        })
+        //login user
+        response = await request(app).post('/auth/login/local')
+        .send({
+            email:'testing@email.com', 
+            password: 'testing123'
+        })
+    })
+    //delete mock user
+    afterAll(async()=>{
+        await prisma.$transaction([
+            prisma.refreshToken.deleteMany(),
+            prisma.userFriends.deleteMany(),
+            prisma.comment.deleteMany(),
+            prisma.post.deleteMany(),
+            prisma.user.deleteMany(),
+        ]);
+    })
+    //- midware is endpoint protected
+    testHelper.checkAuthProtection('user',response)
+
+    describe('get user/me',()=>{
+        beforeEach(async()=>{
+            response = await request(app).get('/user/me')
+            .send({accessToken: response.body.accessToken});
+        })
+        test('userendpoint valid',async()=>{
+           const result = await response
+            expect(result.status).toBe(200)
+        })
+        test(' current user exists in database',async()=>{})
+        test('valid current user data format',async()=>{})
+    })
+    describe('edit user/me',()=>{
+        test('route accessed',()=>{})
+    })
+
     //- GET/user/me                     >get my profile data
     //- PATCH/user/me                   >edit user profile data +  photo type files
     //- GET/user/{id}                   >get other users profile, if not private

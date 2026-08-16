@@ -119,7 +119,6 @@ const isValidGitReq = async(req,res,next)=>{
 
 }
 
-
 const validateRtoken = async(req, res, next)=>{
     const token = req.signedCookies.refreshToken;
     try{
@@ -152,6 +151,21 @@ const wipeTokenByUserId = async(id)=>{
     await prisma.refreshToken.deleteMany({
         where:{ userId: Number(id)}
     }) 
+}
+//this will be used for both comments and posts where 
+//or any content that has an autherId
+const isContentOwner = async(req, res, next)=>{
+    //find resource type
+    //if of type post or comment, get author id
+    //check if author id === to currently authenticated userId
+    //if user is content owner then call next
+    //else throw 401 unauthorized resource
+}
+const isUserActiveFriend = async(req, res, next)=>{
+    //get connection where userid + friend id exist in the same record
+    //friendship status === ACTIVE
+    //call (next)
+    //else throw 401 unauthorized resource
 }
 
 export{

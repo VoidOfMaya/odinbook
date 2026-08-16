@@ -1,6 +1,8 @@
 import cookieSignature from 'cookie-signature';
 import cookieParser from "cookie-parser";
 import {jest} from '@jest/globals';
+import request from "supertest";
+import { app } from "../app.js";
 
 const generateSignedCookieHeader= (name,value, )=>{
     const signedValue = cookieSignature.sign(value, process.env.CRYPTKEY)
@@ -18,12 +20,6 @@ const decodeSignedCookie = (cookie) =>{
     return cleanCookie              
 }
 const mockOauth = (options)=>{
-    /*
-    const codeResponse = new Response(
-        JSON.stringify({code: 11223344, state: options.state}),
-        {status: 200, headers:{'Content-Type': 'application/json'}}
-    )
-    */
     const tokenResponse = new Response(
             JSON.stringify({access_token: 'fake-access-token'}),
             {status: 200,headers: {'Content-Type': 'application/json'}}
@@ -42,10 +38,38 @@ const mockOauth = (options)=>{
          .mockResolvedValueOnce(userResponse)
            
 }
+//takes resource name and accerss token
+const checkAuthProtection = async(resource, res)=>{
+   //- midware is endpoint protected
+    describe(`${resource} endpoint is protected`,()=>{
+        test(`request ${resource} without valid jwt`, async()=>{
+            const feed = await request(app).get(`/${resource}`);
+            const result = await feed
+
+            expect(result.status).toBe(401);
+        })
+        test(`request ${resource} with invalid jwt`,async()=>{
+            const feed = await request(app).get(`/${resource}`)
+            .send({accessToken: 'fake-access-token-lol'});
+            const result = await feed
+
+            expect(result.status).toBe(401);         
+        })
+        test(`request ${resource} with valid jwt`,async()=>{
+            console.log(res.body)
+            const feed = await request(app).get(`/${resource}`)
+            .send({accessToken: res.body.accessToken});
+            const result = await feed
+            ///console.log(result)
+            expect(result.status).toBe(201); 
+        })
+    })
+}
 const testHelper = {
     generateSignedCookieHeader,
     decodeSignedCookie,
-    mockOauth
+    mockOauth,
+    checkAuthProtection
 }
 export {
     testHelper
