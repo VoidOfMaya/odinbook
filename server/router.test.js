@@ -194,7 +194,7 @@ describe('/auth router',()=>{
             test('on empty request', async ()=>{})            
         })
 
-        describe('step1 generate unguessable state',()=>{
+        describe('step A generate unguessable state',()=>{
             //generates 32 cryptographic state
             let response;
             let cookies;
@@ -224,7 +224,7 @@ describe('/auth router',()=>{
             //cookies are signed and httpOnly
             test('state gets sent as a signed cookie',async()=>{})
         })
-        describe('step2 callback ',()=>{
+        describe('step B callback ',()=>{
             let response;
             let cookies;
             let codeResponse;
@@ -265,7 +265,76 @@ describe('/auth router',()=>{
                 expect(user).toBeDefined();
           })
         })
-        describe('step3 login with github',()=>{})
+        describe('step C login with github account',()=>{
+            let cookies;
+            let response;
+            beforeEach(async()=>{
+                // run step A of Oauth flow: generate state and auth query
+                const state = crypto.randomBytes(32).toString('hex')
+                global.fetch = jest.fn();
+                // run step B of Oauth flow: authenticate via github return userId
+                testHelper.mockOauth({state: state});
+                const auth = await request(app).get('/auth/login/github/cb')
+                cookies = auth.headers["set-cookie"]
+                // run step C of Oauth flow: preform user login via cusom auth system
+                response = await request(app).get('/auth/login/github')
+                .set('Cookie',cookies);
+                cookies = response.headers["set-cookie"]
+            })
+            test('returns user in request',async()=>{
+                const userCookie = cookies.find(c=>c.startsWith('userId='));
+                const cleanUserId = testHelper.decodeSignedCookie(userCookie)
+                //const user = await prisma.user.findUnique({where: {id: Number(cleanUserId)}});
+                const result = await response;
+                console.log(result);
+                expect(result.body.user).toBeDefined();
+            })
+            test('returns valid status',()=>{
+                expect(response.status).toBe(200)
+            })
+            //access token exists
+            test('access token exists',()=>{
+                expect(response.body.accessToken).toBeDefined();
+            })
+            //refresh token and threadId cookies set
+            test('refresh token and threadId Cookies set',()=>{
+                expect(response.headers["set-cookie"]).toEqual(
+                    expect.arrayContaining([
+                        expect.stringContaining("refreshToken="),
+                        expect.stringContaining("threadId="),
+                    ])
+                )
+            })
+            //refreshtoken exists in db
+            test('refresh token exists in database',async()=>{
+                //parsing signed cookie  from request
+                const setCookie = response.headers["set-cookie"];
+
+                const refreshCookie =setCookie.find(c=>c.startsWith('refreshToken='));
+                const threadCookie =setCookie.find(c=>c.startsWith('threadId='));
+               const refreshToken = testHelper.decodeSignedCookie(refreshCookie);
+               const threadId = testHelper.decodeSignedCookie(threadCookie);
+                //get from db
+                const token = await prisma.refreshToken.findUnique({
+                    where:{token: refreshToken}
+                })
+                console.log(`cookies:\n token:${refreshToken}\nthreadId:${threadId}`)
+                expect(token).toBeDefined()
+                expect(token.threadId).toEqual(threadId)
+            })
+            //last login updated  
+            test('last login updated',async()=>{
+                const record = await prisma.user.findUnique({
+                    where:{email: user.email}
+                })
+                const now = new Date()
+                const validDate = 
+                    record.lastOnline.getTime() >= now.getTime() - 5000&& 
+                    record.lastOnline.getTime()  <= now.getTime() + 5000
+                expect(record.lastOnline).toBeDefined();
+                expect(validDate).toBe(true);
+            }) 
+        })
 
     })
     //- POST/auth/refresh       >token refresh
