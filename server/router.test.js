@@ -638,7 +638,6 @@ describe('/user',()=>{
         })
         test('returns newlly edited data',async()=>{
             const result = response
-            console.log(result)
             expect(result.status).toBe(200)
         })
     })
@@ -725,9 +724,62 @@ describe('/user',()=>{
     })
 })
 describe('/network',()=>{
-    
     //endpoints to test:-
+    let user;
+    let response;
+    let userToken;
+    //create mock user
+    beforeAll(async()=>{
+        //create fake authenticated user
+        user = await prisma.user.create({
+            data:{
+                email: 'testing@email.com',
+                name: 'test user',
+                password: await bcrypt.hash('testing123',10) 
+            }
+        })
+        //login user
+        response = await request(app).post('/auth/login/local')
+        .send({
+            email:'testing@email.com', 
+            password: 'testing123'
+        })
+        userToken = response.body.accessToken;
+        //creates 5 users with relations to testing user
+        // two records with ACTIVE statuse
+        // one with PENDING status
+        // one with DECLINED status
+        // one with BLOCKED statuse
+        await testHelper.populateFriendships(user.id)
+    })
+    //delete mock user
+    afterAll(async()=>{
+        await prisma.$transaction([
+            prisma.refreshToken.deleteMany(),
+            prisma.userFriends.deleteMany(),
+            prisma.comment.deleteMany(),
+            prisma.post.deleteMany(),
+            prisma.user.deleteMany(),
+        ]);
+    })
+    //- midware is a endpoint protected (ONLY Authenticated users can access)
+    console.log(userToken)
+    testHelper.checkAuthProtection('network',()=>  userToken)
     //- GET/network/friends             >get a list of current users friends
+    describe('get my friends: /network/myfriends',()=>{
+        //init fake users and friendship data
+        beforeEach(()=>{
+
+        })   
+        test('endpoint accessed',async()=>{
+            response = await request(app).get('/network/myfriends')
+            .set('Authorization', `Bearer ${userToken}`);
+            
+            expect(response.status).toBe(200);
+        })
+        test('return only active friendships',async()=>{})
+        test('no relation record duplicates',async()=>{})
+    })
     //- POST/network/request            >creates a friendship record set to PENDING
     //- PATCH/network/request/{reqId}   >set friendship status{"ACTIVE","DECLINE","BLOCKED"}
 })
@@ -745,13 +797,13 @@ describe('/post',()=>{
     //  POST/post/{id}/like             >like a post
     //  DELETE/post/{id}/like           >dislike a post
     //  DELETE/post/{id}                >delete post by id "remove content and author name"
-    describe('post/:id/comment',()=>{
-        //- POST/post/{id}/comment      >create comment on a post by id
-        //- GET/post/{id}/comments      >get post comments
-    })
 })
 describe('/comment',()=>{
     //endpoints to test:-
     //- PATCH/comment{id}               >edit comment by id
     //- delete/comment{id}              >delete comment by id  
+    describe('post/:id/comment',()=>{
+        //- POST/post/{id}/comment      >create comment on a post by id
+        //- GET/post/{id}/comments      >get post comments
+    })
 })

@@ -3,7 +3,9 @@ import cookieParser from "cookie-parser";
 import {jest} from '@jest/globals';
 import request from "supertest";
 import { app } from "../app.js";
-
+import { prisma } from '../lib/prisma.js';
+import { faker } from '@faker-js/faker';
+import bcrypt from 'bcryptjs';
 const generateSignedCookieHeader= (name,value, )=>{
     const signedValue = cookieSignature.sign(value, process.env.CRYPTKEY)
     return `${name}=s%3A${encodeURIComponent(signedValue)}`
@@ -65,11 +67,80 @@ const checkAuthProtection = async(resource, getToken)=>{
         })
     })
 }
+const populateFriendships = async(authUserId)=>{
+
+    for(let i = 0; i < 5; i++){
+        const user = {
+            email: faker.internet.email(),
+            name: faker.person.fullName(),
+            password: faker.internet.password()       
+        }
+        await prisma.user.create({
+            data:{
+                email: String(user.email),
+                name: String(user.name),
+                password: await bcrypt.hash(String(user.password),10),
+                isPrivate: true,
+            }             
+        })
+
+    }
+
+    const users = await prisma.user.findMany({
+        where: {
+            id:{ not: Number(authUserId)}
+        },
+        select:{
+            id: true,
+            name: true
+        }
+    })
+    //log created users:
+    console.log(users)
+    // reate connections
+    await prisma.userFriends.create({
+        data:{
+            userId:authUserId,
+            friendId:users[0].id,
+            status:"ACTIVE"
+        }
+    })
+    await prisma.userFriends.create({
+        data:{
+            userId:authUserId,
+            friendId:users[1].id,
+            status:"PENDING"
+        }
+    })
+    await prisma.userFriends.create({
+        data:{
+            userId:authUserId,
+            friendId:users[2].id,
+            status:"ACTIVE"
+        }
+    })
+    await prisma.userFriends.create({
+        data:{
+            userId:authUserId,
+            friendId:users[3].id,
+            status:"DECLINED"
+        }
+    })
+    await prisma.userFriends.create({
+        data:{
+            userId:authUserId,
+            friendId:users[4].id,
+            status:'BLOCKED'
+        }
+    })
+
+}
 const testHelper = {
     generateSignedCookieHeader,
     decodeSignedCookie,
     mockOauth,
-    checkAuthProtection
+    checkAuthProtection,
+    populateFriendships,
 }
 export {
     testHelper
