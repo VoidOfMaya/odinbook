@@ -6,6 +6,7 @@ import crypto from 'crypto'
 import { afterAll, beforeEach, describe, expect, jest } from '@jest/globals'
 import { testHelper } from "./utils/testHelpers.js";
 import cookieParser from "cookie-parser";
+import { access } from "fs";
 
 //handle clearing testing database befor each test
 beforeAll(async()=>{
@@ -142,7 +143,7 @@ describe('/auth router',()=>{
                 const token = await prisma.refreshToken.findUnique({
                     where:{token: refreshToken}
                 })
-                console.log(`cookies:\n token:${refreshToken}\nthreadId:${threadId}`)
+                //console.log(`cookies:\n token:${refreshToken}\nthreadId:${threadId}`)
                 expect(token).toBeDefined()
                 expect(token.threadId).toEqual(threadId)
             })
@@ -252,7 +253,7 @@ describe('/auth router',()=>{
                 const cleanUserId = testHelper.decodeSignedCookie(userCookie)
                 
                 const result = await response
-                console.log(userCookie)
+                //console.log(userCookie)
                 expect(result.status).toBe(302)
                 expect(result.headers.location).toEqual('http://localhost:5173/login/github');
           })
@@ -286,7 +287,7 @@ describe('/auth router',()=>{
                 const cleanUserId = testHelper.decodeSignedCookie(userCookie)
                 //const user = await prisma.user.findUnique({where: {id: Number(cleanUserId)}});
                 const result = await response;
-                console.log(result);
+               //console.log(result);
                 expect(result.body.user).toBeDefined();
             })
             test('returns valid status',()=>{
@@ -318,7 +319,7 @@ describe('/auth router',()=>{
                 const token = await prisma.refreshToken.findUnique({
                     where:{token: refreshToken}
                 })
-                console.log(`cookies:\n token:${refreshToken}\nthreadId:${threadId}`)
+                //console.log(`cookies:\n token:${refreshToken}\nthreadId:${threadId}`)
                 expect(token).toBeDefined()
                 expect(token.threadId).toEqual(threadId)
             })
@@ -493,7 +494,7 @@ describe('/auth router',()=>{
             .set('Cookie',cookies)
             cookies = response.headers["set-cookie"]
             
-            console.log(response.body)
+            //console.log(response.body)
             const userRecord = await prisma.user.findUnique({
                 where:{email: user.email}
             })
@@ -504,7 +505,7 @@ describe('/auth router',()=>{
             const response = await request(app).delete('/auth/logout')
             .set('Cookie',cookies)
             cookies = response.headers["set-cookie"]
-            console.log(cookies)
+            //console.log(cookies)
             expect(cookies).not.toBeDefined()
         })
 
@@ -516,6 +517,7 @@ describe('/feed',()=>{
     //endpoints to test:-
     let user;
     let response;
+    let accessToken;
     //create test user
     beforeAll(async()=>{
         //create fake user
@@ -532,6 +534,7 @@ describe('/feed',()=>{
             email:'testing@email.com', 
             password: 'testing123'
         })
+        accessToken = response.body.accessToken;
     })
     //delete all users
     afterAll(async()=>{
@@ -544,12 +547,12 @@ describe('/feed',()=>{
         ]);
     })
     //- midware is endpoint protected
-    testHelper.checkAuthProtection('feed',response)
+    testHelper.checkAuthProtection('feed',()=> accessToken)
 
     describe('feed endpoint content',()=>{
         beforeEach(async()=>{
             response = await request(app).get('/feed')
-            .send({accessToken: response.body.accessToken});
+            .set('Authorization', `Bearer ${accessToken}`);
         })
         test('test',async()=>{
 
@@ -563,6 +566,7 @@ describe('/user',()=>{
     //endpoints to test:-
     let user;
     let response;
+    let userToken;
     //create mock user
     beforeAll(async()=>{
         //create fake user
@@ -579,6 +583,7 @@ describe('/user',()=>{
             email:'testing@email.com', 
             password: 'testing123'
         })
+        userToken = response.body.accessToken;
     })
     //delete mock user
     afterAll(async()=>{
@@ -591,37 +596,148 @@ describe('/user',()=>{
         ]);
     })
     //- midware is endpoint protected
-    testHelper.checkAuthProtection('user',response)
-
+    testHelper.checkAuthProtection('user',()=>  userToken)
+    
+    //- GET/user/me                     >get my profile data
     describe('get user/me',()=>{
         beforeEach(async()=>{
             response = await request(app).get('/user/me')
-            .send({accessToken: response.body.accessToken});
+            .set('Authorization', `Bearer ${userToken}`);
         })
-        test('userendpoint valid',async()=>{
-           const result = await response
+        test('user endpoint valid',async()=>{
+            const result = response;
             expect(result.status).toBe(200)
         })
-        test(' current user exists in database',async()=>{})
-        test('valid current user data format',async()=>{})
+        test('valid current user data format',async()=>{
+            const result = response;
+            const user = result.body.user;
+
+            expect(user.name).toBeDefined();
+            expect(user.bio).toBeDefined();
+            expect(user.photo).toBeDefined();
+            expect(user.isOnline).toBeDefined();
+            expect(user.lastOnline).toBeDefined();
+            expect(user.createdAt).toBeDefined();
+            expect(user.email).not.toBeDefined();
+           expect(user.password).not.toBeDefined();
+           expect(user.githubId).not.toBeDefined();
+        })
     })
+    
+    //- PATCH/user/me                   >edit user profile data +  photo type files
     describe('edit user/me',()=>{
-        test('route accessed',()=>{})
+        beforeEach(async()=>{
+            console.log(userToken);
+            response = await request(app).patch('/user/me')
+            .set('Authorization', `Bearer ${userToken}`)
+            .send({
+                name:'mark clark',
+                bio:'edited in new bio',
+                photo: ''
+            })
+        })
+        test('returns newlly edited data',async()=>{
+            const result = response
+            console.log(result)
+            expect(result.status).toBe(200)
+        })
     })
 
-    //- GET/user/me                     >get my profile data
-    //- PATCH/user/me                   >edit user profile data +  photo type files
     //- GET/user/{id}                   >get other users profile, if not private
-    //- GET/user/{id}/posts             >get users posts
+    describe('user/:id',()=>{
+        let publicUser;
+        let privateUser;
+        beforeAll(async()=>{
+            //create a  public user and a private current user!
+            publicUser = await prisma.user.create({
+                data:{
+                    email: 'public@email.com',
+                    name: 'public user',
+                    password: await bcrypt.hash('testing123@',10),
+                    isPrivate: false,
+                },
+                select:{
+                    id: true
+                }
+            })
+            privateUser = await prisma.user.create({
+                data:{
+                    email: 'private@email.com',
+                    name: 'private user',
+                    password: await bcrypt.hash('testing123@32',10),
+                    isPrivate: true, 
+                },
+                select:{
+                    id: true
+                }
+            })           
+        })
+        afterAll(async()=>{
+            await prisma.$transaction([
+                prisma.refreshToken.deleteMany(),
+                prisma.userFriends.deleteMany(),
+                prisma.comment.deleteMany(),
+                prisma.post.deleteMany(),
+                prisma.user.delete({
+                    where:{email: 'public@email.com'}
+                }),
+                prisma.user.delete({
+                    where:{email: 'private@email.com'}
+                }),
+            ]);
+        })
+
+        test('able to get public members',async()=>{
+            response = await request(app).get(`/user/${publicUser.id}`)
+            .set('Authorization', `Bearer ${userToken}`)
+            
+            expect(response.status).toBe(200);
+        });
+        test('throw 403 if authenticated user has no active frienship with requested user',async()=>{
+            response = await request(app).get(`/user/${privateUser.id}`)
+            .set('Authorization', `Bearer ${userToken}`) 
+            
+            expect(response.status).toBe(403);
+        });
+        test('friend can view private member resource',async()=>{
+            //add private user as friend
+            await prisma.userFriends.create({
+                data:{
+                    userId: Number(user.id),
+                    friendId: Number(privateUser.id),
+                    status: "ACTIVE"
+                }
+            })
+            //execute resource request
+            response = await request(app).get(`/user/${privateUser.id}`)
+            .set('Authorization', `Bearer ${userToken}`) 
+            
+            expect(response.status).toBe(200);
+        })
+    })
+
     //- GET/user?search={user}          >get a list of matching users
+    describe('user/?search={username}',()=>{
+
+        test('searches user by looking up if character name exists',async()=>{});
+        test('if no such user found through a 404',async()=>{});
+        test('if query is invalid data throguh 404 error',async()=>{});        
+    })
 })
 describe('/network',()=>{
+    
     //endpoints to test:-
     //- GET/network/friends             >get a list of current users friends
     //- POST/network/request            >creates a friendship record set to PENDING
     //- PATCH/network/request/{reqId}   >set friendship status{"ACTIVE","DECLINE","BLOCKED"}
 })
 describe('/post',()=>{
+    //- GET/user/{id}/posts             >get users posts
+        describe('user/:id/posts',()=>{
+            test('only authorized members can view',async()=>{});
+            test('if private only authorized members that are friends can view',async()=>{});        
+        })
+        
     //endpoints to test:-
     //  POST/post                       >create post where current user is author
     //  PATCH/post/{id}                 >edit post at id  where current user is author

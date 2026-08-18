@@ -39,29 +39,29 @@ const mockOauth = (options)=>{
            
 }
 //takes resource name and accerss token
-const checkAuthProtection = async(resource, res)=>{
+const checkAuthProtection = async(resource, getToken)=>{
    //- midware is endpoint protected
     describe(`${resource} endpoint is protected`,()=>{
         test(`request ${resource} without valid jwt`, async()=>{
-            const feed = await request(app).get(`/${resource}`);
-            const result = await feed
+            const res = await request(app).get(`/${resource}`);
+            const result = await res
 
             expect(result.status).toBe(401);
         })
         test(`request ${resource} with invalid jwt`,async()=>{
-            const feed = await request(app).get(`/${resource}`)
-            .send({accessToken: 'fake-access-token-lol'});
-            const result = await feed
+            const res = await request(app).get(`/${resource}`)
+            .set('Authorization', `Bearer fake-access-token-lol`);
+            const result = await res
 
             expect(result.status).toBe(401);         
         })
         test(`request ${resource} with valid jwt`,async()=>{
-            console.log(res.body)
-            const feed = await request(app).get(`/${resource}`)
-            .send({accessToken: res.body.accessToken});
-            const result = await feed
+            const accessToken = getToken();
+            const res = await request(app).get(`/${resource}`)
+            .set('Authorization', `Bearer ${accessToken}`);
+            const result = await res;
             ///console.log(result)
-            expect(result.status).toBe(201); 
+            expect(result.status).toBe(200); 
         })
     })
 }
