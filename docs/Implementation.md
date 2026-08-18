@@ -24,6 +24,8 @@
 |createdAt  |               |editedAt   |editedAt   |               |graceUntill    |
 |token      |               |           |           |               |userId FK      |
 |isPrivate  |               |           |           |               |               |
+|githubId   |               |           |           |               |               |
+|lastOnline |               |           |           |               |               |
 
 ## Routes
 -   **authRouter**
@@ -44,9 +46,9 @@
 ```
 -   **userRouter**
 ```
-    []  GET/user/me                     >get current users profile
-    []  PATCH/user/me                   >edit current users profile
-    []  GET/user/{id}                   >get other users profile, if not private
+    [X]  GET/user/me                     >get current users profile
+    [X]  PATCH/user/me                   >edit current users profile
+    [Pending]  GET/user/{id}                   >get other users profile, if not private
     []  GET/user/{id}/posts             >get users posts
     []  GET/user?search={user}          >get a list of matching users
 ```

@@ -63,7 +63,7 @@ const login = async (data) =>{
     }
 }
 //CUSTOM AUTH 
-const createAToken = async (userId, threadId)=>{
+const createAToken = async (userId)=>{
     const user = await prisma.user.findUnique({
         where:{id: Number(userId)}
     });
