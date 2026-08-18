@@ -35,8 +35,8 @@ app.use(cookieParser(process.env.CRYPTKEY));
 
 //INSERT SERVER ENDPOINTS HERE: 
 app.use('/auth',pipe.authRouter)
+app.use('/user',midware.isAuthenticated, pipe.userRouter)
 app.use('/feed',midware.isAuthenticated,/*feed router here*/)
-app.use('/user',midware.isAuthenticated, /*user router*/)
 app.use('/network',midware.isAuthenticated, /*fetwork router*/)
 app.use('/post', midware.isAuthenticated,/*post router*/)
 app.use('/comment',midware.isAuthenticated,/*comment router*/)
