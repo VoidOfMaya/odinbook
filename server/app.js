@@ -36,10 +36,10 @@ app.use(cookieParser(process.env.CRYPTKEY));
 //INSERT SERVER ENDPOINTS HERE: 
 app.use('/auth',pipe.authRouter)
 app.use('/user',midware.isAuthenticated, pipe.userRouter)
+app.use('/network',midware.isAuthenticated,pipe.networkRouter)
 app.use('/feed',midware.isAuthenticated,/*feed router here*/)
-app.use('/network',midware.isAuthenticated, /*fetwork router*/)
-app.use('/post', midware.isAuthenticated,/*post router*/)
-app.use('/comment',midware.isAuthenticated,/*comment router*/)
+//app.use('/post', midware.isAuthenticated,/*post router*/)
+//app.use('/comment',midware.isAuthenticated,/*comment router*/)
 //server health endpoint:
 app.get("/health", (req, res) => {
     console.log("Health endpoint hit");
