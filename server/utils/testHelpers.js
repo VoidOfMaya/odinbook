@@ -70,17 +70,14 @@ const checkAuthProtection = async(resource, getToken)=>{
 const populateFriendships = async(authUserId)=>{
 
     for(let i = 0; i < 5; i++){
-        const user = {
-            email: faker.internet.email(),
-            name: faker.person.fullName(),
-            password: faker.internet.password()       
-        }
         await prisma.user.create({
             data:{
-                email: String(user.email),
-                name: String(user.name),
-                password: await bcrypt.hash(String(user.password),10),
+                email: String(faker.internet.email()),
+                name: String(faker.person.fullName()),
+                password: await bcrypt.hash(String(faker.internet.password()),10),
                 isPrivate: true,
+                bio: String(faker.lorem.sentence()),
+                photo: String(faker.image.avatar())
             }             
         })
 
@@ -95,8 +92,7 @@ const populateFriendships = async(authUserId)=>{
             name: true
         }
     })
-    //log created users:
-    console.log(users)
+ 
     // reate connections
     await prisma.userFriends.create({
         data:{
@@ -114,8 +110,8 @@ const populateFriendships = async(authUserId)=>{
     })
     await prisma.userFriends.create({
         data:{
-            userId:authUserId,
-            friendId:users[2].id,
+            userId:users[2].id,
+            friendId:authUserId,
             status:"ACTIVE"
         }
     })

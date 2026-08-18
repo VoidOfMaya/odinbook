@@ -627,7 +627,6 @@ describe('/user',()=>{
     //- PATCH/user/me                   >edit user profile data +  photo type files
     describe('edit user/me',()=>{
         beforeEach(async()=>{
-            console.log(userToken);
             response = await request(app).patch('/user/me')
             .set('Authorization', `Bearer ${userToken}`)
             .send({
@@ -768,19 +767,58 @@ describe('/network',()=>{
     //- GET/network/friends             >get a list of current users friends
     describe('get my friends: /network/myfriends',()=>{
         //init fake users and friendship data
-        beforeEach(()=>{
-
-        })   
+  
         test('endpoint accessed',async()=>{
             response = await request(app).get('/network/myfriends')
             .set('Authorization', `Bearer ${userToken}`);
             
             expect(response.status).toBe(200);
         })
-        test('return only active friendships',async()=>{})
-        test('no relation record duplicates',async()=>{})
+        test('return only active friendships',async()=>{
+            const friends = response.body.friends
+
+            expect(friends).toBeDefined();
+            friends.forEach(friend =>{
+                expect(friend.meta.status).toEqual("ACTIVE")
+            })
+        })
+        test('no relation record duplicates',async()=>{
+            const friends = response.body.friends
+            //check for duplication
+            const friendIds=[];
+            friends.forEach(friend=>{
+                expect(friendIds).not.toContain(friend.user.id);
+                friendIds.push(friend.user.id);
+            })
+        })
     })
     //- POST/network/request            >creates a friendship record set to PENDING
+    describe('get friend request: /network/requests',()=>{
+        //init fake users and friendship data   
+        test('endpoint accessed',async()=>{
+            response = await request(app).get('/network/requests')
+            .set('Authorization', `Bearer ${userToken}`);
+            
+            expect(response.status).toBe(200);
+        })
+        test('return only active friendships',async()=>{
+            const friends = response.body.friends
+
+            expect(friends).toBeDefined();
+            friends.forEach(friend =>{
+                expect(friend.meta.status).toEqual("PENDING")
+            })
+        })
+        test('no relation record duplicates',async()=>{
+            const friends = response.body.friends
+            //check for duplication
+            const friendIds=[];
+            friends.forEach(friend=>{
+                expect(friendIds).not.toContain(friend.user.id);
+                friendIds.push(friend.user.id);
+            })
+        })
+    })
     //- PATCH/network/request/{reqId}   >set friendship status{"ACTIVE","DECLINE","BLOCKED"}
 })
 describe('/post',()=>{
