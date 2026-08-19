@@ -791,7 +791,6 @@ describe('/network',()=>{
             expect(errors.message).toEqual('validation Error');
         })                    
     })
-
     //- GET/network/friends             >get a list of current users friends
     describe('get my friends: /network/connection?status=ACTIVE',()=>{
         //init fake users and friendship data
@@ -848,42 +847,31 @@ describe('/network',()=>{
     })
 
     //- PATCH/network/request/:{reqId}   >set friendship status{"ACTIVE","DECLINE","BLOCKED"}
-    describe('changeFriendship status: /network/request/:id',()=>{
-        let recordId;
+    describe('change connection status: /network/connection/:id',()=>{
+        let records;
         beforeEach(async()=>{
-            recordId = await prisma.userFriends.findFirst({
-                where: {status: 'PENDING'},
-                select: {
-                    id: true,
-                }
-            })
+            records= await prisma.userFriends.findMany()
         })
         test('activate friendship',async()=>{
-            const recordId = await prisma.userFriends.findFirst({
-                where: {status: 'PENDING'},
-                select: {
-                    id: true,
-                }
-            })
-            response = await request(app).patch(`/network/requests/${recordId}`)
+            response = await request(app).patch(`/network/connection/${records[1].id}`)
             .set('Authorization', `Bearer ${userToken}`)
-            .send({status: 'ACTIVE'});
-            
+            .send({updateStatus: 'ACTIVE'});
+            //console.log(response.body.error.details)
             expect(response.status).toBe(200);
         })
         test('block friendship',async()=>{
 
-            response = await request(app).patch(`/network/requests/${recordId}`)
+            response = await request(app).patch(`/network/connection/${records[0].id}`)
             .set('Authorization', `Bearer ${userToken}`)
-            .send({status: 'ACTIVE'});
-            
+            .send({updateStatus: 'DECLINED'});
+            console.log(response.body)
             expect(response.status).toBe(200);
         })
         test('decline friendship',async()=>{
 
-            response = await request(app).patch(`/network/requests/${recordId}`)
+            response = await request(app).patch(`/network/connection/${records[2].id}`)
             .set('Authorization', `Bearer ${userToken}`)
-            .send({status: 'ACTIVE'});
+            .send({updateStatus: 'BLOCKED'});
             
             expect(response.status).toBe(200);
         })
