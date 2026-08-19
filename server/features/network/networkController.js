@@ -1,17 +1,20 @@
 import { service } from "./networkService"
+import { validationResult,matchedData } from "express-validator";
 
 
-const getMyFriends = async(req, res, next)=>{
-
+const getConnections = async(req, res, next)=>{
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) throw new ApiError(400,"validation Error",errors.array())
+    const {status} = matchedData(req);
     try{
         //get active friendships for user
-        const friendsList = await  service.getFriends(req.user.id);
+        const friendsList = await  service.getConnections(req.user.id, status);
         return res.status(200).json({friends: friendsList})
     }catch(err){
         next(err)
     }
 
-}
+}/*
 const getPendingRequests = async(req, res, next)=>{
 
     try{
@@ -23,7 +26,7 @@ const getPendingRequests = async(req, res, next)=>{
     }
 
 }
+*/
 export const controller = {
-    getMyFriends,
-    getPendingRequests
+    getConnections,
 }

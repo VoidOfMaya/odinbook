@@ -1,16 +1,16 @@
 import { prisma } from "../../lib/prisma"
-const getFriends = async(id)=>{
+const getConnections = async(id, status)=>{
     const friends = await prisma.user.findUnique({
         where:{id: Number(id)},
             select:{
                 friendSent:{
-                    where:{status: 'ACTIVE'},
+                    where:{status: String(status)},
                     include:{
                         friend: true,
                     }
                 },
                 friendsRecieved:{
-                    where:{status: 'ACTIVE'},
+                    where:{status: String(status)},
 
                     include:{
                         user: true,
@@ -127,6 +127,5 @@ const sanitizedFriendData = (friends) =>{
 }
 
 export const service = {
-    getFriends,
-    getRequests
+    getConnections,
 }
