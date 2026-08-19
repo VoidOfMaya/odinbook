@@ -1,6 +1,6 @@
 import { service } from "./networkService"
 import { validationResult,matchedData } from "express-validator";
-
+import { ApiError } from "../../errorhelper";
 
 const getConnections = async(req, res, next)=>{
     const errors = validationResult(req);
