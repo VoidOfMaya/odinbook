@@ -20,26 +20,15 @@ const getConnections = async(id, status)=>{
         })
     return sanitizedFriendData(friends)
 }
-const getRequests = async (id)=>{
-    const requests = await prisma.user.findUnique({
-        where:{id: Number(id)},
-            select:{
-                friendSent:{
-                    where:{status: 'PENDING'},
-                    include:{
-                        friend: true,
-                    }
-                },
-                friendsRecieved:{
-                    where:{status: 'PENDING'},
-
-                    include:{
-                        user: true,
-                    }
-                }
-            }
+const updateConnection = async(id, status)=>{
+    try{
+        await prisma.userFriends.update({
+            where:{ id: Number(id)},
+            data:{ status: String(status)}
         })
-    return sanitizedFriendData(requests)   
+    }catch(err){
+        throw new Error(err)
+    }
 }
 const sanitizedFriendData = (friends) =>{
     let array =[];
@@ -128,4 +117,5 @@ const sanitizedFriendData = (friends) =>{
 
 export const service = {
     getConnections,
+    updateConnection
 }

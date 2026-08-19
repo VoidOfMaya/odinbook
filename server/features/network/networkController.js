@@ -14,7 +14,21 @@ const getConnections = async(req, res, next)=>{
         next(err)
     }
 
-}/*
+}
+const updateConnection =async (req, res, next)=> {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) throw new ApiError(400,"validation Error",errors.array())
+    const {connectionId, updateStatus} = matchedData(req);
+    try{
+        //get active friendships for user
+        const updateConnection = await  service.updateConnection(connectionId, updateStatus)
+        return res.status(200).json({message: 'Connection statuse updated!'})
+    }catch(err){
+        next(err)
+    }
+
+}
+/*
 const getPendingRequests = async(req, res, next)=>{
 
     try{
@@ -27,6 +41,10 @@ const getPendingRequests = async(req, res, next)=>{
 
 }
 */
-export const controller = {
+const controller = {
     getConnections,
+    updateConnection,
+}
+export {
+    controller
 }
