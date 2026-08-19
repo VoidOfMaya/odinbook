@@ -764,12 +764,40 @@ describe('/network',()=>{
     //- midware is a endpoint protected (ONLY Authenticated users can access)
     console.log(userToken)
     testHelper.checkAuthProtection('network',()=>  userToken)
+    describe('test validation layer',()=>{
+        let errors;
+        test('throws error if status is not defined',async()=>{
+            response = await request(app).get('/network/connection')
+            .set('Authorization', `Bearer ${userToken}`);
+            
+            errors = response.body.error;
+            expect(response.status).toBe(400);
+            expect(errors.message).toEqual('validation Error');
+        })
+        test('throws error if status is empty',async()=>{
+            response = await request(app).get('/network/connection?status=')
+            .set('Authorization', `Bearer ${userToken}`);
+            
+            errors = response.body.error;
+            expect(response.status).toBe(400);
+            expect(errors.message).toEqual('validation Error');
+        })
+        test('throws error if status is invalid',async()=>{
+            response = await request(app).get('/network/connection?status=stuff')
+            .set('Authorization', `Bearer ${userToken}`);
+            
+            errors = response.body.error;
+            expect(response.status).toBe(400);
+            expect(errors.message).toEqual('validation Error');
+        })                    
+    })
+
     //- GET/network/friends             >get a list of current users friends
-    describe('get my friends: /network/myfriends',()=>{
+    describe('get my friends: /network/connection?status=ACTIVE',()=>{
         //init fake users and friendship data
   
         test('endpoint accessed',async()=>{
-            response = await request(app).get('/network/myfriends')
+            response = await request(app).get('/network/connection?status=ACTIVE')
             .set('Authorization', `Bearer ${userToken}`);
             
             expect(response.status).toBe(200);
@@ -793,17 +821,16 @@ describe('/network',()=>{
         })
     })
     //- POST/network/request            >creates a friendship record set to PENDING
-    describe('get friend request: /network/requests',()=>{
+    describe('get friend request: /network/requests?status=PENDING',()=>{
         //init fake users and friendship data   
         test('endpoint accessed',async()=>{
-            response = await request(app).get('/network/requests')
+            response = await request(app).get('/network/connection?status=PENDING')
             .set('Authorization', `Bearer ${userToken}`);
             
             expect(response.status).toBe(200);
         })
         test('return only active friendships',async()=>{
             const friends = response.body.friends
-
             expect(friends).toBeDefined();
             friends.forEach(friend =>{
                 expect(friend.meta.status).toEqual("PENDING")
@@ -819,7 +846,48 @@ describe('/network',()=>{
             })
         })
     })
-    //- PATCH/network/request/{reqId}   >set friendship status{"ACTIVE","DECLINE","BLOCKED"}
+
+    //- PATCH/network/request/:{reqId}   >set friendship status{"ACTIVE","DECLINE","BLOCKED"}
+    describe('changeFriendship status: /network/request/:id',()=>{
+        let recordId;
+        beforeEach(async()=>{
+            recordId = await prisma.userFriends.findFirst({
+                where: {status: 'PENDING'},
+                select: {
+                    id: true,
+                }
+            })
+        })
+        test('activate friendship',async()=>{
+            const recordId = await prisma.userFriends.findFirst({
+                where: {status: 'PENDING'},
+                select: {
+                    id: true,
+                }
+            })
+            response = await request(app).patch(`/network/requests/${recordId}`)
+            .set('Authorization', `Bearer ${userToken}`)
+            .send({status: 'ACTIVE'});
+            
+            expect(response.status).toBe(200);
+        })
+        test('block friendship',async()=>{
+
+            response = await request(app).patch(`/network/requests/${recordId}`)
+            .set('Authorization', `Bearer ${userToken}`)
+            .send({status: 'ACTIVE'});
+            
+            expect(response.status).toBe(200);
+        })
+        test('decline friendship',async()=>{
+
+            response = await request(app).patch(`/network/requests/${recordId}`)
+            .set('Authorization', `Bearer ${userToken}`)
+            .send({status: 'ACTIVE'});
+            
+            expect(response.status).toBe(200);
+        })
+    })
 })
 describe('/post',()=>{
     //- GET/user/{id}/posts             >get users posts
