@@ -43,11 +43,23 @@ const getUser = async(req,res, next)=>{
         next(err);
     }
 }
-
+const searchUsers = async(req, res, next)=>{
+    //validation handler
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) return res.status(400).json({errors : errors.array()})
+    const {name} = matchedData(req);  
+    try{
+        const usersList = await service.findMatchingUsers(name);
+        return res.status(200).json({users: usersList})
+    }catch(err){
+        next(err);
+    }
+}
 const controller ={
     getMe,
     updateProfile,
-    getUser
+    getUser,
+    searchUsers,
 
 }
 export{

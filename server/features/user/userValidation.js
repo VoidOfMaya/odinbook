@@ -1,4 +1,4 @@
-import { body,param } from 'express-validator';
+import { body,param,query } from 'express-validator';
 
 const userEdit = [
     body('name').trim().isLength({max:25, min: 3}).withMessage('name must be 3 - 25 characters in length')
@@ -11,10 +11,14 @@ const userId =[
     param('id').trim().notEmpty().withMessage('no user id provided')
     .toInt().withMessage('id must be a number')
 ]
-
+const search=[
+    query('name').trim().isLength({max:25, min: 1}).withMessage('name must be 3-25 characters in length')
+    .matches(/^[a-zA-Z ]+$/).withMessage('name can have letters and spaces')
+]
 const validate ={
     userId,
-    userEdit
+    userEdit,
+    search
 }
 
 export{

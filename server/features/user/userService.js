@@ -29,10 +29,29 @@ const updateMyData= async(id, data, photo = null)=>{
 const isUserPrivate = async(id)=>{
 
 }
+const findMatchingUsers= async(name)=>{
+    const users = await prisma.user.findMany({
+        where:{
+            name: {
+            startsWith: String(name)
+            }
+        },
+        select:{
+            id: true,
+            name: true,
+            photo: true
+        },
+        orderBy:{
+            name: "desc",
+        },
+    })
+    return users
+}
 const service = {
     getMyData,
     updateMyData,
-    isUserPrivate
+    isUserPrivate,
+    findMatchingUsers,
 }
 export {
     service

@@ -132,6 +132,19 @@ const populateFriendships = async(authUserId)=>{
     })
 
 }
+const createFakeUser= async(name, email, pass)=>{
+    const user= await prisma.user.create({
+        data:{
+            name: name,
+            email:email,
+            password: pass
+        },
+        select:{
+            id: true,
+        }
+    })
+    return user.id
+}
 const cascadeClearDb = async(id)=>{
     await prisma.$transaction([
         prisma.refreshToken.deleteMany({
@@ -151,7 +164,8 @@ const testHelper = {
     mockOauth,
     checkAuthProtection,
     populateFriendships,
-    cascadeClearDb
+    cascadeClearDb,
+    createFakeUser,
     
 }
 export {

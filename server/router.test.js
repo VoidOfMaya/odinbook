@@ -3,7 +3,7 @@ import { app } from "./app.js";
 import {prisma} from './lib/prisma.js'
 import bcrypt from "bcryptjs";
 import crypto from 'crypto'
-import { afterAll, afterEach, beforeEach, describe, expect, jest } from '@jest/globals'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, jest } from '@jest/globals'
 import { testHelper } from "./utils/testHelpers.js";
 import cookieParser from "cookie-parser";
 import { access } from "fs";
@@ -715,11 +715,67 @@ describe('/user',()=>{
     })
 
     //- GET/user?search={user}          >get a list of matching users
-    describe('user/?search={username}',()=>{
+    describe('user/search?name={username}',()=>{
+        const userIdArray = [];// serves as index for users to delete afte test if required
+        beforeAll(async()=>{
+            //create fake users to test search
+            const users = await Promise.all([
+            testHelper.createFakeUser('alex', 'alex@gmail.com', 'zaq1xsw2'),
+            testHelper.createFakeUser('avidia', 'david@gmail.com', 'zaq1xsw2'),
+            testHelper.createFakeUser('john', 'john@gmail.com', 'zaq1xsw2'),
+            ])
+            userIdArray.push(...users)
+        })
+        test('searches and display only users with letter a',async()=>{
+            response = await request(app).get('/user/search?name=a')
+            .set('Authorization', `Bearer ${userToken}`)
 
-        test('searches user by looking up if character name exists',async()=>{});
-        test('if no such user found through a 404',async()=>{});
-        test('if query is invalid data throguh 404 error',async()=>{});        
+            expect(response.status).toBe(200);
+
+            const matchingUsers = response.body.users;
+            console.log(matchingUsers);
+            console.log(userIdArray[2]);
+            matchingUsers.forEach(user=>{
+                expect(user.id).not.toEqual(userIdArray[2])
+            })
+
+        });
+        test('if no such user found through a 404',async()=>{
+            response = await request(app).get('/user/search?name=j')
+            .set('Authorization', `Bearer ${userToken}`)
+
+            expect(response.status).toBe(200);
+
+            const matchingUsers = response.body.users;
+
+            matchingUsers.forEach(user=>{
+                expect(user.id).toEqual(userIdArray[2]);
+                expect(user.id).not.toEqual(userIdArray[0]);
+                expect(user.id).not.toEqual(userIdArray[1]);
+            })
+
+
+        });
+        test('if query is invalid data throguh 404 error',async()=>{
+            response = await request(app).get('/user/search?name=al')
+            .set('Authorization', `Bearer ${userToken}`)
+
+            expect(response.status).toBe(200);
+            const matchingUsers = response.body.users;
+            matchingUsers.forEach(user=>{
+                expect(user.id).toEqual(userIdArray[0]);
+                expect(user.id).not.toEqual(userIdArray[1]);
+                expect(user.id).not.toEqual(userIdArray[2]);
+            })
+        }); 
+        test('handle no users found!',async()=>{
+            response = await request(app).get('/user/search?name=muratina')
+            .set('Authorization', `Bearer ${userToken}`)
+
+            expect(response.status).toBe(200);
+            const matchingUsers = response.body.users;
+            expect(matchingUsers).toEqual([]);
+        });       
     })
 })
 describe('/network',()=>{
