@@ -8,7 +8,7 @@ networkRouter.get('/',async(req, res)=>{
 //gets connections based on statuse query provided
 networkRouter.get('/connection',validate.status,controller.getConnections);
 networkRouter.patch('/connection/:connectionId',validate.statusUpdate,controller.updateConnection);
-//validate.statusUpdate
+networkRouter.post('/connection',validate.recipientId, controller.createConnection)
 //networkRouter.get('/requests',validate.query, controller.getPendingRequests)
 
 export {

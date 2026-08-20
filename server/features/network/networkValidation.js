@@ -13,6 +13,10 @@ const statusUpdate= [
     .isAlpha().withMessage('status must be alphabetic only')
     .custom((status)=>isValidStatus(status))
 ]
+const recipientId = [
+    body('recipiantId').trim().notEmpty().withMessage('recipiantId must be defined')
+    .isInt().withMessage('recipiantId can only be an int number'),
+]
 
 //define custom validation functions:
 const isValidStatus=(status)=>{
@@ -25,5 +29,6 @@ const isValidStatus=(status)=>{
 }
 export const validate ={
     status,
-    statusUpdate
+    statusUpdate,
+    recipientId
 }

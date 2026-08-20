@@ -83,6 +83,7 @@ const populateFriendships = async(authUserId)=>{
 
     }
 
+
     const users = await prisma.user.findMany({
         where: {
             id:{ not: Number(authUserId)}
@@ -131,12 +132,27 @@ const populateFriendships = async(authUserId)=>{
     })
 
 }
+const cascadeClearDb = async(id)=>{
+    await prisma.$transaction([
+        prisma.refreshToken.deleteMany({
+            where:{ userId: {not: Number(id)}}
+        }),
+        prisma.userFriends.deleteMany(),
+        prisma.comment.deleteMany(),
+        prisma.post.deleteMany(),
+        prisma.user.deleteMany({
+            where: {id:{not: Number(id)}}
+        }),
+    ]);
+}
 const testHelper = {
     generateSignedCookieHeader,
     decodeSignedCookie,
     mockOauth,
     checkAuthProtection,
     populateFriendships,
+    cascadeClearDb
+    
 }
 export {
     testHelper

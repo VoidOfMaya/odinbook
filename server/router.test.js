@@ -3,7 +3,7 @@ import { app } from "./app.js";
 import {prisma} from './lib/prisma.js'
 import bcrypt from "bcryptjs";
 import crypto from 'crypto'
-import { afterAll, beforeEach, describe, expect, jest } from '@jest/globals'
+import { afterAll, afterEach, beforeEach, describe, expect, jest } from '@jest/globals'
 import { testHelper } from "./utils/testHelpers.js";
 import cookieParser from "cookie-parser";
 import { access } from "fs";
@@ -727,6 +727,7 @@ describe('/network',()=>{
     let user;
     let response;
     let userToken;
+    let records;
     //create mock user
     beforeAll(async()=>{
         //create fake authenticated user
@@ -749,7 +750,9 @@ describe('/network',()=>{
         // one with PENDING status
         // one with DECLINED status
         // one with BLOCKED statuse
-        await testHelper.populateFriendships(user.id)
+        records = await testHelper.populateFriendships(user.id)
+        //create user without connections
+
     })
     //delete mock user
     afterAll(async()=>{
@@ -819,6 +822,50 @@ describe('/network',()=>{
             })
         })
     })
+    describe('send connection request',()=>{
+        //let records
+        beforeEach(async()=>{
+            records = await prisma.user.findMany();
+        })
+
+        test('input validation',async()=>{
+            response = await request(app).post('/network/connection')
+            .set('Authorization', `Bearer ${userToken}`)
+
+            expect(response.status).toBe(400);          
+        })
+        test('send a connection request',async()=>{
+            //setup fake new user with 0 connections
+            const record = await prisma.user.create({
+                data:{
+                    email: "Mock@user.com",
+                    name: "alice cooper",
+                    password: "BANANA",
+                    isPrivate: true,
+                    bio: "ALL HAIL THE CLAW",
+                },
+                select:{
+                    id: true,
+                }
+            })
+            response = await request(app).post('/network/connection')
+            .set('Authorization', `Bearer ${userToken}`)
+            .send({recipiantId : record.id}) //last position
+            
+            expect(response.status).toBe(201);
+            expect(response.body.connectionId).toBeDefined();
+
+        }) 
+        //if a connection already exists abort
+        test('return 409 for already existing connections',async()=>{
+            response = await request(app).post('/network/connection')
+            .set('Authorization', `Bearer ${userToken}`)
+            .send({recipiantId : records[1].id})
+            expect(response.status).toBe(409);
+        })
+
+    })
+
     //- POST/network/request            >creates a friendship record set to PENDING
     describe('get friend request: /network/requests?status=PENDING',()=>{
         //init fake users and friendship data   

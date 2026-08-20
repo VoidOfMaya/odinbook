@@ -1,4 +1,35 @@
+import { ApiError } from "../../errorhelper";
 import { prisma } from "../../lib/prisma"
+
+
+const createConnection = async(senderId, recipientId)=>{
+    
+    //validate connection!
+    const friends = await prisma.userFriends.findFirst({
+        where:{
+            status: {not: "DECLINED"},
+            OR:[
+                //case A
+                {userId: Number(senderId), friendId:Number(recipientId)},
+                //case B
+                {userId: Number(recipientId), friendId:Number(senderId)},
+            ]
+        }
+    })
+    if(friends) throw new ApiError(409,"conflicting connection record was found");
+    //create connection:-
+    const result = await prisma.userFriends.create({
+        data:{
+            userId: Number(senderId),
+            friendId: Number(recipientId),
+            status: 'PENDING'
+        },
+        select:{
+            id: true
+        }
+    })
+    return result;
+}
 const getConnections = async(id, status)=>{
     const friends = await prisma.user.findUnique({
         where:{id: Number(id)},
@@ -21,14 +52,10 @@ const getConnections = async(id, status)=>{
     return sanitizedFriendData(friends)
 }
 const updateConnection = async(id, status)=>{
-    try{
-        await prisma.userFriends.update({
-            where:{ id: Number(id)},
-            data:{ status: String(status)}
-        })
-    }catch(err){
-        throw new Error(err)
-    }
+    await prisma.userFriends.update({
+        where:{ id: Number(id)},
+        data:{ status: String(status)}
+    })
 }
 const sanitizedFriendData = (friends) =>{
     let array =[];
@@ -65,6 +92,24 @@ const sanitizedFriendData = (friends) =>{
                     bio: friend.bio,
                     onlineStatus: 
                         friend.isOnline? friend.isOnline : friend.lastOnline,
+                }
+            })
+        }
+        if(connection.status === "DECLINED"){
+            array.push({
+                meta:{
+                    connectionId: connection.id,
+                    status: connection.status,
+                    isInitiator: true,     
+                }
+            })
+        }
+        if(connection.status === "BLOCKED"){
+            array.push({
+                meta:{
+                    connectionId: connection.id,
+                    status: connection.status,
+                    isInitiator: true,     
                 }
             })
         }
@@ -109,6 +154,24 @@ const sanitizedFriendData = (friends) =>{
                     }
                 })
             }
+        if(connection.status === "DECLINED"){
+            array.push({
+                meta:{
+                    connectionId: connection.id,
+                    status: connection.status,
+                    isInitiator: true,     
+                }
+            })
+        }
+        if(connection.status === "BLOCKED"){
+            array.push({
+                meta:{
+                    connectionId: connection.id,
+                    status: connection.status,
+                    isInitiator: true,     
+                }
+            })
+        }
 
         }
     })
@@ -117,5 +180,6 @@ const sanitizedFriendData = (friends) =>{
 
 export const service = {
     getConnections,
-    updateConnection
+    updateConnection,
+    createConnection
 }
