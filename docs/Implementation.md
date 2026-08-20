@@ -48,15 +48,15 @@
 ```
     [X]  GET/user/me                     >get current users profile
     [X]  PATCH/user/me                   >edit current users profile
-    [Pending]  GET/user/{id}                   >get other users profile, if not private
-    []  GET/user/{id}/posts             >get users posts
+    [X]  GET/user/{id}                   >get other users profile, if not private
+    [PENDING]  GET/user/{id}/posts             >get users posts
     []  GET/user?search={user}          >get a list of matching users
 ```
 -   **networkRouter**
 ```
-    []  GET/network/friends             >get a list of current users friends
-    []  POST/network/request            >creates a friendship record set to PENDING
-    []  PATCH/network/request/{reqId}   >set friendship status{"ACTIVE","DECLINE","BLOCKED"}
+    [X]  GET/network/connection?status=ACTIVE   >get a list of user connections
+    []  POST/network/connect                >creates a friendship record set to PENDING
+    [X]  PATCH/network/connection/{reqId}       >set friendship status{"ACTIVE","DECLINE","BLOCKED"}
 ```
 -   **postRouter**
 ```
