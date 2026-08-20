@@ -37,8 +37,8 @@ app.use(cookieParser(process.env.CRYPTKEY));
 app.use('/auth',pipe.authRouter)
 app.use('/user',midware.isAuthenticated, pipe.userRouter)
 app.use('/network',midware.isAuthenticated,pipe.networkRouter)
+app.use('/post', midware.isAuthenticated,pipe.postRouter)
 app.use('/feed',midware.isAuthenticated,/*feed router here*/)
-//app.use('/post', midware.isAuthenticated,/*post router*/)
 //app.use('/comment',midware.isAuthenticated,/*comment router*/)
 //server health endpoint:
 app.get("/health", (req, res) => {

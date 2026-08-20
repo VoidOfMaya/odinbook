@@ -7,6 +7,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, jest } fr
 import { testHelper } from "./utils/testHelpers.js";
 import cookieParser from "cookie-parser";
 import { access } from "fs";
+import { faker } from "@faker-js/faker";
 
 //handle clearing testing database befor each test
 beforeAll(async()=>{
@@ -981,19 +982,83 @@ describe('/network',()=>{
     })
 })
 describe('/post',()=>{
-    //- GET/user/{id}/posts             >get users posts
-        describe('user/:id/posts',()=>{
-            test('only authorized members can view',async()=>{});
-            test('if private only authorized members that are friends can view',async()=>{});        
+    let user;
+    let response;
+    let userToken;
+    let records;
+    //create mock user
+    beforeAll(async()=>{
+        //create fake authenticated user
+        user = await prisma.user.create({
+            data:{
+                email: 'testing@email.com',
+                name: 'test user',
+                password: await bcrypt.hash('testing123',10) 
+            }
         })
-        
+        //login user
+        response = await request(app).post('/auth/login/local')
+        .send({
+            email:'testing@email.com', 
+            password: 'testing123'
+        })
+        userToken = response.body.accessToken;
+    })
+    //delete mock user
+    afterAll(async()=>{
+        await prisma.$transaction([
+            prisma.refreshToken.deleteMany(),
+            prisma.userFriends.deleteMany(),
+            prisma.comment.deleteMany(),
+            prisma.post.deleteMany(),
+            prisma.user.deleteMany(),
+        ]);
+    })
+       
     //endpoints to test:-
     //  POST/post                       >create post where current user is author
+    describe('post creation',()=>{
+        test('sending post with no photo',async()=>{
+            response = await request(app).post('/post')
+            .set("Authorization", `Bearer ${userToken}`)
+            .send({
+                photo: null,
+                content: faker.lorem.paragraph()
+            });
+            expect(response.status).toBe(201)            
+        })
+    })
     //  PATCH/post/{id}                 >edit post at id  where current user is author
+    describe('updating existing post',()=>{
+        //create fake posts made by user for testing editing functionality
+        test('sending post with no photo',async()=>{
+            response = await request(app).patch(`/post/${1}`)
+            .set("Authorization", `Bearer ${userToken}`)
+            .send({
+                photo: null,
+                content: faker.lorem.paragraph()
+            });
+            expect(response.status).toBe(200)            
+        })
+
+    })
     //  GET/post/{id}                   >get post by id
-    //  POST/post/{id}/like             >like a post
-    //  DELETE/post/{id}/like           >dislike a post
+    describe('get single post by id',()=>{})
+    //  POST/post/{id}/reaction             >like a post
+    describe('give a post a reaction such as like or dislike',()=>{})
+    //  PATCH/post/{id}/                >dislike a post
+    describe('edit post reaction by user',()=>{})
     //  DELETE/post/{id}                >delete post by id "remove content and author name"
+    describe('delete post by id',()=>{})
+    //NESTED ROUTES
+    //- GET/user/{id}/posts             >get users posts
+        describe('user/:id/posts',()=>{
+            test('only authorized members can view',async()=>{
+                response = await request(app).get(`/user/${user.id}/posts`)
+                expect()
+            });
+            test('if private only authorized members that are friends can view',async()=>{});        
+        })
 })
 describe('/comment',()=>{
     //endpoints to test:-
