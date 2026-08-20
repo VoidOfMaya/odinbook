@@ -50,12 +50,12 @@
     [X]  PATCH/user/me                   >edit current users profile
     [X]  GET/user/{id}                   >get other users profile, if not private
     [PENDING]  GET/user/{id}/posts             >get users posts
-    []  GET/user?search={user}          >get a list of matching users
+    [X]  GET/user?search={user}          >get a list of matching users
 ```
 -   **networkRouter**
 ```
     [X]  GET/network/connection?status=ACTIVE   >get a list of user connections
-    []  POST/network/connect                >creates a friendship record set to PENDING
+    [X]  POST/network/connect                >creates a friendship record set to PENDING
     [X]  PATCH/network/connection/{reqId}       >set friendship status{"ACTIVE","DECLINE","BLOCKED"}
 ```
 -   **postRouter**
