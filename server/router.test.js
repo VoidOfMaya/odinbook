@@ -1094,7 +1094,20 @@ describe('/post',()=>{
         })
     })
     //  DELETE/post/{id}                >delete post by id "remove content and author name"
-    describe('delete post by id',()=>{})
+    describe('delete post by id',()=>{
+        test('post deleted', async()=>{
+            response = await request(app).delete(`/post/${post.id}`)
+            .set('Authorization', `Bearer ${userToken}`)
+
+            expect(response.status).toBe(200);
+            expect(response.body.message).toEqual('Post Deleted');
+
+            const deletedPost = await prisma.post.findUnique({
+                where:{id: Number(post.id)}
+            })
+            expect(deletedPost).toBe(null);
+        })
+    })
     //NESTED ROUTES
     //- GET/user/{id}/posts             >get users posts
         describe('user/:id/posts',()=>{
