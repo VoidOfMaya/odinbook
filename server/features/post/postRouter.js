@@ -10,9 +10,13 @@ postRouter.get('/',async(req, res)=>{
 });
 postRouter.post('/',validate.content,controller.createPost)
 postRouter.get('/:id',validate.postId,controller.getPost)
-postRouter.patch('/:id',validate.postEdit,isUserAuthor,controller.editPost)
+
 postRouter.patch('/:id/like',validate.postId, controller.like)
 postRouter.patch('/:id/dislike',validate.postId, controller.dislike)
+
+postRouter.patch('/:id',validate.postEdit,isUserAuthor,controller.editPost)
+postRouter.delete('/:id',validate.postId,isUserAuthor,controller.deletePost)
+
 
 
 

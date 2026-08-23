@@ -48,10 +48,16 @@ const dislike = async(id)=>{
         }
     })
 }
+const deletePost = async(postId)=>{
+    return await prisma.post.delete({
+        where:{id: Number(postId)}
+    })
+}
 const service={
     getPost,
     newPost,
     updatePost,
+    deletePost,
     like,
     dislike
 }

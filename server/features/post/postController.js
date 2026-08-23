@@ -38,6 +38,18 @@ const editPost = async (req, res, next)=>{
     }
 
 }
+const deletePost = async( req, res, next)=>{
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) throw new ApiError(400,"validation Error",errors.array())
+    const {id} = matchedData(req); 
+    try{
+        const post = await service.deletePost(id);
+        if(!post) throw new ApiError(404, 'Could not find post')
+        res.status(200).json({message: 'Post Deleted', post: post})
+    }catch(err){
+        next(err)
+    }
+}
 const like = async (req, res, next)=>{
     const errors = validationResult(req);
     if(!errors.isEmpty()) throw new ApiError(400,"validation Error",errors.array())
@@ -68,7 +80,8 @@ const controller ={
     createPost,
     editPost,
     like,
-    dislike
+    dislike,
+    deletePost,
 }
 export{
     controller
