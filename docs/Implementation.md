@@ -60,11 +60,11 @@
 ```
 -   **postRouter**
 ```
-    []  POST/post                       >create post where current user is author
-    []  PATCH/post/{id}                 >edit post at id  where current user is author
-    []  GET/post/{id}                   >get post by id
-    []  POST/post/{id}/like             >like a post
-    []  DELETE/post/{id}/like           >dislike a post
+    [X]  POST/post                       >create post where current user is author
+    [X]  PATCH/post/{id}                 >edit post at id  where current user is author
+    [X]  GET/post/{id}                   >get post by id
+    [X]  PATCH/post/{id}/like            >like a post
+    [X]  PATCH/post/{id}/dislike         >dislike a post
     []  DELETE/post/{id}                >delete post by id "remove content and author name"
     -   nested comments resource
     []  POST/post/{id}/comment          >create comment on a post by id
