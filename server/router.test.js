@@ -1034,22 +1034,65 @@ describe('/post',()=>{
     describe('updating existing post',()=>{
         //create fake posts made by user for testing editing functionality
         test('sending post with no photo',async()=>{
+            const newContent = faker.lorem.paragraph();
             response = await request(app).patch(`/post/${post.id}`)
             .set("Authorization", `Bearer ${userToken}`)
             .send({
                 photo: null,
-                content: faker.lorem.paragraph()
+                content: newContent
             });
-            expect(response.status).toBe(200)            
+            const updatedPost = response.body.post;
+            expect(response.status).toBe(200)
+            expect(updatedPost.content).toEqual(newContent)
+            expect(updatedPost.updatedAt).not.toEqual(updatedPost.createdAt)          
         })
 
     })
     //  GET/post/{id}                   >get post by id
-    describe('get single post by id',()=>{})
+    describe('get single post by id',()=>{
+        test('get post',async()=>{
+            response= await request(app).get(`/post/${post.id}`)
+            .set("Authorization", `Bearer ${userToken}`)
+
+            expect(response.status).toBe(200);
+            expect(response.body.post.id).toEqual(post.id);
+        })
+    })
     //  POST/post/{id}/reaction             >like a post
-    describe('give a post a reaction such as like or dislike',()=>{})
-    //  PATCH/post/{id}/                >dislike a post
-    describe('edit post reaction by user',()=>{})
+    describe('interact with post',()=>{
+        test('like a post!',async()=>{
+            response = await request(app).patch(`/post/${post.id}/like`)
+            .set('Authorization', `Bearer ${userToken}`);
+             
+            expect(response.status).toBe(200);
+            
+            const postLikes = await prisma.post.findUnique({
+                where:{id: Number(post.id)},
+                select:{
+                    likes: true
+                }
+            })
+            expect(postLikes.likes).toEqual(1);
+        })
+        
+        test('dislike post',async()=>{
+            //first dislike call
+            response = await request(app).patch(`/post/${post.id}/dislike`)
+            .set("Authorization", `Bearer ${userToken}`)
+            expect(response.status).toBe(200)
+            //second dislike call post should have -1
+            await request(app).patch(`/post/${post.id}/dislike`)
+            .set("Authorization", `Bearer ${userToken}`)
+
+            const postLikes = await prisma.post.findUnique({
+                where:{id: Number(post.id)},
+                select:{
+                    likes: true
+                }
+            })
+            expect(postLikes.likes).toEqual(-1);
+        })
+    })
     //  DELETE/post/{id}                >delete post by id "remove content and author name"
     describe('delete post by id',()=>{})
     //NESTED ROUTES

@@ -12,12 +12,13 @@ const postEdit =[
     toInt()
 ]
 const postId = [
-        body('id').isInt().toInt().withMessage('parent id must be an integed if provided'),
-        param('channelId').isInt().toInt().withMessage('parent id must be an integed if provided')
+    param('id').trim().notEmpty().withMessage('post id is not provided')
+    .isInt().withMessage('id must be an integer value').toInt() 
 ]
 const validate ={
     content,
     postEdit,
+    postId
 }
 export{
     validate

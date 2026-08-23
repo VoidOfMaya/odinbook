@@ -89,6 +89,7 @@ model Post{
   //comments
   comments    Comment[]
 }
+//implement  a reaction intity to be able to track and handle user reactions to comments and posts
 model Comment{
   id          Int               @id @default(autoincrement())
   content     String            
