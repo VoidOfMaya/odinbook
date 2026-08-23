@@ -1,7 +1,8 @@
+import { ne } from "@faker-js/faker";
 import { prisma } from "../../lib/prisma";
 
 const newPost= async (authorId, content, photo= null)=>{
-    await prisma.post.create({
+    return await prisma.post.create({
         data:{
             authorId: Number(authorId),
             content: String(content),
@@ -9,8 +10,18 @@ const newPost= async (authorId, content, photo= null)=>{
         }
     })
 }
+const updatePost = async (id, content) =>{
+    return await prisma.post.update({
+        where:{id: Number(id)},
+        data:{
+            content: String(content),
+            editedAt: new Date()
+        }
+    })
+}
 const service={
-    newPost
+    newPost,
+    updatePost,
 }
 export{
     service

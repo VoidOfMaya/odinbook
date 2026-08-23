@@ -1017,6 +1017,7 @@ describe('/post',()=>{
        
     //endpoints to test:-
     //  POST/post                       >create post where current user is author
+    let post;
     describe('post creation',()=>{
         test('sending post with no photo',async()=>{
             response = await request(app).post('/post')
@@ -1025,6 +1026,7 @@ describe('/post',()=>{
                 photo: null,
                 content: faker.lorem.paragraph()
             });
+            post = response.body.post;
             expect(response.status).toBe(201)            
         })
     })
@@ -1032,7 +1034,7 @@ describe('/post',()=>{
     describe('updating existing post',()=>{
         //create fake posts made by user for testing editing functionality
         test('sending post with no photo',async()=>{
-            response = await request(app).patch(`/post/${1}`)
+            response = await request(app).patch(`/post/${post.id}`)
             .set("Authorization", `Bearer ${userToken}`)
             .send({
                 photo: null,
