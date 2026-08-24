@@ -6,34 +6,35 @@ this document serves as a map for developers to guide and help understand how to
 ## Authentication
 The API provides flexible user authentication, session management across multiple devices, and automated reuse detection to protect against token theft.
     
-Methods:-
+### Methods:-
 
     - Local Strategy: Traditional username and password.
     - OAuth 2.0: Third-party sign in via GitHub.
 
-Session & Token Management:-
+### Session & Token Management:-
 
-Dual Token Architecture:
+#### Dual Token Architecture:
 
-    Uses short lived Access Tokens(JWT) for resource authorization and long lived Refresh Tokens for session persistence.
+-Uses short lived Access Tokens(JWT)for resource authorization and long lived Refresh Tokens for session persistence.
 
-Token Rotation & Thread Tracking:
+#### Token Rotation & Thread Tracking:
 
-    Every refresh token is bound to a threadId representing its lineage (family tree). Rotating a token issues a new token on the same thread and revokes the previous token to insure one valid token per
-    thread.
+-Every refresh token is bound to a threadId representing its lineage (family tree). Rotating a token issues a new token on the same thread and revokes the previous token to insure one valid token per
+thread.
 
-Reuse Detection & Automatic Revocation: 
+#### Reuse Detection & Automatic Revocation: 
     
-    If a previously invalidated refresh token is presented, the system flags potential token theft and immediately revokes all tokens associated with that family tree via its threadId.
+If a previously invalidated refresh token is presented, the system flags potential token theft and immediately revokes all tokens associated with that family tree via its threadId.
 
-Grace Period: 
+#### Grace Period: 
         
-    To accommodate legitimate concurrent requests (e.g., parallel initial fetches), a multi second grace period is triggered after revoking a token where it allowes for legitimate concurrent requests to bypass it for a very short period of time so to not trip the token theft detection system.
+-To accommodate legitimate concurrent requests (e.g., parallel initial fetches), a multi second grace period is triggered after revoking a token where it allowes for legitimate concurrent requests to bypass it for a very short period of time so to not trip the token theft detection system.
 
-Frontend Implementation Note:
+#### Frontend Implementation Note:
         
-    To prevent race conditions during token updates, implement a request queue or mutex on the client. Hold outgoing API requests while an expired refresh token is being rotated, ensuring all queued calls wait for and use the new token.
- ### Request Routes:
+To prevent race conditions during token updates, implement a request queue or mutex on the client. Hold outgoing API requests while an expired refresh token is being rotated, ensuring all queued calls wait for and use the new token.
+
+### Endpoints:
   #### Register:`POST:/auth/register`
    creates a new user account!.
    
