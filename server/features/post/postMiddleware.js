@@ -28,7 +28,15 @@ const isUserAuthor = async(req, res, next)=>{
         return next(err)
     }
 }
-
+// debugging middleware:
+const logParams = async(req, res, next)=>{
+    console.log(`STEP 2: Post Router level id: ${req.params.id}`);
+    next();
+}
+const debug={
+    logParams
+}
 export{
-    isUserAuthor
+    isUserAuthor,
+    debug
 }

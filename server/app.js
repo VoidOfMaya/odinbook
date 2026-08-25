@@ -38,8 +38,8 @@ app.use('/auth',pipe.authRouter)
 app.use('/user',midware.isAuthenticated, pipe.userRouter)
 app.use('/network',midware.isAuthenticated,pipe.networkRouter)
 app.use('/post', midware.isAuthenticated,pipe.postRouter)
-app.use('/feed',midware.isAuthenticated,/*feed router here*/)
-//app.use('/comment',midware.isAuthenticated,/*comment router*/)
+//app.use('/feed',midware.isAuthenticated,/*feed router here*/)
+app.use('/comment',midware.isAuthenticated,pipe.commentRouter/*comment router*/)
 //server health endpoint:
 app.get("/health", (req, res) => {
     console.log("Health endpoint hit");

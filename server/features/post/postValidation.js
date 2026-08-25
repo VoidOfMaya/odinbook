@@ -13,7 +13,7 @@ const postEdit =[
 ]
 const postId = [
     param('id').trim().notEmpty().withMessage('post id is not provided')
-    .isInt().withMessage('id must be an integer value').toInt() 
+    .isInt().withMessage('id must be an integer value')
 ]
 const validate ={
     content,

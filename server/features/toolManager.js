@@ -3,6 +3,7 @@ import { passportConfig, isAuthenticated } from "./auth/authMiddleware.js";
 import { userRouter } from './user/userRouter.js';
 import { networkRouter } from './network/networkRouter.js';
 import { postRouter } from './post/postRouter.js';
+import { commentRouter } from './comment/commentRouter.js';
 
 //centralized midellware & Router buss
 const midware ={
@@ -15,6 +16,7 @@ const pipe = {
     userRouter,
     networkRouter,
     postRouter,
+    commentRouter
 }
 export{
     midware,
