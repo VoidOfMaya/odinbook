@@ -65,21 +65,26 @@
     [X]  GET/post/{id}                   >get post by id
     [X]  PATCH/post/{id}/like            >like a post
     [X]  PATCH/post/{id}/dislike         >dislike a post
-    []  DELETE/post/{id}                >delete post by id "remove content and author name"
+    [X]  DELETE/post/{id}                >delete post by id "remove content and author name"
     -   nested comments resource
-    []  POST/post/{id}/comment          >create comment on a post by id
-    []  GET/post/{id}/comments          >get post comments
+    [X]  POST/post/{id}/comment          >create comment on a post by id
+    [X]  GET/post/{id}/comments          >get post comments
 ```
 -   **commentRouter**
 ```
-    []  PATCH/comment{id}               >edit comment by id
-    []  delete/comment{id}              >delete comment by id  
+    [X]  PATCH/comment{id}               >edit comment by id
+    [X]  delete/comment{id}              >delete comment by id
+    [X]  PATCH/comment/{id}/like            >like a comment
+    [X]  PATCH/comment/{id}/dislike         >dislike a comment
 ```
 ## Socket Events 
 ## MiddleWare
-    []  isAuthenticated()
-    []  is cookieSigned()
-    []  isAuthorized()
+#### authentication
+#### user
+#### network
+#### feed
+#### post
+#### comment
 ## Error handelling
 Error handling is globalized to the following code:
 ```js

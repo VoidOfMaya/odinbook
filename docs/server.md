@@ -8,8 +8,61 @@ The API provides flexible user authentication, session management across multipl
     
 ### Methods:-
 
-    - Local Strategy: Traditional username and password.
-    - OAuth 2.0: Third-party sign in via GitHub.
+- Local Strategy: Traditional username and password.
+- OAuth 2.0: Third-party sign in via GitHub.
+### Local strategy:-
+  #### Register:`POST:/auth/register`
+  - password is hashed with `bcrypt.js` and then saved to the database
+   recieves:
+   ``` json
+    {
+        email: "example@gmail.com",
+        name: "alice cooper",
+        password: "superSecretP@ssWord",
+        confirmPassword:"superSecretP@ssWord",
+    }
+   ```
+   returns status(201):
+   ```json
+    {
+        message: "User  registered successfully"
+    }
+   ```
+
+  #### Log in:`POST:/auth/login/local`
+  
+  recieves in req.body:
+  ```json
+  {
+    email: "example@gmail.com", 
+    password:"examplePassword123@"
+  }
+  ```
+  returns:
+  ```json
+  //req.status(200)
+
+  //signed Cookies:-
+  {
+    threadId,
+    refreshToken
+  }
+  // req.Body
+  {
+    user:{
+        id,
+        email,
+        name,
+        bio,
+        photo,
+        createdAt,
+        lastOnline,
+    },
+    accessToken,
+  }
+  ```
+### Oauth2.0 with Github:-
+
 
 ### Session & Token Management:-
 
@@ -35,42 +88,7 @@ If a previously invalidated refresh token is presented, the system flags potenti
 To prevent race conditions during token updates, implement a request queue or mutex on the client. Hold outgoing API requests while an expired refresh token is being rotated, ensuring all queued calls wait for and use the new token.
 
 ### Endpoints:
-  #### Register:`POST:/auth/register`
-   creates a new user account!.
-   
-   recieves:
-   ```
-    {
-    email,
-    name,
-    password,
-    confirmPassword
-    }
-   ```
-  #### Log in:
-  utelizes passport.js to authenticate user, sets up a jwt token and refresh token
-  route:`POST:/auth/login`
 
-  recieves:
-  ```
-  {email, password}
-  ```
-  returns:
-  ```
-  cookies:{threadId,refreshToken} //those remain stored in the browser and no need to send as they send automatically
-  {
-    user:{
-        id,
-        email,
-        name,
-        bio,
-        photo,
-        createdAt,
-        lastOnline,
-    },
-    accessToken,
-  }
-  ```
   #### refresh:
 
   re-authenticates a new jwt access token, when  provided a valid refresh token, refresh tokens can only be used once to reauthenticate a new access refresh pair`note: always provide the latest refresh token else server will auto wipe the refreshtoken tree for user, on invalid token usageas a security measure`
