@@ -40,45 +40,29 @@ const getComments = async(postId, limit = 1, cursor = null)=>{
     const nextCursor = rawChunk[rawChunk.length - 1]
     return {chunk, nextCursor};
     
-    /*
-    on feed pagination 
-    - return should look like :
-    {
-        meta:{
-        limit: 25,
-        cursor: 
-        },
-        //records returned  must be ordered by creation data
-        //and ina descending order  
-        comments:[
-            {comment object},
-            .
-            .
-            .
-            {comment object}
-        ]
-    }
-    - if cursor iis not defined or null then get from the most
-      up to date records{first request}
-      * Must return a valid cursor point that comes after the last record
-        based on date of creation!
-      * to find next cursor query database for a 2 records long array
-        containing the last object in the array then the one that comes after
-        it based on creation date  and we will asign that  records id as our nextCursor
-        in the metadata
-    
-    - if cursor is provided
-        *query database with that cursor and sort by creation time
+}
+const editComment = async(id, content)=>{
+    return await prisma.comment.update({
+        where: {id: Number(id)},
+        data:{
+            content: String(content),
+        }
+    })
+}
+const deleteComment = async (id)=>{
 
-    >however i am struggling to figure out how to handle the fact that when
-     wetry to pagenate ist possible to do that based on the createdAt field instead of 
-     the id
-     */
+    return await prisma.comment.delete({
+        where:{
+            id: Number(id)
+        }
+    })
 }
 
 const service={
     createComment,
-    getComments
+    getComments,
+    editComment,
+    deleteComment
 }
 export{
     service

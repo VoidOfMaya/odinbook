@@ -39,10 +39,39 @@ const createComment =async(req, res, next)=>{
         next(err)
     }
 }
+const editComment =async(req, res, next)=>{
+    
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) throw new ApiError(400,"validation Error",errors.array())
+    const {id ,content}= matchedData(req);
+    try{
+        const comment = await service.editComment(id, content);
+        if(!content)throw new ApiError(500, "Could not update comment");
+        res.status(200).json({message: "Comment edited successfully", comment: comment})
+    }catch(err){
+        next(err)
+    }
+}
+const deleteComment=async(req, res, next)=>{
+        
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) throw new ApiError(400,"validation Error",errors.array())
+    const {id}= matchedData(req);
+    try{
+        console.log(id)
+        const comment = await service.deleteComment(id);
+        if(!comment) throw new ApiError(500, "Could not delete comment")
+        res.status(200).json({message: 'Comment deleted successfully'})
+    }catch(err){
+        next(err)
+    }
+}
 
 const controller = {
     getComments,
     createComment,
+    editComment,
+    deleteComment
 }
 export{
     controller

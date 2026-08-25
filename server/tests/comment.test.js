@@ -66,12 +66,9 @@ describe('/comment',()=>{
     //endpoints to test:-
     //test authorization:-
     testHelper.checkAuthProtection('comment',()=>  userToken)
-    //- PATCH/comment{id}               >edit comment by id
-    //- delete/comment{id}              >delete comment by id  
-    describe('post/:id/comment',()=>{
-        beforeAll(async()=>{
 
-        })
+    describe('post/:id/comment',()=>{
+        //- POST/post/{id}/comment/newcomment     >create comment on a post by id
         test('comment on post',async()=>{
             response = await request(app).post(`/post/${myPost.id}/comment/newComment`)
             .set('Authorization', `Bearer ${userToken}`)
@@ -84,7 +81,7 @@ describe('/comment',()=>{
             
 
         })
-            
+        //- GET/post/{id}/comments/commentlist?limit=3      >get post comments
         test('get post comments',async()=>{
             // input face comments
             const populateComment = async()=>{
@@ -113,6 +110,7 @@ describe('/comment',()=>{
             expect(response.body.comments).toBeDefined();
             expect(response.body.nextCursor).toBeDefined();
         })
+        // -GET/post/{id}/comments/commentlist?limit=3&cursor={nextCursor}
         test('comment pagination',async()=>{
 
             let nextCursor;
@@ -131,8 +129,9 @@ describe('/comment',()=>{
                     commentsArray.push(comment)
                 })                
             }
+            //map timestamps to validate the order of each comment
             const datesArray = commentsArray.map(comment => comment.createdAt);
-            console.log(datesArray)
+
             const isOrdered = datesArray.every((current, index, array)=>{
                 return index === array.length-1 || current > array[index+ 1]
             })
@@ -142,7 +141,35 @@ describe('/comment',()=>{
             expect(isOrdered).toBe(true);
 
         })
-        //- POST/post/{id}/comment      >create comment on a post by id
-        //- GET/post/{id}/comments      >get post comments
     })
+    describe('comment edit/delete',()=>{
+        //- PATCH/comment{id}               >edit comment by id
+        let comment;
+        beforeAll(async()=>{
+              
+            response = await request(app).post(`/post/${myPost.id}/comment/newComment`)
+            .set('Authorization', `Bearer ${userToken}`)
+            .send({comment: faker.lorem.sentence()})
+            comment = response.body.comment
+            
+        })
+        test('edit comment',async()=>{
+            console.log(comment)
+            response = await request(app).patch(`/comment/${comment.id}`)
+            .set('Authorization', `Bearer ${userToken}`)
+            .send({
+                content: faker.lorem.sentence(),
+            })
+
+            expect(response.status).toBe(200);
+            expect(response.body.comment.content).not.toEqual(comment.content);
+        })
+        //- delete/comment{id}              >delete comment by id  
+        test('delete comment',async()=>{
+            response = await request(app).delete(`/comment/${comment.id}`)
+            .set('Authorization', `Bearer ${userToken}`)
+            expect(response.status).toBe(200)
+        })        
+    })
+
 })
