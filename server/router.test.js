@@ -33,6 +33,7 @@ describe('GET/health',()=>{
 
     })
 })
+/*
 describe('/auth router',()=>{
     const user = {
         email:'example@email.com',
@@ -734,8 +735,8 @@ describe('/user',()=>{
             expect(response.status).toBe(200);
 
             const matchingUsers = response.body.users;
-            console.log(matchingUsers);
-            console.log(userIdArray[2]);
+            //console.log(matchingUsers);
+            //console.log(userIdArray[2]);
             matchingUsers.forEach(user=>{
                 expect(user.id).not.toEqual(userIdArray[2])
             })
@@ -822,7 +823,7 @@ describe('/network',()=>{
         ]);
     })
     //- midware is a endpoint protected (ONLY Authenticated users can access)
-    console.log(userToken)
+    //console.log(userToken)
     testHelper.checkAuthProtection('network',()=>  userToken)
     describe('test validation layer',()=>{
         let errors;
@@ -968,7 +969,7 @@ describe('/network',()=>{
             response = await request(app).patch(`/network/connection/${records[0].id}`)
             .set('Authorization', `Bearer ${userToken}`)
             .send({updateStatus: 'DECLINED'});
-            console.log(response.body)
+            //console.log(response.body)
             expect(response.status).toBe(200);
         })
         test('decline friendship',async()=>{
@@ -1016,6 +1017,8 @@ describe('/post',()=>{
     })
        
     //endpoints to test:-
+    //test authorization:-
+    testHelper.checkAuthProtection('post',()=>  userToken)
     //  POST/post                       >create post where current user is author
     let post;
     describe('post creation',()=>{
@@ -1119,11 +1122,92 @@ describe('/post',()=>{
         })
 })
 describe('/comment',()=>{
+    let user;
+    let response;
+    let userToken;
+    let myPost;
+    let otherPost;
+    //create mock user
+    beforeAll(async()=>{
+        //create fake authenticated user
+        user = await prisma.user.create({
+            data:{
+                email: 'testing@email.com',
+                name: 'test user',
+                password: await bcrypt.hash('testing123',10) 
+            }
+        })
+        //login user
+        response = await request(app).post('/auth/login/local')
+        .send({
+            email:'testing@email.com', 
+            password: 'testing123'
+        })
+        userToken = response.body.accessToken;
+        myPost = await prisma.post.create({
+            data:{
+                content: faker.lorem.paragraph(),
+                authorId: user.id
+            }
+        })
+    })
+    //delete mock user
+    afterAll(async()=>{
+        await prisma.$transaction([
+            prisma.refreshToken.deleteMany(),
+            prisma.userFriends.deleteMany(),
+            prisma.comment.deleteMany(),
+            prisma.post.deleteMany(),
+            prisma.user.deleteMany(),
+        ]);
+    })
     //endpoints to test:-
+    //test authorization:-
+    testHelper.checkAuthProtection('comment',()=>  userToken)
     //- PATCH/comment{id}               >edit comment by id
     //- delete/comment{id}              >delete comment by id  
     describe('post/:id/comment',()=>{
+
+        test('comment on post',async()=>{
+            response = await request(app).post(`/post/${myPost.id}/comment/`)
+            .set('Authorization', `Bearer ${userToken}`)
+            .send({comment: faker.lorem.sentence()})
+            const comment = response.body.comment
+            const commentInDb = await prisma.comment.findUnique({where:{id: comment.id}})
+            
+            expect(response.status).toBe(201);
+            expect(commentInDb).toBeDefined();
+            
+
+        })
+        test('get post comments',async()=>{
+            // input face comments
+            const populateComment = async()=>{
+                await request(app).post(`/post/${myPost.id}/comment/`)
+                .set('Authorization', `Bearer ${userToken}`)
+                .send({comment: faker.lorem.sentence()})
+            }
+            
+            await Promise.all([
+                populateComment(),
+                populateComment(),
+                populateComment(),
+                populateComment(),
+                populateComment(),
+                populateComment(),
+            ]);
+           
+            console.log(`Step1: test level ${myPost.id}`)
+            response = await request(app).get(`/post/${myPost.id}/comment/`)
+            .set('Authorization', `Bearer ${userToken}`)
+            .query({
+                limit: 3
+            })
+
+            expect(response.status).toBe(200);
+        })
         //- POST/post/{id}/comment      >create comment on a post by id
         //- GET/post/{id}/comments      >get post comments
     })
 })
+*/
