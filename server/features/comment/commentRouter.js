@@ -7,8 +7,8 @@ const commentRouter = Router({mergeParams: true});
 commentRouter.get('/', async(req, res)=>{res.sendStatus(200)})
 commentRouter.get('/commentlist',validate.limit,validate.cursor,controller.getComments)//get comments 
 commentRouter.post('/newComment',validate.newComment,controller.createComment)//post a new comment on parent post
-//commentRouter.patch('/:id/like')
-//commentRouter.patch('/:id/dislike')
+commentRouter.patch('/:id/like',validate.id, controller.likeComment)
+commentRouter.patch('/:id/dislike',validate.id, controller.dislikeComment)
 
 //comment authors only
 commentRouter.patch('/:id',validate.id,validate.comment,isUserAuthor,controller.editComment)//validate ownership of comment

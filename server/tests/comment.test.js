@@ -8,6 +8,7 @@ import { testHelper } from "../utils/testHelpers.js";
 import cookieParser from "cookie-parser";
 import { access } from "fs";
 import { faker } from "@faker-js/faker";
+import { execPath } from "process";
 //handle clearing testing database befor each test
 beforeAll(async()=>{
     console.log('initiall db clearing:- in progress')
@@ -164,12 +165,42 @@ describe('/comment',()=>{
             expect(response.status).toBe(200);
             expect(response.body.comment.content).not.toEqual(comment.content);
         })
+        test('like comment',async()=>{
+            response = await request(app).patch(`/comment/${comment.id}/like`)
+            .set('Authorization', `Bearer ${userToken}`)
+
+            //validate like amnount in database
+            const updatedComment = await prisma.comment.findUnique({
+                where: {id: Number(comment.id)},
+                select:{
+                    likes: true,
+                }
+            })
+            expect(response.status).toBe(200);
+            expect(updatedComment.likes).toEqual(1);
+            
+        })       
+        test('dislike comment',async()=>{
+            response = await request(app).patch(`/comment/${comment.id}/dislike`)
+            .set('Authorization', `Bearer ${userToken}`)
+
+            //validate like amnount in database
+            const updatedComment = await prisma.comment.findUnique({
+                where: {id: Number(comment.id)},
+                select:{
+                    likes: true,
+                }
+            })
+            expect(response.status).toBe(200);
+            //returns zero because pervious test increased likes by 1
+            expect(updatedComment.likes).toEqual(0);
+        }) 
         //- delete/comment{id}              >delete comment by id  
         test('delete comment',async()=>{
             response = await request(app).delete(`/comment/${comment.id}`)
             .set('Authorization', `Bearer ${userToken}`)
             expect(response.status).toBe(200)
-        })        
+        })       
     })
 
 })

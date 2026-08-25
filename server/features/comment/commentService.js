@@ -57,12 +57,38 @@ const deleteComment = async (id)=>{
         }
     })
 }
+const likeComment =async(id)=>{
+    return await prisma.comment.update({
+        where: {id: Number(id)},
+        data:{
+            likes:{
+                increment: 1,
+            }
+        },
+        select:{
+            likes:true,
+        }
+    })
+}
+const dislikeComment =async(id)=>{
+    return await prisma.comment.update({
+        where: {id: Number(id)},
+        data:{likes:{
+            decrement: 1
+        }},
+        select:{
+            likes: true
+        }
+    })
+}
 
 const service={
     createComment,
     getComments,
     editComment,
-    deleteComment
+    deleteComment,
+    likeComment,
+    dislikeComment
 }
 export{
     service

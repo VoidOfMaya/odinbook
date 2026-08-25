@@ -58,10 +58,36 @@ const deleteComment=async(req, res, next)=>{
     if(!errors.isEmpty()) throw new ApiError(400,"validation Error",errors.array())
     const {id}= matchedData(req);
     try{
-        console.log(id)
         const comment = await service.deleteComment(id);
         if(!comment) throw new ApiError(500, "Could not delete comment")
         res.status(200).json({message: 'Comment deleted successfully'})
+    }catch(err){
+        next(err)
+    }
+}
+const likeComment = async (req, res, next)=>{
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) throw new ApiError(400,"validation Error",errors.array())
+    const {id}= matchedData(req);
+
+    try{
+        const comment = await service.likeComment(id);
+        if(!comment) throw new ApiError(500, " could not like comment");
+        res.status(200).json({message: 'comment liked!'})
+        
+    }catch(err){
+        next(err)
+    }
+}
+const dislikeComment = async (req, res, next)=>{
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) throw new ApiError(400,"validation Error",errors.array())
+    const {id}= matchedData(req);
+    try{
+        const comment = await service.dislikeComment(id);
+        if(!comment) throw new ApiError(500, " could not like comment");
+        res.status(200).json({message: 'comment disliked!'})
+        
     }catch(err){
         next(err)
     }
@@ -71,7 +97,9 @@ const controller = {
     getComments,
     createComment,
     editComment,
-    deleteComment
+    deleteComment,
+    likeComment,
+    dislikeComment
 }
 export{
     controller
