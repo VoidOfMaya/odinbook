@@ -158,6 +158,7 @@ const cascadeClearDb = async(id)=>{
         }),
     ]);
 }
+
 const testHelper = {
     generateSignedCookieHeader,
     decodeSignedCookie,
@@ -165,8 +166,7 @@ const testHelper = {
     checkAuthProtection,
     populateFriendships,
     cascadeClearDb,
-    createFakeUser,
-    
+    createFakeUser,   
 }
 export {
     testHelper
