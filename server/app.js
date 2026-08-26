@@ -34,12 +34,13 @@ app.use(cookieParser(process.env.CRYPTKEY));
 //CRYPTKEY is a cryptographically generated 32byte hex string
 
 //INSERT SERVER ENDPOINTS HERE: 
-app.use('/auth',pipe.authRouter)
-app.use('/user',midware.isAuthenticated, pipe.userRouter)
-app.use('/network',midware.isAuthenticated,pipe.networkRouter)
-app.use('/post', midware.isAuthenticated,pipe.postRouter)
-//app.use('/feed',midware.isAuthenticated,/*feed router here*/)
-app.use('/comment',midware.isAuthenticated,pipe.commentRouter/*comment router*/)
+app.use('/auth',pipe.authRouter);
+app.use('/user',midware.isAuthenticated, pipe.userRouter);
+app.use('/network',midware.isAuthenticated,pipe.networkRouter);
+app.use('/feed',midware.isAuthenticated,pipe.feedRouter);
+app.use('/post', midware.isAuthenticated,pipe.postRouter);
+app.use('/comment',midware.isAuthenticated,pipe.commentRouter);
+
 //server health endpoint:
 app.get("/health", (req, res) => {
     console.log("Health endpoint hit");
