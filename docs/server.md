@@ -141,7 +141,6 @@ The API provides flexible user authentication, session management across multipl
   ```
   - its advised to set both the authenticated user object and the accessToken
     in memory
-  
 ### Session & Token Management:-
 
 #### Dual Token Architecture:
@@ -164,16 +163,15 @@ thread.
 #### Frontend Implementation Note:
         
 - To prevent race conditions during token updates, implement a request queue or mutex on the client. Hold outgoing API requests while an expired refresh token is being rotated, ensuring all queued calls wait for and use the new token.
-
-### Endpoints:
+#### Endpoints:
 
   #### refresh:
 
-  - re-authenticates a new jwt access token, when  provided a valid refresh token, refresh tokens can only be used once to reauthenticate a new access refresh pair`note: always provide the latest refresh token else server will auto wipe the refreshtoken tree for user, on invalid token usageas a security measure`
+  - re authenticates a new jwt access token, when  provided a valid refresh token, refresh tokens can only be used once to reauthenticate a new access refresh pair`note: always provide the latest refresh token else server will auto wipe the refreshtoken tree for user, on invalid token usage as a security measure`
 
   ##### path:`POST:/auth/refresh` (authentication protected)
 
-  ##### expects: `req.cookies:{rToken,threadId}**automatically provided**, and a valid jwt token` 
+  ##### expects: `req.cookies:{rToken,threadId} include credentials on fetch` 
 
   ##### returns:
   ```js
@@ -192,7 +190,7 @@ thread.
     accessToken
   }
   ```
-  ### logout:-
+  #### logout:-
   logout simply looks for the 
 
   ##### path:`DELETE:/auth/logout` (authentication protected)
@@ -205,13 +203,245 @@ thread.
     message: 'session thread removed'
   }
   ```
-
 ## User
+### Endpoints:-
+- all endpoints are authentication protected meaning each request
+  **must provide a valid jwt**  else refresh access token
+#### Get user(me) profile:-
+  ##### path:`GET:/user//me`
 
+  ##### expects:
+  - user is authenticated 
+    - authenticated users id is  validated against the db as the single source of truth 
+
+  ##### returns:
+  ```js
+  {
+    id, 
+    name, 
+    bio, 
+    photo, 
+    isOnline,
+    lastOnline, 
+    createdAt
+  }
+  ```
+#### Edit user(me) profile:-
+  ##### path:`PATCH:/user/me`
+    - validates update content
+  ##### expects:
+  - in body:{ name, bio, photo}
+    - each field is optional!, provide an empty string `""` for that field
+      when requesting an update
+
+  ##### returns:
+  ```js
+  {
+    message: 'Profile updated successfully'
+  }
+  ```
+#### Search for users by name:-
+  ##### path:`GET:/user/search`
+  - validates name query where it can only be a string
+  ##### expects:
+  - set a query variable as "name" with the desired username
+
+
+  ##### returns:
+  ```js
+  {
+    //returns a list of users that match the query and empty array if no match is found
+    [
+      {            
+        id: true,
+        name: true,
+        photo: true
+      },
+      .
+      .
+      .
+    ]
+  }
+  ```
+#### Get user(other) profile:-
+  ##### path:`GET:/user/:id`
+  - validates user id as a valid int
+  - Privacy setting protected(if user is set to isPrivate: true) user
+    can not view profile unless in an active connection with user thats 
+    preforming the resource request
+  ##### expects:
+  - id as a parameter in the request header example: `Get:/${userId}`
+  ##### returns:
+  ```js
+  {
+    id, 
+    name, 
+    bio, 
+    photo, 
+    isOnline,
+    lastOnline, 
+    createdAt
+  }
+  ```
 ## Network
-
+### Endpoints:-
+- all endpoints are authentication protected meaning each request
+  **must provide a valid jwt**  else refresh access token
+#### Get connections
+  ##### path:`GET:/network/connection`
+  ##### expects:
+  - a status query: status: "ACTIVE"/"PENDING"/"BLOCKED"/"DECLINED"
+  ##### returns:
+  ```js
+      {
+      friends: [
+        { 
+          meta:
+            {connectionId, status},
+          user: 
+            {id, name, photo, bio, onlineStatus} 
+        },
+        .
+        .
+        .
+      ]
+    }
+  ```
+#### Create new Connection(send friend request):-
+  ##### path:`POST:/network/connection`
+  ##### expects:
+  - a `recipiantId` defined in the request body
+  ##### returns:
+  ```js
+  //will throw a 409 status if a valid (does not include records with a declined status)record already exists
+  {
+    connectionId,
+  }
+  ```
+#### Update Connection(activate/reject/block):-
+  ##### path:`GET:/network/connection/:id`
+  ##### expects:
+  - set `updateStatus` in the request body
+  ##### returns:
+  ```js
+  {message: 'Connection statuse updated!'}
+  ```
 ## Post
-
+### Endpoints:-
+- all endpoints are authentication protected meaning each request
+  **must provide a valid jwt**  else refresh access token
+postRouter.post('/',validate.content,controller.createPost);
+#### Create Post
+  ##### path:`POST:/post/`
+  ##### expects:
+  ##### returns:
+  ```js
+  ```
+postRouter.get('/:id',validate.postId,controller.getPost);
+#### Get Single post
+  ##### path:`GET:/post/:id`
+  ##### expects:
+  ##### returns:
+  ```js
+  ```
+postRouter.patch('/:id/like',validate.postId, controller.like);
+#### Like a Post
+  ##### path:`PATCH:/post/:id/like`
+  ##### expects:
+  ##### returns:
+  ```js
+  ```
+postRouter.patch('/:id/dislike',validate.postId, controller.dislike);
+#### Dislike a Post
+  ##### path:`PATCH:/post//:id/like`
+  ##### expects:
+  ##### returns:
+  ```js
+  ```
+// only post authors
+postRouter.patch('/:id',validate.postEdit,isUserAuthor,controller.editPost);
+#### Edit Post
+  ##### path:`PATCH:/post/:id`
+  ##### expects:
+  ##### returns:
+  ```js
+  ```
+postRouter.delete('/:id',validate.postId,isUserAuthor,controller.deletePost);
+#### Delete Post
+  ##### path:`DELETE:/post/:id`
+  ##### expects:
+  ##### returns:
+  ```js
+  ```
+//Nested routes!
+postRouter.use('/:id/comment',validate.postId, commentRouter);
+#### On post comments
 ## Comment
+  ##### path:`GET:/post/connections`
+  ##### expects:
+  ##### returns:
+  ```js
+  ```
+### Endpoints:-
+- all endpoints are authentication protected meaning each request
+  **must provide a valid jwt**  else refresh access token
+
+commentRouter.get('/commentlist',validate.limit,validate.cursor,controller.getComments)//get comments 
+#### Get post comment:-
+  ##### path:`GET:/post/:id/comment/commentList`
+  ##### expects:
+  - expects a limit be provided ,if no limit is provided it will use the default value of 1
+  - to enable pagination  inject the `nextCursor` provided by the first request into the query along side the limit
+  ##### returns:
+  ```js
+  {
+    comments:[
+      {}
+    ], 
+    nextCursor: nextCursor.id
+  }
+  ```
+//authenticated users only
+
+
+post('/newComment',validate.newComment,controller.createComment)//post a 
+new comment on parent post
+#### create new comment:-
+  ##### path:`POST:/post/:id/comment/newComment`
+  ##### expects:
+
+  ##### returns:
+  ```js
+
+  ```
+patch('/:id/like',validate.id, controller.likeComment)
+#### like a comment:-
+  ##### path:`PATCH:/comment/:id/like`
+  ##### expects:
+
+  ##### returns:
+  ```js
+
+  ```
+patch('/:id/dislike',validate.id, controller.dislikeComment)
+#### dislike a comment:-
+  ##### path:`PATCH:/comment/:id/dislike`
+  ##### expects:
+
+  ##### returns:
+  ```js
+
+  ```
+//comment authors only
+commentRouter.patch('/:id',validate.id,validate.comment,isUserAuthor,controller.editComment)//validate ownership of comment
+commentRouter.delete('/:id',validate.id,isUserAuthor, controller.deleteComment)//delete comment where user is comment author
 
 ## Feed
+### Endpoint:-
+- all endpoints are authentication protected meaning each request
+  **must provide a valid jwt**  else refresh access token
+  ##### path:`GET:/feed`
+  ##### expects:
+  ##### returns:
+  ```js
+  ```

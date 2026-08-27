@@ -182,14 +182,8 @@ describe('/feed',()=>{
 
 
     describe('feed endpoint content',()=>{
-        test('check pulse',async()=>{
-            response = await request(app).get(`/feed`)
-            .set(`Authorization`, `Bearer ${accessToken}`)
-
-            expect(response.status).toBe(200);
-        })
         test('first load',async()=>{
-            response = await request(app).get(`/feed/${user.id}`)
+            response = await request(app).get(`/feed`)
             .set(`Authorization`, `Bearer ${accessToken}`)
             .query({
                 limit: 2,
@@ -203,7 +197,7 @@ describe('/feed',()=>{
             
             for(let i = 0; i < 3; i++){
                 console.log(`next cursor: ${nextCursor}`)
-                response = await request(app).get(`/feed/${user.id}`)
+                response = await request(app).get(`/feed`)
                 .set('Authorization', `Bearer ${accessToken}`)
                 .query({
                     limit: 2,

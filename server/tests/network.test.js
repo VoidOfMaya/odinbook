@@ -93,16 +93,19 @@ describe('/network',()=>{
             errors = response.body.error;
             expect(response.status).toBe(400);
             expect(errors.message).toEqual('validation Error');
-        })                    
+        })                      
     })
     //- GET/network/friends             >get a list of current users friends
     describe('get my friends: /network/connection?status=ACTIVE',()=>{
         //init fake users and friendship data
   
         test('endpoint accessed',async()=>{
-            response = await request(app).get('/network/connection?status=ACTIVE')
-            .set('Authorization', `Bearer ${userToken}`);
-            
+            response = await request(app).get('/network/connection')//?status=ACTIVE'
+            .set('Authorization', `Bearer ${userToken}`)
+            .query({
+                status: 'ACTIVE'
+            })
+            console.log(JSON.stringify(response.body, null, 2));
             expect(response.status).toBe(200);
         })
         test('return only active friendships',async()=>{

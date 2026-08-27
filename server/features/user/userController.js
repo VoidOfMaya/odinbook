@@ -6,7 +6,7 @@ const getMe = async(req, res, next)=>{
 
     //{id, name, bio. photo, isOnline,lastOnline, createdAt}
     try{
-        const userData = await service.getMyData(req.user.id);
+        const userData = await service.getUser(req.user.id);
         return res.status(200).json({user: userData});     
     }catch(err){
         next(err);
@@ -37,7 +37,7 @@ const getUser = async(req,res, next)=>{
     try{
         // validate if user is private
         
-        const userData = await service.getMyData(data.id);
+        const userData = await service.getUser(data.id);
         return res.status(200).json({user: userData});     
     }catch(err){
         next(err);

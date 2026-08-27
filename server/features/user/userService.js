@@ -1,5 +1,5 @@
 import {prisma} from "../../lib/prisma.js"
-const getMyData = async(id)=>{
+const getUser = async(id)=>{
     //{id, name, bio. photo, isOnline,lastOnline, createdAt}
     return await prisma.user.findUnique({
         where: {id: Number(id)},
@@ -48,7 +48,7 @@ const findMatchingUsers= async(name)=>{
     return users
 }
 const service = {
-    getMyData,
+    getUser,
     updateMyData,
     isUserPrivate,
     findMatchingUsers,
