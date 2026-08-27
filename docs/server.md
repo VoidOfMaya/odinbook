@@ -115,7 +115,7 @@ The API provides flexible user authentication, session management across multipl
   - the client renders a temporary loading component at this rout
   - the component should intiate the request on step 3 when it renders
   
-  returns: `this step is only a transtional bridge to automatically handle the Oauth flow with minmal end user input `
+  ##### returns: `this step is only a transtional bridge to automatically handle the Oauth flow with minmal end user input `
 
   #### Step 3: Complete github authentiation
   ##### path:`GET:/auth/login/github`
@@ -124,12 +124,20 @@ The API provides flexible user authentication, session management across multipl
   ##### purpose/use case:
   - on rendering the loading component from step 2 intiate the above request
   - API will fetch the created record for the authenticated user via the temporary userId cookie
-  - returns:-
-  ```
+  ##### returns:-
+  ```js
   cookies: {sessionId, refreshToken}
-  body:{
-    user, accessToken
-  }
+    user:{
+      id,
+      email,
+      name,
+      bio,
+      photo,
+      lastOnline,
+      isOnline,
+      createdAt
+  },
+  accessToken
   ```
   - its advised to set both the authenticated user object and the accessToken
     in memory
@@ -138,37 +146,38 @@ The API provides flexible user authentication, session management across multipl
 
 #### Dual Token Architecture:
 
--Uses short lived Access Tokens(JWT)for resource authorization and long lived Refresh Tokens for session persistence.
+- Uses short lived Access Tokens(JWT)for resource authorization and long lived Refresh Tokens for session persistence.
 
 #### Token Rotation & Thread Tracking:
 
--Every refresh token is bound to a threadId representing its lineage (family tree). Rotating a token issues a new token on the same thread and revokes the previous token to insure one valid token per
+- Every refresh token is bound to a threadId representing its lineage (family tree). Rotating a token issues a new token on the same thread and revokes the previous token to insure one valid token per
 thread.
 
 #### Reuse Detection & Automatic Revocation: 
     
-If a previously invalidated refresh token is presented, the system flags potential token theft and immediately revokes all tokens associated with that family tree via its threadId.
+- If a previously invalidated refresh token is presented, the system flags potential token theft and immediately revokes all tokens associated with that family tree via its threadId.
 
 #### Grace Period: 
         
--To accommodate legitimate concurrent requests (e.g., parallel initial fetches), a multi second grace period is triggered after revoking a token where it allowes for legitimate concurrent requests to bypass it for a very short period of time so to not trip the token theft detection system.
+- To accommodate legitimate concurrent requests (e.g., parallel initial fetches), a multi second grace period is triggered after revoking a token where it allowes for legitimate concurrent requests to bypass it for a very short period of time so to not trip the token theft detection system.
 
 #### Frontend Implementation Note:
         
-To prevent race conditions during token updates, implement a request queue or mutex on the client. Hold outgoing API requests while an expired refresh token is being rotated, ensuring all queued calls wait for and use the new token.
+- To prevent race conditions during token updates, implement a request queue or mutex on the client. Hold outgoing API requests while an expired refresh token is being rotated, ensuring all queued calls wait for and use the new token.
 
 ### Endpoints:
 
   #### refresh:
 
-  re-authenticates a new jwt access token, when  provided a valid refresh token, refresh tokens can only be used once to reauthenticate a new access refresh pair`note: always provide the latest refresh token else server will auto wipe the refreshtoken tree for user, on invalid token usageas a security measure`
+  - re-authenticates a new jwt access token, when  provided a valid refresh token, refresh tokens can only be used once to reauthenticate a new access refresh pair`note: always provide the latest refresh token else server will auto wipe the refreshtoken tree for user, on invalid token usageas a security measure`
 
-  route:`POST:/auth/refresh` (authentication protected)
+  ##### path:`POST:/auth/refresh` (authentication protected)
 
-  expects: `req.cookies:{rToken,threadId}**automatically provided**, and a valid jwt token` 
+  ##### expects: `req.cookies:{rToken,threadId}**automatically provided**, and a valid jwt token` 
 
-  returns:
-  ```
+  ##### returns:
+  ```js
+   cookies: {sessionId, refreshToken}
   {
     user:{
         id,
@@ -186,12 +195,12 @@ To prevent race conditions during token updates, implement a request queue or mu
   ### logout:-
   logout simply looks for the 
 
-  route:`DELETE:/auth/logout` (authentication protected)
+  ##### path:`DELETE:/auth/logout` (authentication protected)
 
-  expects: `toke bearer : accessToken, cookies threadId` 
+  ##### expects: `toke bearer : accessToken, cookies threadId` 
 
-  returns:
-  ```
+  ##### returns:
+  ```js
   {
     message: 'session thread removed'
   }
