@@ -4,8 +4,8 @@ import { service as networkService } from "../network/networkService.js";
 const getFeed = async( req, res, next)=>{
     const errors = validationResult(req);
     if(!errors.isEmpty()) throw new ApiError(400,"validation Error",errors.array())
-    const {id, limit, cursor}= matchedData(req);
-
+    const {limit, cursor}= matchedData(req);
+    const id = req.user.id;
     try{ 
         //get an array of connections user has where statuse is active
         const connections = await networkService.getConnections(id, "ACTIVE");

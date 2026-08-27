@@ -4,9 +4,7 @@ import { controller } from "./feedController";
 
 const feedRouter = Router();
 
-feedRouter.get('/',async(req, res)=>{res.sendStatus(200)});
-feedRouter.get('/:id',
-    validate.userId,
+feedRouter.get('/',
     validate.limit,
     validate.cursor,
     controller.getFeed)
