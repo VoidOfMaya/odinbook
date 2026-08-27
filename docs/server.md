@@ -290,7 +290,7 @@ thread.
 #### Get connections
   ##### path:`GET:/network/connection`
   ##### expects:
-  - a status query: status: "ACTIVE"/"PENDING"/"BLOCKED"/"DECLINED"
+  - a status query: status: `"ACTIVE"/"PENDING"/"BLOCKED"/"DECLINED"`
   ##### returns:
   ```js
       {
@@ -321,7 +321,13 @@ thread.
 #### Update Connection(activate/reject/block):-
   ##### path:`GET:/network/connection/:id`
   ##### expects:
-  - set `updateStatus` in the request body
+  - set `updateStatus` with one of the following:
+    - `"ACTIVE"`
+    - `"PENDING"`
+    - `"BLOCKED"`
+    - `"DECLINED"`
+
+  - in the request body
   ##### returns:
   ```js
   {message: 'Connection statuse updated!'}
