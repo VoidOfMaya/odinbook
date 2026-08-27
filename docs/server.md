@@ -13,7 +13,7 @@ The API provides flexible user authentication, session management across multipl
 ### Local strategy:-
   #### Register:`POST:/auth/register`
   - password is hashed with `bcrypt.js` and then saved to the database
-   recieves:
+   ##### recieves:
    ``` json
     {
         email: "example@gmail.com",
@@ -22,7 +22,7 @@ The API provides flexible user authentication, session management across multipl
         confirmPassword:"superSecretP@ssWord",
     }
    ```
-   returns status(201):
+   ##### returns:
    ```json
     {
         message: "User  registered successfully"
@@ -38,8 +38,8 @@ The API provides flexible user authentication, session management across multipl
     password:"examplePassword123@"
   }
   ```
-  returns:
-  ```json
+  ##### returns:
+  ```js
   //req.status(200)
 
   //signed Cookies:-
@@ -66,13 +66,13 @@ The API provides flexible user authentication, session management across multipl
   <img src='./images/secure git Oauth flow.jpg'/>
 
   #### Step 0: Intialize github Oauth
-  path: `GET:API/login/github/state`
+  ##### path: `GET:API/login/github/state`
   
-  purpose/use case: 
-    intializes a new OAuth authentication attempt
+  ##### purpose/use case: 
+  - intializes a new OAuth authentication attempt
   
-  returns:
-  ```json
+  ##### returns:
+  ```js
   //the following data is only a representaion of what should be returned
   //httpOnlySignedCookie is set in browser cookies user can not interact with them
   //on the client side but only include them by adding credentials: include to the fetch headers
@@ -82,11 +82,12 @@ The API provides flexible user authentication, session management across multipl
   - client should use the returned `query` in step 1
 
   #### Step 1:Redirect to github
-  path: `https://github.com/login/oauth/authorize?${query}`
+  ##### path: `https://github.com/login/oauth/authorize?${query}`
 
-  purpose/use case:
-    Redirects the user to GitHub so they can authorize the application.
-    The client should construct the GitHub authorization URL using the query returned by Step 0 and redirect the browser to it.
+  ##### purpose/use case:
+
+  - Redirects the user to GitHub so they can authorize the application.
+      The client should construct the GitHub authorization URL using the query returned by Step 0 and redirect the browser to it.
     ```js
     window.location.href =
       `https://github.com/login/oauth/authorize?${query}`;
@@ -94,8 +95,8 @@ The API provides flexible user authentication, session management across multipl
     After the user authorizes the application, GitHub redirects the browser back to the API.
     The server then handles the OAuth callback, retrieves the user's GitHub information, and finds or creates the corresponding user record.
     
-  returns:
-    The client does not receive a conventional API response from this step.
+  ##### returns:
+  The client does not receive a conventional API response from this step.
     After successful authorization, the server:
     Finds or creates the user's database record.
     Sets a short lived, httpOnly signed cookie `userId`.
@@ -106,23 +107,23 @@ The API provides flexible user authentication, session management across multipl
   ```
 
   #### Step 2: Intialize a transactional Authenticaiton component
-  path: `app/login/github`
+  ##### path: `app/login/github`
 
-  purpose/use case:
-    - provides a temporary client side route used to complete the authentication 
+  ##### purpose/use case:
+  - provides a temporary client side route used to complete the authentication 
       the serevr redirects client to github.
-    - the client renders a temporary loading component at this rout
-    - the component should intiate the request on step 3 when it renders
+  - the client renders a temporary loading component at this rout
+  - the component should intiate the request on step 3 when it renders
   
   returns: `this step is only a transtional bridge to automatically handle the Oauth flow with minmal end user input `
 
   #### Step 3: Complete github authentiation
-  path:`GET:/auth/login/github`
-    - `set headers: {credentials: include}`
+  ##### path:`GET:/auth/login/github`
+  - `set headers: {credentials: include}`
 
-  purpose/use case:
-    - on rendering the loading component from step 2 intiate the above request
-    - API will fetch the created record for the authenticated user via the temporary userId cookie
+  ##### purpose/use case:
+  - on rendering the loading component from step 2 intiate the above request
+  - API will fetch the created record for the authenticated user via the temporary userId cookie
   - returns:-
   ```
   cookies: {sessionId, refreshToken}
