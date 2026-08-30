@@ -488,8 +488,22 @@ thread.
 ### Endpoint:-
 - all endpoints are authentication protected meaning each request
   **must provide a valid jwt**  else refresh access token
-  ##### path:`GET:/feed`
+  
+#### Get user unique feed
+  ##### path:`GET:/feed/`
   ##### expects:
+
+  - a `limit` query(determains how many posts to get per query)
+  - a `cursor`id query
+    - if not defined: denotes the first fetch/ start of feed (gets the most recent
+    posts it can find), 
+    - if defined: denotes which post to start fetching from for an organized  and chronologically coherent feed
   ##### returns:
   ```js
+  {
+    feed:[
+      {}
+    ], 
+    nextCursor: nextCursor.id
+  }
   ```
