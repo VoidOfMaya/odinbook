@@ -71,7 +71,7 @@ describe('/comment',()=>{
     describe('post/:id/comment',()=>{
         //- POST/post/{id}/comment/newcomment     >create comment on a post by id
         test('comment on post',async()=>{
-            response = await request(app).post(`/post/${myPost.id}/comment/newComment`)
+            response = await request(app).post(`/post/${myPost.id}/comment/new`)
             .set('Authorization', `Bearer ${userToken}`)
             .send({comment: faker.lorem.sentence()})
             const comment = response.body.comment
@@ -86,7 +86,7 @@ describe('/comment',()=>{
         test('get post comments',async()=>{
             // input face comments
             const populateComment = async()=>{
-                await request(app).post(`/post/${myPost.id}/comment/newComment`)
+                await request(app).post(`/post/${myPost.id}/comment/new`)
                 .set('Authorization', `Bearer ${userToken}`)
                 .send({comment: faker.lorem.sentence()})
             }
@@ -101,7 +101,7 @@ describe('/comment',()=>{
             ]);
 
             console.log(`Step1: test level ${myPost.id}`)
-            response = await request(app).get(`/post/${myPost.id}/comment/commentlist`)
+            response = await request(app).get(`/post/${myPost.id}/comment/list`)
             .set('Authorization', `Bearer ${userToken}`)
             .query({
                 limit: 3
@@ -119,7 +119,7 @@ describe('/comment',()=>{
             
             for(let i = 0; i < 3; i++){
                 console.log(`next cursor: ${nextCursor}`)
-                response = await request(app).get(`/post/${myPost.id}/comment/commentlist`)
+                response = await request(app).get(`/post/${myPost.id}/comment/list`)
                 .set('Authorization', `Bearer ${userToken}`)
                 .query({
                     limit: 2,
@@ -148,7 +148,7 @@ describe('/comment',()=>{
         let comment;
         beforeAll(async()=>{
               
-            response = await request(app).post(`/post/${myPost.id}/comment/newComment`)
+            response = await request(app).post(`/post/${myPost.id}/comment/new`)
             .set('Authorization', `Bearer ${userToken}`)
             .send({comment: faker.lorem.sentence()})
             comment = response.body.comment

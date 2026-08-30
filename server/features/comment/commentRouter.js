@@ -3,10 +3,15 @@ import { validate } from "./commentValidation.js";
 import { controller} from "./commentController.js"
 import { debug, isUserAuthor } from "./commentMiddleware.js";
 const commentRouter = Router({mergeParams: true});
+
+
+//Post nested Endpoints
+commentRouter.get('/list',validate.limit,validate.cursor,controller.getComments)//get comments 
+commentRouter.post('/new',validate.newComment,controller.createComment)//post a new comment on parent post
+
+// Standalone Endpoints
 //authenticated users only
 commentRouter.get('/', async(req, res)=>{res.sendStatus(200)})
-commentRouter.get('/commentlist',validate.limit,validate.cursor,controller.getComments)//get comments 
-commentRouter.post('/newComment',validate.newComment,controller.createComment)//post a new comment on parent post
 commentRouter.patch('/:id/like',validate.id, controller.likeComment)
 commentRouter.patch('/:id/dislike',validate.id, controller.dislikeComment)
 
