@@ -12,6 +12,8 @@ const getFeed = async( req, res, next)=>{
         if(!connections)throw new ApiError(500, "Could retrieve conenctions");
         //extract user ids from connection data
         const friendsIdArray = connections.map(connection => connection.user.id);
+        // add users id to the friends array to also fetch userts own posts!
+        friendsIdArray.push(id);
         // get posts by connecitons array id
         const feed = await service.getfeed(friendsIdArray, limit, cursor);
         if(!feed)throw new ApiError(500, "Could not find comments");

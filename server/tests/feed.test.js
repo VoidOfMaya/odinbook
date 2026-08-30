@@ -165,6 +165,12 @@ describe('/feed',()=>{
                 }
             }), 
         ])
+        // create a post from current user
+        response =request(app).post('post/')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+            content: 'hey first post ever here!'
+        })
 
     })
     //delete all users
