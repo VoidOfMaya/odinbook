@@ -397,12 +397,12 @@ thread.
 //Nested routes!
 postRouter.use('/:id/comment',validate.postId, commentRouter);
 ### Nested Endpoints:-
-
+- **Must provide a post id** to access its nested endpoints
 #### Comment on  post:-
   ##### path:`POST:/post/:id/comment/new`
   ##### expects:
   - post `id` in `req.params`
-  - a `comment: "insert comment here"` variable in `req.body`
+  - a `content: "insert comment here"` variable in `req.body`
     - length wise `min: 1, max: 750`
   
   ##### returns:
@@ -419,28 +419,6 @@ postRouter.use('/:id/comment',validate.postId, commentRouter);
   comment to start fetching from for an organized feed)
   ##### returns:
   ```js
-  {comments, nextCursor}
-  ```
-
-
-## Comment
-  ##### path:`GET:/post/connections`
-  ##### expects:
-  ##### returns:
-  ```js
-  ```
-### Endpoints:-
-- all endpoints are authentication protected meaning each request
-  **must provide a valid jwt**  else refresh access token
-
-commentRouter.get('/commentlist',validate.limit,validate.cursor,controller.getComments)//get comments 
-#### Get post comment:-
-  ##### path:`GET:/post/:id/comment/commentList`
-  ##### expects:
-  - expects a limit be provided ,if no limit is provided it will use the default value of 1
-  - to enable pagination  inject the `nextCursor` provided by the first request into the query along side the limit
-  ##### returns:
-  ```js
   {
     comments:[
       {}
@@ -448,41 +426,57 @@ commentRouter.get('/commentlist',validate.limit,validate.cursor,controller.getCo
     nextCursor: nextCursor.id
   }
   ```
-//authenticated users only
 
+## Comment
 
-post('/newComment',validate.newComment,controller.createComment)//post a 
-new comment on parent post
-#### create new comment:-
-  ##### path:`POST:/post/:id/comment/newComment`
-  ##### expects:
+### Endpoints:-
+- all endpoints are authentication protected meaning each request
+  **must provide a valid jwt**  else refresh access token
 
-  ##### returns:
-  ```js
-
-  ```
 patch('/:id/like',validate.id, controller.likeComment)
-#### like a comment:-
+#### Like a comment:-
   ##### path:`PATCH:/comment/:id/like`
   ##### expects:
-
+  - comment`id` in `req.params`
   ##### returns:
   ```js
-
+  {message: 'comment liked!'}
   ```
 patch('/:id/dislike',validate.id, controller.dislikeComment)
-#### dislike a comment:-
+#### Dislike a comment:-
   ##### path:`PATCH:/comment/:id/dislike`
   ##### expects:
+  - comment`id` in `req.params`
 
   ##### returns:
   ```js
-
+  {message: 'comment disliked!'}
   ```
 //comment authors only
 commentRouter.patch('/:id',validate.id,validate.comment,isUserAuthor,controller.editComment)//validate ownership of comment
-commentRouter.delete('/:id',validate.id,isUserAuthor, controller.deleteComment)//delete comment where user is comment author
+#### Edit comment:-
+  - this endpoint is **accessible only to comment author**
+  ##### path:`PATCH:/comment/:id`
+  ##### expects:
+  - comment`id` in `req.params`
+  - a `content: "insert comment here"` variable in `req.body`
+    - length wise `min: 1, max: 750`
 
+  ##### returns:
+  ```js
+  {message: "Comment edited successfully", comment: comment}
+  ```
+
+commentRouter.delete('/:id',validate.id,isUserAuthor, controller.deleteComment)//delete comment where user is comment author
+#### Delete comment:-
+  - this endpoint is **accessible only to comment author**
+  ##### path:`DELETE:/comment/:id`
+  ##### expects:
+  - comment`id` in `req.params`
+
+  ##### returns:
+  ```
+  ```
 ## Feed
 ### Endpoint:-
 - all endpoints are authentication protected meaning each request
