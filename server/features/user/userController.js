@@ -67,8 +67,8 @@ const searchUsers = async(req, res, next)=>{
             const sentConnection = user.friendSent;
             const recievedConnection = user.friendsRecieved;
             let status = 'NONE';
-            sentConnection.length > 0? status = sentConnection.statuse : status;
-            recievedConnection.length > 0?status = recievedConnection.statuse : status
+            sentConnection.length > 0? status = sentConnection.status : status;
+            recievedConnection.length > 0?status = recievedConnection.status : status
              
             const newUser={
                 id: user.id,
