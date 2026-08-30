@@ -336,52 +336,93 @@ thread.
 ### Endpoints:-
 - all endpoints are authentication protected meaning each request
   **must provide a valid jwt**  else refresh access token
-postRouter.post('/',validate.content,controller.createPost);
+
 #### Create Post
   ##### path:`POST:/post/`
   ##### expects:
+  - `{content, photo(optional)}` in request body
   ##### returns:
   ```js
+  {message: "post created!", post}
   ```
-postRouter.get('/:id',validate.postId,controller.getPost);
+
 #### Get Single post
   ##### path:`GET:/post/:id`
   ##### expects:
+  - post `id` in `req.params`
   ##### returns:
   ```js
+  {post}
   ```
-postRouter.patch('/:id/like',validate.postId, controller.like);
+
 #### Like a Post
   ##### path:`PATCH:/post/:id/like`
   ##### expects:
+  - post `id` in `req.params`
   ##### returns:
   ```js
+  {message: "Post Liked", likeCount}
   ```
-postRouter.patch('/:id/dislike',validate.postId, controller.dislike);
+
 #### Dislike a Post
-  ##### path:`PATCH:/post//:id/like`
+  ##### path:`PATCH:/post//:id/dislike`
   ##### expects:
+  - post `id` in `req.params`
   ##### returns:
   ```js
+  {message: "Post Disliked", likeCount}
   ```
-// only post authors
-postRouter.patch('/:id',validate.postEdit,isUserAuthor,controller.editPost);
+
 #### Edit Post
+  - this rout is protected and **can only be accessed by the post author**
   ##### path:`PATCH:/post/:id`
   ##### expects:
+  - user provides `content, photo(optional)` in `req.body`
+  - post `id` in `req.params`
   ##### returns:
   ```js
+  {message:"Post Updated!", post: post}
   ```
-postRouter.delete('/:id',validate.postId,isUserAuthor,controller.deletePost);
+
 #### Delete Post
+  - this rout is protected and **can only be accessed by the post author**
+
   ##### path:`DELETE:/post/:id`
   ##### expects:
+  - post `id` in `req.params`
   ##### returns:
   ```js
+  {message: 'Post Deleted', post: post}
   ```
 //Nested routes!
 postRouter.use('/:id/comment',validate.postId, commentRouter);
-#### On post comments
+### Nested Endpoints:-
+
+#### Comment on  post:-
+  ##### path:`POST:/post/:id/comment/new`
+  ##### expects:
+  - post `id` in `req.params`
+  - a `comment: "insert comment here"` variable in `req.body`
+    - length wise `min: 1, max: 750`
+  
+  ##### returns:
+  ```js
+  {message: "comment created", comment: newComment}
+  ```
+
+#### Get post comments:-
+  ##### path:`GET:/post/:id/comment/list`
+  ##### expects:
+  - post `id` in `req.params`
+  - a `limit` query(determains how many comments to get per query)
+  - a `cursor`query (if not defined: denotes the first fetch , if defined: denotes which
+  comment to start fetching from for an organized feed)
+  ##### returns:
+  ```js
+  {comments, nextCursor}
+  ```
+
+
 ## Comment
   ##### path:`GET:/post/connections`
   ##### expects:
