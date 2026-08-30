@@ -5,7 +5,7 @@ const limit = [
     .isInt().withMessage('limit must be a number and atleast 3 or greater')
 ]
 const newComment=[
-    body('comment').trim().notEmpty().withMessage("comment can not be empty!")
+    body('content').trim().notEmpty().withMessage("comment can not be empty!")
     .isString().isLength({min: 1, max: 750}).withMessage("message length out of range!")
 ]
 const cursor = [

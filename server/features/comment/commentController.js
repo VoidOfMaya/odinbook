@@ -28,11 +28,11 @@ const createComment =async(req, res, next)=>{
     
     const errors = validationResult(req);
     if(!errors.isEmpty()) throw new ApiError(400,"validation Error",errors.array())
-    const {comment}= matchedData(req);
+    const {content}= matchedData(req);
     const postId = req.params.id
 
     try{
-        const newComment = await service.createComment(req.user.id, postId, comment);
+        const newComment = await service.createComment(req.user.id, postId, content);
         if(!newComment) throw new ApiError(500, "Could not create comment");
         res.status(201).json({message: "comment created", comment: newComment})
     }catch(err){

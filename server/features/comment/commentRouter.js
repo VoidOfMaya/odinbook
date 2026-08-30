@@ -7,7 +7,7 @@ const commentRouter = Router({mergeParams: true});
 
 //Post nested Endpoints
 commentRouter.get('/list',validate.limit,validate.cursor,controller.getComments)//get comments 
-commentRouter.post('/new',validate.newComment,controller.createComment)//post a new comment on parent post
+commentRouter.post('/new',validate.comment,controller.createComment)//post a new comment on parent post
 
 // Standalone Endpoints
 //authenticated users only

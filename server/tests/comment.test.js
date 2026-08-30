@@ -73,7 +73,7 @@ describe('/comment',()=>{
         test('comment on post',async()=>{
             response = await request(app).post(`/post/${myPost.id}/comment/new`)
             .set('Authorization', `Bearer ${userToken}`)
-            .send({comment: faker.lorem.sentence()})
+            .send({content: faker.lorem.sentence()})
             const comment = response.body.comment
             const commentInDb = await prisma.comment.findUnique({where:{id: comment.id}})
             
@@ -88,7 +88,7 @@ describe('/comment',()=>{
             const populateComment = async()=>{
                 await request(app).post(`/post/${myPost.id}/comment/new`)
                 .set('Authorization', `Bearer ${userToken}`)
-                .send({comment: faker.lorem.sentence()})
+                .send({content: faker.lorem.sentence()})
             }
             
             await Promise.all([
@@ -150,7 +150,7 @@ describe('/comment',()=>{
               
             response = await request(app).post(`/post/${myPost.id}/comment/new`)
             .set('Authorization', `Bearer ${userToken}`)
-            .send({comment: faker.lorem.sentence()})
+            .send({content: faker.lorem.sentence()})
             comment = response.body.comment
             
         })
