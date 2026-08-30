@@ -203,10 +203,12 @@ thread.
     message: 'session thread removed'
   }
   ```
+
 ## User
 ### Endpoints:-
 - all endpoints are authentication protected meaning each request
   **must provide a valid jwt**  else refresh access token
+
 #### Get user(me) profile:-
   ##### path:`GET:/user//me`
 
@@ -226,6 +228,7 @@ thread.
     createdAt
   }
   ```
+
 #### Edit user(me) profile:-
   ##### path:`PATCH:/user/me`
     - validates update content
@@ -240,6 +243,7 @@ thread.
     message: 'Profile updated successfully'
   }
   ```
+
 #### Search for users by name:-
   ##### path:`GET:/user/search`
   - validates name query where it can only be a string
@@ -263,6 +267,7 @@ thread.
     ]
   }
   ```
+
 #### Get user(other) profile:-
   ##### path:`GET:/user/:id`
   - validates user id as a valid int
@@ -283,6 +288,7 @@ thread.
     createdAt
   }
   ```
+
 ## Network
 ### Endpoints:-
 - all endpoints are authentication protected meaning each request
@@ -307,6 +313,7 @@ thread.
       ]
     }
   ```
+
 #### Create new Connection(send friend request):-
   ##### path:`POST:/network/connection`
   ##### expects:
@@ -318,6 +325,7 @@ thread.
     connectionId,
   }
   ```
+
 #### Update Connection(activate/reject/block):-
   ##### path:`GET:/network/connection/:id`
   ##### expects:
@@ -332,6 +340,7 @@ thread.
   ```js
   {message: 'Connection statuse updated!'}
   ```
+
 ## Post
 ### Endpoints:-
 - all endpoints are authentication protected meaning each request
@@ -394,8 +403,7 @@ thread.
   ```js
   {message: 'Post Deleted', post: post}
   ```
-//Nested routes!
-postRouter.use('/:id/comment',validate.postId, commentRouter);
+
 ### Nested Endpoints:-
 - **Must provide a post id** to access its nested endpoints
 #### Comment on  post:-
@@ -433,7 +441,6 @@ postRouter.use('/:id/comment',validate.postId, commentRouter);
 - all endpoints are authentication protected meaning each request
   **must provide a valid jwt**  else refresh access token
 
-patch('/:id/like',validate.id, controller.likeComment)
 #### Like a comment:-
   ##### path:`PATCH:/comment/:id/like`
   ##### expects:
@@ -442,7 +449,7 @@ patch('/:id/like',validate.id, controller.likeComment)
   ```js
   {message: 'comment liked!'}
   ```
-patch('/:id/dislike',validate.id, controller.dislikeComment)
+
 #### Dislike a comment:-
   ##### path:`PATCH:/comment/:id/dislike`
   ##### expects:
@@ -452,8 +459,7 @@ patch('/:id/dislike',validate.id, controller.dislikeComment)
   ```js
   {message: 'comment disliked!'}
   ```
-//comment authors only
-commentRouter.patch('/:id',validate.id,validate.comment,isUserAuthor,controller.editComment)//validate ownership of comment
+
 #### Edit comment:-
   - this endpoint is **accessible only to comment author**
   ##### path:`PATCH:/comment/:id`
@@ -467,7 +473,6 @@ commentRouter.patch('/:id',validate.id,validate.comment,isUserAuthor,controller.
   {message: "Comment edited successfully", comment: comment}
   ```
 
-commentRouter.delete('/:id',validate.id,isUserAuthor, controller.deleteComment)//delete comment where user is comment author
 #### Delete comment:-
   - this endpoint is **accessible only to comment author**
   ##### path:`DELETE:/comment/:id`
@@ -475,8 +480,10 @@ commentRouter.delete('/:id',validate.id,isUserAuthor, controller.deleteComment)/
   - comment`id` in `req.params`
 
   ##### returns:
+  ```js
+  {message: 'Comment deleted successfully'}
   ```
-  ```
+
 ## Feed
 ### Endpoint:-
 - all endpoints are authentication protected meaning each request
