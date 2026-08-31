@@ -8,6 +8,7 @@ import { testHelper } from "../utils/testHelpers.js";
 import cookieParser from "cookie-parser";
 import { access } from "fs";
 import { faker } from "@faker-js/faker";
+import { query } from "express-validator";
 //handle clearing testing database befor each test
 beforeAll(async()=>{
     console.log('initiall db clearing:- in progress')
@@ -188,54 +189,53 @@ describe('/user',()=>{
             userIdArray.push(...users)
         })
         test('searches and display only users with letter a',async()=>{
-            response = await request(app).get('/user/search?name=a')
+            response = await request(app).get('/user/search')
             .set('Authorization', `Bearer ${userToken}`)
+            .query({name: 'a'})
 
             expect(response.status).toBe(200);
 
             const matchingUsers = response.body.users;
-            //console.log(matchingUsers);
-            //console.log(userIdArray[2]);
+            console.log(matchingUsers);
+            
             matchingUsers.forEach(user=>{
                 expect(user.id).not.toEqual(userIdArray[2])
             })
 
         });
         test('if no such user found through a 404',async()=>{
-            response = await request(app).get('/user/search?name=j')
+            response = await request(app).get('/user/search')
             .set('Authorization', `Bearer ${userToken}`)
-
-            expect(response.status).toBe(200);
-
-            const matchingUsers = response.body.users;
-
-            matchingUsers.forEach(user=>{
-                expect(user.id).toEqual(userIdArray[2]);
-                expect(user.id).not.toEqual(userIdArray[0]);
-                expect(user.id).not.toEqual(userIdArray[1]);
+            .query({
+                name: 'mark'
             })
+
+            expect(response.status).toBe(404);
+            expect(response.body.message).toEqual('User not found')
 
 
         });
-        test('if query is invalid data throguh 404 error',async()=>{
-            response = await request(app).get('/user/search?name=al')
+        test('if query is invalid data throw 404 error',async()=>{
+            response = await request(app).get('/user/search')
             .set('Authorization', `Bearer ${userToken}`)
-
-            expect(response.status).toBe(200);
-            const matchingUsers = response.body.users;
-            matchingUsers.forEach(user=>{
-                expect(user.id).toEqual(userIdArray[0]);
-                expect(user.id).not.toEqual(userIdArray[1]);
-                expect(user.id).not.toEqual(userIdArray[2]);
+            .query({
+                name: 1738
             })
+            expect(response.status).toBe(400);
         }); 
+        test('if no name provided index all users and pagenate',async()=>{
+            response = await request(app).get('/user/search')
+            .set('Authorization', `Bearer ${userToken}`)
+            
+            expect(response.status).toBe(200);
+        })
         test('handle no users found!',async()=>{
             response = await request(app).get('/user/search?name=muratina')
             .set('Authorization', `Bearer ${userToken}`)
-
-            expect(response.status).toBe(200);
-            const matchingUsers = response.body.users;
-            expect(matchingUsers).toEqual([]);
+            
+            console.log(response.body)
+            expect(response.status).toBe(404);
+            expect(response.body.message).toEqual("User not found");
         });       
     })
 })

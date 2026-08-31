@@ -12,7 +12,7 @@ const userId =[
     .toInt().withMessage('id must be a number')
 ]
 const search=[
-    query('name').trim().isLength({max:25, min: 3}).withMessage('name must be 3-25 characters in length')
+    query('name').trim().optional({values:'falsy'}).isLength({max:25, min:0}).withMessage('name must be 0-25 characters in length')
     .matches(/^[a-zA-Z ]+$/).withMessage('name can have letters and spaces')
 ]
 const validate ={

@@ -80,7 +80,7 @@ const searchUsers = async(req, res, next)=>{
         })
         console.log(sanitizedUsers)
         return res.status(200).json({
-            users: sanitizedUsers.chunk,
+            users: sanitizedUsers,
             nextCursor: usersList.nextCursor !== null
                 ? usersList.nextCursor.id
                 : null
