@@ -5,7 +5,7 @@ import { networkRouter } from './network/networkRouter.js';
 import { postRouter } from './post/postRouter.js';
 import { commentRouter } from './comment/commentRouter.js';
 import { feedRouter } from './feed/feedRouter.js';
-
+import { photoRouter} from '../features/photo/photoRouter.js'
 //centralized midellware & Router buss
 const midware ={
     passportConfig, 
@@ -18,7 +18,8 @@ const pipe = {
     networkRouter,
     postRouter,
     commentRouter,
-    feedRouter
+    feedRouter,
+    photoRouter,
 }
 export{
     midware,

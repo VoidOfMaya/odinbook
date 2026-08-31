@@ -40,6 +40,7 @@ app.use('/network',midware.isAuthenticated,pipe.networkRouter);
 app.use('/feed',midware.isAuthenticated,pipe.feedRouter);
 app.use('/post', midware.isAuthenticated,pipe.postRouter);
 app.use('/comment',midware.isAuthenticated,pipe.commentRouter);
+app.use('/upload',midware.isAuthenticated,pipe.photoRouter);
 
 //server health endpoint:
 app.get("/health", (req, res) => {

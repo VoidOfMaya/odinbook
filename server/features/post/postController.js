@@ -18,7 +18,15 @@ const createPost = async (req, res, next)=>{
     if(!errors.isEmpty()) throw new ApiError(400,"validation Error",errors.array())
     const data = matchedData(req);
     try{
-        const post = await service.newPost(req.user.id, data.content)//takes userId, content,  photo=null
+        let result = null;
+        if(req.file){
+            result = await cloudUpload(req.file.buffer);
+            //checks if cloudinary  returned the correct objects
+            if(!result.secure_url){ 
+                throw new Error('errors','internal Error: cloudinary url faulty, try again later!' )
+            }            
+        }
+        const post = await service.newPost(req.user.id, data.content, result.secure_url)//takes userId, content,  photo=null
         return res.status(201).json({message: "post created!", post: post})
     }catch(err){
         next(err);
