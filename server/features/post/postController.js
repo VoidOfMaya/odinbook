@@ -1,6 +1,6 @@
 import { validationResult, matchedData } from "express-validator";
-import { service } from "./postService";
-import { ApiError } from "../../errorhelper";
+import { service } from "./postService.js";
+import { ApiError } from "../../errorhelper.js";
 const getPost = async(req, res, next)=>{
     const errors = validationResult(req);
     if(!errors.isEmpty()) throw new ApiError(400,"validation Error",errors.array())

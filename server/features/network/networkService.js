@@ -1,5 +1,5 @@
-import { ApiError } from "../../errorhelper";
-import { prisma } from "../../lib/prisma"
+import { ApiError } from "../../errorhelper.js";
+import { prisma } from "../../lib/prisma.js"
 
 
 const createConnection = async(senderId, recipientId)=>{

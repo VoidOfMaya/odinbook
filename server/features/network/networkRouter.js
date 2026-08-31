@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { controller } from "./networkController";
-import { validate } from "./networkValidation";
+import { controller } from "./networkController.js";
+import { validate } from "./networkValidation.js";
 const networkRouter = Router();
 networkRouter.get('/',async(req, res)=>{
     res.sendStatus(200);

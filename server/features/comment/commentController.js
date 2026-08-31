@@ -1,6 +1,6 @@
 import { validationResult, matchedData } from "express-validator"
-import { ApiError } from "../../errorhelper";
-import { service } from "./commentService";
+import { ApiError } from "../../errorhelper.js";
+import { service } from "./commentService.js";
 
 const getComments = async(req, res, next)=>{
     

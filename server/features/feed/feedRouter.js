@@ -1,6 +1,6 @@
 import { Router  } from "express";
-import { validate } from "./feedValidation";
-import { controller } from "./feedController";
+import { validate } from "./feedValidation.js";
+import { controller } from "./feedController.js";
 
 const feedRouter = Router();
 

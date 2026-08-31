@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { validate } from "./postValidation";
-import { controller } from "./postController";
-import { debug, isUserAuthor } from "./postMiddleware";
+import { validate } from "./postValidation.js";
+import { controller } from "./postController.js";
+import { debug, isUserAuthor } from "./postMiddleware.js";
 import { commentRouter } from "../comment/commentRouter.js";
-
+import { multerMiddleware} from "../photo/photoMiddleWare.js"
 const postRouter = Router();
 
 postRouter.get('/',async(req, res)=>{

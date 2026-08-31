@@ -1,4 +1,4 @@
-import { prisma } from "../../lib/prisma"
+import { prisma } from "../../lib/prisma.js"
 
 const createComment = async (userId, postId, content)=>{
     return await prisma.comment.create({

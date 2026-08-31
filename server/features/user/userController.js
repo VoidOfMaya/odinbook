@@ -1,6 +1,6 @@
-import { ApiError } from "../../errorhelper";
+import { ApiError } from "../../errorhelper.js";
 import { validationResult, matchedData } from "express-validator";
-import { service } from "./userService"
+import { service } from "./userService.js"
 
 const getMe = async(req, res, next)=>{
 

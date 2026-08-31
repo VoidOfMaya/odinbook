@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { controller } from "./userController";
-import { validate } from "./userValidation";
-import { checkUserVisibility } from "./userMiddleware";
+import { controller } from "./userController.js";
+import { validate } from "./userValidation.js";
+import { checkUserVisibility } from "./userMiddleware.js";
 
 const userRouter = Router();
 

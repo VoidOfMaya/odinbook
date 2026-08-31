@@ -1,4 +1,4 @@
-import { prisma } from "../../lib/prisma";
+import { prisma } from "../../lib/prisma.js";
    //- friends: 
    // should be an array of user ids that are in a connection/friendship
    //with the user, where connection statuse = "ACTIVE"
