@@ -1,0 +1,6 @@
+.replyIcon{
+    width: 100%;
+    display: flex; 
+    justify-self: flex-start;
+    transform: translateX(-40px);
+}

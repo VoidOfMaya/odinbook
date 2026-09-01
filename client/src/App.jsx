@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react'
-import{Outlet, useParams} from 'react-router-dom'
+import{Outlet, useParams, useNavigate} from 'react-router-dom'
 import { Login } from './components/login.jsx'
+import { TopNav } from './components/topNav/navbar.jsx'
+import { WelcomePage } from './pages/welcome-page/welcome.jsx'
 import './App.css'
 
 function App() {
   const [initAuth, setInitAuth] = useState(false)
   const [auth, setAuth] = useState(null)
+  const goTo = useNavigate();
   const initAuthHandler =()=>{
     setInitAuth(true)
   }
@@ -14,23 +17,13 @@ function App() {
   }
   return (
     <>
+    <TopNav  auth={auth}/>
     <Outlet context={{
       auth,
       initAuth,
       initAuthHandler,
       setAuthHandler,
     }}/>
-      {auth? (
-        <>
-          {console.log(auth.user)}
-          <h1> welcome {auth.user.name}</h1>
-          <img src={auth.user.photo} height='300px' width='300px'/>
-        </>
-      ):(
-        <>       
-        </>
-      )}
-
     </>
   )
 }
