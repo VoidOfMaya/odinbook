@@ -210,7 +210,7 @@ thread.
   **must provide a valid jwt**  else refresh access token
 
 #### Get user(me) profile:-
-  ##### path:`GET:/user//me`
+  ##### path:`GET:/user/me`
 
   ##### expects:
   - user is authenticated 

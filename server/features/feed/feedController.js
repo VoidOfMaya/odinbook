@@ -25,7 +25,23 @@ const getFeed = async( req, res, next)=>{
         next(err)
     }
 }
-
+const getMyFeed = async(req, res, next)=>{
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) throw new ApiError(400,"validation Error",errors.array())
+    const {limit, cursor}= matchedData(req);
+    const id = req.user.id;
+    try{ 
+        // supplie id as a single index array, getFeed expects an array of ids to work
+        const feed = await service.getfeed([id], limit, cursor);
+        if(!feed)throw new ApiError(500, "Could not find comments");
+        console.log(feed)
+        // get offset value for next comment chunk
+        res.status(200)
+        .json({feed: feed.chunk, nextCursor: feed.nextCursor.id || null})
+    }catch(err){
+        next(err)
+    }
+}
 const controller = {
     getFeed,
 }

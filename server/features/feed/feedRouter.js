@@ -7,7 +7,11 @@ const feedRouter = Router();
 feedRouter.get('/',
     validate.limit,
     validate.cursor,
-    controller.getFeed)
+    controller.getFeed);
+feedRouter.get('/me',
+    validate.limit,
+    validate.cursor,
+    controller.getMyFeed)
 
 export{
     feedRouter
