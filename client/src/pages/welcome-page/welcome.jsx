@@ -34,6 +34,10 @@ const WelcomePage =({})=>{
             <Icon.EditMessage />
             <Icon.Logout />
             <Icon.Plus />
+            <Icon.Like />
+            <Icon.Dislike />
+            <Icon.Github />
+            <Icon.Comments />
         </main>
     )
 }

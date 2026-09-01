@@ -4,3 +4,6 @@
     justify-self: flex-start;
     transform: translateX(-40px);
 }
+.dislike{
+    transform: rotateX(180deg);
+}
