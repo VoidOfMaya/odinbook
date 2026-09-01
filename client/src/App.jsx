@@ -3,7 +3,7 @@ import{Outlet, useParams, useNavigate} from 'react-router-dom'
 import { Login } from './components/login.jsx'
 import { TopNav } from './components/topNav/navbar.jsx'
 import { WelcomePage } from './pages/welcome-page/welcome.jsx'
-import './App.css'
+import style from './App.module.css'
 
 function App() {
   const [initAuth, setInitAuth] = useState(false)
@@ -16,15 +16,20 @@ function App() {
     setAuth(data)
   }
   return (
-    <>
-    <TopNav  auth={auth}/>
-    <Outlet context={{
-      auth,
-      initAuth,
-      initAuthHandler,
-      setAuthHandler,
-    }}/>
-    </>
+    <main className={style.appContainer}>
+      <div className={style.topnavContainer}>
+        <TopNav  auth={auth}/>    
+      </div>
+      <div className={style.pageContainer}>
+        <Outlet context={{
+          auth,
+          initAuth,
+          initAuthHandler,
+          setAuthHandler,
+        }}/>      
+      </div>
+
+    </main>
   )
 }
 

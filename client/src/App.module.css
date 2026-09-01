@@ -1,0 +1,13 @@
+/* SETS APP TO FILL VIEPORT AND DIVIDE TOPNAV AND OTHER PAGES*/
+.appContainer{
+    height: 100vh;
+    display: flex;
+    flex-direction: column; 
+    outline-offset: -4px;
+}
+.topnavContainer{
+    flex: 1;
+}
+.pageContainer{
+    flex: 19;
+}

@@ -1,5 +1,46 @@
 .mainContainer{
     background-color: #fff;
-    height: 100vh;
+    height: 100%;
     color: #010101;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.formContainer{
+    border: 1px solid #010101;
+    display: flex;
+    align-self: center;
+
+    width: fit-content;
+    padding: 10px;
+    border-radius: 15px;
+}
+.loginform{
+    display: grid;
+    position: relative; /* to allow for absolute positioning for child elements such as eye*/
+    grid-template-columns: 1fr 2fr 6fr 1fr;
+    grid-template-rows: 1fr 1fr 2fr;
+    grid-template-areas:
+    '. emailLabel EmailField .'
+    '. passwordLabel passwordField eye'
+    '. login login .'
+    '. github github github'
+    '. register register register'
+    ;
+    gap: 10px;
+    align-self: center;
+}
+.loginform input{
+    background-color: #dddddd;
+    padding: 5px;
+    border: none;
+    color: #000;
+}
+
+.eye{
+    grid-area: eye;
+    position: absolute;
+    left: -30px;
+    top: 3px;
 }
