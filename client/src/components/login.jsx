@@ -42,7 +42,7 @@ const Login = ({initAuthHandler})=>{
           })
           const result = await response.json()
           window.location.href=`https://github.com/login/oauth/authorize?${result.query}`
-          initAuthHandler();
+          //initAuthHandler();
           }
         }
         />

@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 :root {
     /* COLOR SCHEME */
     --clr-text: hsl(251, 33%, 10%);
@@ -9,9 +10,9 @@
     --clr-black: rgb(12, 12, 12);
     --clr-white: rgb(241, 241, 241);
     /* FONT STYLES */
-    --ff-head: sans-serif;
-    --ff-body: sans-serif;
-    --ff-accent: sans-serif;
+    --ff-head: 'Inter', sans-serif;
+    --ff-body: 'Inter', sans-serif;
+    --ff-accent: 'Inter', sans-serif;
     /* TYPOGRAPHY SCALE */
     --fs-300: clamp(0.69rem, calc(0.66rem + 0.18vw), 0.80rem);
     --fs-400: clamp(0.83rem, calc(0.78rem + 0.29vw), 1.00rem);
@@ -89,9 +90,12 @@ h3 {
     font-size: var(--fs-600);
 }
 
-a,
+a{
+    color: inherit;
+    text-decoration: none;
+}
 li {
-    color: var(--clr-primary);
+
     font-weight: bold;
     text-decoration: none;
     list-style: none;

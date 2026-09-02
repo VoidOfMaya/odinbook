@@ -8,22 +8,19 @@ const WelcomePage =({})=>{
     const [ hidePasswprd, setHidePassword] = useState(true);
     const goTo = useNavigate();
 
-    useEffect(()=>{
-        if(auth) return goTo('/feed') 
-    },[])
-
     return(
         <main className={style.mainContainer}>
+            <h2 style={{color:"#aaaaaadd", padding:"10px"}}>Sign in</h2>
             <div className={style.formContainer}>
                 <form className={style.loginform}>
                     <label style={{gridArea: 'emailLabel'}} htmlFor='email'> 
-                        Email 
+                        <b>Email</b> 
                     </label>
                     <input style={{gridArea: 'EmailField '}} name='email' id='email'>
                     </input>                        
                   
                     <label style={{gridArea:'passwordLabel'}} htmlFor='password'>
-                        Password 
+                        <b>Password </b>
                     </label>
                     <input style={{gridArea:'passwordField'}} name='password' 
                         type={hidePasswprd? 'password': 'text'} id='password'>
@@ -35,16 +32,17 @@ const WelcomePage =({})=>{
                     </div>
                                           
                     
-                    <button style={{gridArea: 'login'}}>Sign in</button>
+                    <button style={{gridArea: 'login',cursor: 'pointer'}}>Sign in</button>
                     
-                    <div style={{gridArea: 'github', justifySelf: 'center'}}>
-                        or
-                        <Login initAuthHandler={initAuthHandler}/> 
+                    <div className={style.github}>
+                        <p>or <b>Log in with Github </b></p>
+                        <Login initAuthHandler={initAuthHandler}/>   
+                        
                     </div>
 
                     <div
-                    style={{gridArea: 'register'}}>
-                        <b>Create new account</b> 
+                    style={{gridArea: 'register', justifySelf: 'center'}}>
+                        <b style={{cursor: 'pointer'}}>Create new account </b> 
                         if you havent already
                     </div>
                     

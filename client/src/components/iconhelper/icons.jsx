@@ -4,6 +4,7 @@ const User =({fn = null, color ='#27282c', focusColor='#62646b', size=25, title=
     const [focuse, setFocus]= useState(false);
     return(
         <svg xmlns="http://www.w3.org/2000/svg" 
+            style={{cursor: 'pointer'}} 
             width={`${size}px`}
             height={`${size}px`}
             viewBox="0 -960 960 960"
@@ -21,6 +22,7 @@ const Search =({fn = null, color ='#27282c', focusColor='#62646b', size=25, titl
     const [focuse, setFocus]= useState(false);
     return(
         <svg xmlns="http://www.w3.org/2000/svg" 
+            style={{cursor: 'pointer'}} 
             height={`${size}px`} 
             viewBox="0 -960 960 960" 
             width={`${size}px`}
@@ -37,6 +39,7 @@ const EditeProfile =({fn = null, color ='#27282c', focusColor='#62646b', size=25
     const [focuse, setFocus]= useState(false);
     return(
         <svg xmlns="http://www.w3.org/2000/svg" 
+            style={{cursor: 'pointer'}} 
             height={`${size}px`}  
             viewBox="0 -960 960 960" 
             width={`${size}px`}  
@@ -54,6 +57,7 @@ const Block =({fn = null, color ='#27282c', focusColor='#62646b', size=25, title
     const [focuse, setFocus]= useState(false);
     return(
         <svg xmlns="http://www.w3.org/2000/svg" 
+            style={{cursor: 'pointer'}} 
             height={`${size}px`}  
             viewBox="0 -960 960 960" 
             width={`${size}px`}  
@@ -70,6 +74,7 @@ const ReplyTo =({fn = null, color ='#27282c', focusColor='#62646b', size=25, tit
     const [focuse, setFocus] = useState(false);
     return(
         <svg xmlns="http://www.w3.org/2000/svg" 
+            style={{cursor: 'pointer'}} 
             height={`${size}px`} 
             viewBox="0 -960 960 960" 
             width={`${size}px`} 
@@ -86,6 +91,7 @@ const EditMessage =({fn = null, color ='#27282c', focusColor='#62646b', size=25,
     const [focuse, setFocus]= useState(false);
     return(
         <svg xmlns="http://www.w3.org/2000/svg" 
+            style={{cursor: 'pointer'}} 
             height={`${size}px`} 
             viewBox="0 -960 960 960" 
             width={`${size}px`} 
@@ -103,6 +109,7 @@ const Delete =({fn = null, color ='#27282c', focusColor='#62646b', size=25, titl
     const [focuse, setFocus]= useState(false);
     return(
         <svg xmlns="http://www.w3.org/2000/svg" 
+            style={{cursor: 'pointer'}} 
             height={`${size}px`}
             viewBox="0 -960 960 960" 
             width={`${size}px`}
@@ -119,7 +126,8 @@ const Delete =({fn = null, color ='#27282c', focusColor='#62646b', size=25, titl
 const Logout =({fn = null, color ='#27282c', focusColor='#62646b', size=25, title='Logout'})=>{
     const [focuse, setFocus]= useState(false);
     return(
-        <svg xmlns="http://www.w3.org/2000/svg" 
+        <svg xmlns="http://www.w3.org/2000/svg"
+            style={{cursor: 'pointer'}}  
             height={`${size}px`}
             viewBox="0 -960 960 960" 
             width={`${size}px`}
@@ -137,7 +145,9 @@ const Plus =({fn = null, color ='#27282c', focusColor='#62646b', size=25, title=
     const [focuse, setFocus]= useState(false);
     return(
         <svg xmlns="http://www.w3.org/2000/svg" 
+            style={{cursor: 'pointer'}} 
             height={`${size}px`}
+
             viewBox="0 -960 960 960" 
             width={`${size}px`} 
             fill={focuse? focusColor : color}
@@ -157,6 +167,7 @@ const Like =({fn = null, color ='#27282c', focusColor='#62646b', size=25, title=
     const [focuse, setFocus]= useState(false);
     return(
         <svg xmlns="http://www.w3.org/2000/svg" 
+            style={{cursor: 'pointer'}} 
             height={`${size}px`}
             viewBox="0 0 640 640" 
             width={`${size}px`} 
@@ -183,7 +194,7 @@ const Dislike =({fn = null, color ='#27282c', focusColor='#62646b', size=25, tit
         <svg xmlns="http://www.w3.org/2000/svg" 
             // flip thumbs up icon 
             className={style.dislike}
-
+            style={{cursor: 'pointer'}} 
             height={`${size}px`}
             viewBox="0 0 640 640" 
             width={`${size}px`} 
@@ -208,6 +219,7 @@ const Github =({fn = null, color ='#27282c', focusColor='#62646b', size=25, titl
     const [focuse, setFocus]= useState(false);
     return(
         <svg role="img" 
+            style={{cursor: 'pointer'}} 
             viewBox="0 0 24 24" 
             xmlns="http://www.w3.org/2000/svg"
             height={`${size}px`}
@@ -226,6 +238,7 @@ const Comments =({fn = null, color ='#27282c', focusColor='#62646b', size=25, ti
     const [focuse, setFocus]= useState(false);
     return(
         <svg role="img" 
+            style={{cursor: 'pointer'}} 
             viewBox="0 0 640 640"
             xmlns="http://www.w3.org/2000/svg"
             height={`${size}px`}
@@ -246,7 +259,8 @@ const Comments =({fn = null, color ='#27282c', focusColor='#62646b', size=25, ti
 const Eye =({fn = null, color ='#27282c', focusColor='#62646b', size=25, title='eye'})=>{
     const [focuse, setFocus]= useState(false);
     return(
-        <svg role="img" 
+        <svg role="img"
+            style={{cursor: 'pointer'}} 
             viewBox="0 0 640 640"
             xmlns="http://www.w3.org/2000/svg"
             height={`${size}px`}
@@ -256,7 +270,7 @@ const Eye =({fn = null, color ='#27282c', focusColor='#62646b', size=25, title='
                     onMouseLeave={()=>setFocus(false)}
             onClick={()=> fn? fn(): null}
             >
-                <title>{title}</title>
+            <title>{title}</title>
             <path d="M320 96C239.2 96 174.5 132.8 127.4 176.6C80.6 220.1 49.3 272 34.4 
             307.7C31.1 315.6 31.1 324.4 34.4 332.3C49.3 368 80.6 420 127.4 463.4C174.5 
             507.1 239.2 544 320 544C400.8 544 465.5 507.2 512.6 463.4C559.4 419.9 590.7 
@@ -270,8 +284,77 @@ const Eye =({fn = null, color ='#27282c', focusColor='#62646b', size=25, title='
         </svg>
     )
 }
+const Friends= ({fn = null, color ='#27282c', focusColor='#62646b', size=25, title='friends'})=>{
+    const [focuse, setFocus]= useState(false);
+    return(
+        <svg xmlns="http://www.w3.org/2000/svg" 
+            height={`${size}px`} 
+            viewBox="0 -960 960 960" 
+            title={title}
+            width={`${size}px`}
+            fill={focuse? focusColor : color}
+                onMouseEnter={()=>setFocus(true)}
+                onMouseLeave={()=>setFocus(false)}
+            onClick={()=> fn? fn(): null}>
+            <title>{title}</title>
+            <path d="M40-160v-112q0-34 17.5-62.5T104-378q62-31 126-46.5T360-440q66 0
+            130 15.5T616-378q29 15 46.5 43.5T680-272v112H40Zm720 0v-120q0-44-24.5-84.5T666-434q51
+            6 96 20.5t84 35.5q36 20 55 44.5t19 53.5v120H760ZM247-527q-47-47-47-113t47-113q47-47 
+            113-47t113 47q47 47 47 113t-47 113q-47 47-113 47t-113-47Zm466 0q-47 47-113 47-11 
+            0-28-2.5t-28-5.5q27-32 41.5-71t14.5-81q0-42-14.5-81T544-792q14-5 28-6.5t28-1.5q66 
+            0 113 47t47 113q0 66-47 113ZM120-240h480v-32q0-11-5.5-20T580-306q-54-27-109-40.5T360-360q-56 
+            0-111 13.5T140-306q-9 5-14.5 14t-5.5 20v32Zm296.5-343.5Q440-607 440-640t-23.5-56.5Q393-720 
+            360-720t-56.5 23.5Q280-673 280-640t23.5 56.5Q327-560 360-560t56.5-23.5ZM360-240Zm0-400Z"/>
+        </svg>
+    )
+}
+const Send = ({fn = null, color ='#27282c', focusColor='#62646b', size=25, title='send'})=>{
+    const [focuse, setFocus]= useState(false);
+    return(
+        <svg xmlns="http://www.w3.org/2000/svg" 
+            height={`${size}px`} 
+            viewBox="0 -960 960 960" 
+            width={`${size}px`}
+            fill={focuse? focusColor : color}
+                onMouseEnter={()=>setFocus(true)}
+                onMouseLeave={()=>setFocus(false)}
+            onClick={()=> fn? fn(): null}>
+            <title>{title}</title>
+            <path d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 
+            60-240 60v140Zm0 0v-400 400Z"/>
+        </svg>
+    )
+}
+const Inbox =({fn = null, color ='#27282c', focusColor='#62646b', size=25, title='inbox'})=>{
+    const [focuse, setFocus]= useState(false);
+    return(
+        <svg role="img"
+            style={{cursor: 'pointer'}} 
+            viewBox="0 0 640 640"
+            xmlns="http://www.w3.org/2000/svg"
+            height={`${size}px`}
+            width={`${size}px`}
+            fill={focuse? focusColor : color}
+                    onMouseEnter={()=>setFocus(true)}
+                    onMouseLeave={()=>setFocus(false)}
+            onClick={()=> fn? fn(): null}
+            >
+            <title>{title}</title>
+            <path d="M155.8 96C123.9 96 96.9 119.4 92.4 150.9L64.6 345.2C64.2 348.2 64 
+                351.2 64 354.3L64 480C64 515.3 92.7 544 128 544L512 544C547.3 544 
+                576 515.3 576 480L576 354.3C576 351.3 575.8 348.2 575.4 345.2L547.6
+                150.9C543.1 119.4 516.1 96 484.2 96L155.8 96zM155.8 160L484.3 160L511.7
+                352L451.8 352C439.7 352 428.6 358.8 423.2 369.7L408.9 398.3C403.5 409.1 
+                392.4 416 380.3 416L259.9 416C247.8 416 236.7 409.2 231.3 398.3L217 
+                369.7C211.6 358.9 200.5 352 188.4 352L128.3 352L155.8 160z"/>
+            
+        </svg>
+    )
+}
 const Icon ={
     User,
+    Friends,
+    Send,
     Search,
     Block,
     ReplyTo,
@@ -284,7 +367,8 @@ const Icon ={
     Dislike,
     Github,
     Comments,
-    Eye
+    Eye,
+    Inbox
 
 }
 export{

@@ -7,6 +7,7 @@
 }
 .topnavContainer{
     flex: 1;
+    padding: 5px;
 }
 .pageContainer{
     flex: 19;

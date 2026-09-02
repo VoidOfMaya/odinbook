@@ -1,3 +1,14 @@
+.topNav{
+    display: flex;
+    justify-content: space-between;
+}
+.navOptions{
+    align-self: center;
+    align-items: center;
+    display: flex;
+    gap: 20px;
+    padding: 10px;
+}
 .title{
     display: flex;
     justify-self: start;

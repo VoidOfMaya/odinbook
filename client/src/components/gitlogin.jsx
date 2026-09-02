@@ -4,9 +4,8 @@ const GitLogin= ({})=>{
     //this is a transtionall componenet for handelling Oauth user flow only
     const{      
         auth,
-        initAuth,
-        initAuthHandler,
-        setAuthHandler
+        setAuthHandler,
+        onLoginSuccess
     } = useOutletContext();
     const[loading, setLoading]= useState(false);
     
@@ -22,7 +21,8 @@ const GitLogin= ({})=>{
         }
       )
     const result = await response.json()
-    setAuthHandler({user: result.user, accessToken: result.accessToken})
+    onLoginSuccess(result.user, result.accessToken)
+
     }
     //redirect user to home once authenticated
     const redirect = useNavigate();
@@ -30,13 +30,11 @@ const GitLogin= ({})=>{
         if(!auth){
             setLoading(true)
             fetchUser();
-        }
-    },[initAuth])
-    useEffect(()=>{
-        if(auth){
+        }else{
             setLoading(false)
-            redirect('/')
+            redirect('/feed')       
         }
+
     },[auth])
 return(
     <>

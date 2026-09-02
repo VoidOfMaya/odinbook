@@ -1,0 +1,23 @@
+.mainContainer{
+    
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border-radius: 15px ;
+    margin: 5px;
+    background-color: #f2f2f2;
+    box-shadow: 0px 7px 12px 4px #bab9b633;
+    height: 99%;
+}
+.userDisplay{
+    display: flex;
+    margin-bottom: 15px;
+    border: 2px solid #bababa;
+    border-radius: 25px;
+}
+.options{
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
