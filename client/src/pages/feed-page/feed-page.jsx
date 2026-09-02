@@ -2,6 +2,7 @@ import { useOutletContext } from 'react-router-dom';
 import { SideBar } from '../../components/feedSidebar/sidebar';
 import style from './feed.module.css';
 import { useEffect, useState } from 'react';
+import { CreatePost } from '../../components/post/createPost';
 
 const FeedPage = ({})=>{
     const {saveFeed,auth, isAuthenticated} = useOutletContext();
@@ -15,8 +16,17 @@ const FeedPage = ({})=>{
             <div className={style.sidebarContainer}>
                 <SideBar user={user}/>
             </div>
+            <div className={style.contentContainer}>
+                <div className={style.postCreate}>
+                    <CreatePost />
+                    
+                </div>
+                <div className={style.postContainer}>
+                    post
+                </div>                
+            </div>
 
-            <div className={style.postContainer}>Post container</div>
+            
         </main>
     )
 }

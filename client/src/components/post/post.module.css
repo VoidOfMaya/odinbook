@@ -1,0 +1,33 @@
+.CreatePostContainer{
+display: flex;
+justify-content: center;
+position: relative;
+}
+.postForm{
+    position:absolute;
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+  
+    border-radius: 20px;
+
+    align-content: center;
+    justify-content: center;
+
+    align-items: center;
+    width: 60%;
+    margin: 10px;
+    background-color: #f2f2f2;
+    box-shadow: 0px 7px 12px 4px #bab9b633;
+
+}
+.postForm textarea{
+    min-width: 90%;
+    font-size: larger;
+    border: none;
+    outline: none;
+    border-radius: 10px;
+    padding: 5px;
+    background-color: #646363;
+
+} 
