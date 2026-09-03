@@ -1,11 +1,13 @@
 import { validationResult, matchedData } from "express-validator"
 import { service } from './feedService.js'
 import { service as networkService } from "../network/networkService.js";
+import { ApiError } from "../../errorhelper.js";
 const getFeed = async( req, res, next)=>{
     const errors = validationResult(req);
     if(!errors.isEmpty()) throw new ApiError(400,"validation Error",errors.array())
     const {limit, cursor}= matchedData(req);
     const id = req.user.id;
+    console.log(id)
     try{ 
         //get an array of connections user has where statuse is active
         const connections = await networkService.getConnections(id, "ACTIVE");
@@ -19,6 +21,7 @@ const getFeed = async( req, res, next)=>{
         if(!feed)throw new ApiError(500, "Could not find comments");
         console.log(feed)
         // get offset value for next comment chunk
+        if(feed.chunk.length === 0 && !feed.cursor) throw new ApiError(404, "No Posts Found!")
         res.status(200)
         .json({feed: feed.chunk, nextCursor: feed.nextCursor.id || null})
     }catch(err){
@@ -44,6 +47,7 @@ const getMyFeed = async(req, res, next)=>{
 }
 const controller = {
     getFeed,
+    getMyFeed,
 }
 export{
     controller
