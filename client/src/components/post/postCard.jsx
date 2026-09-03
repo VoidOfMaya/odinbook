@@ -1,8 +1,14 @@
 import style from './post.module.css';
-const PostCard = ({}) =>{
+const PostCard = ({post}) =>{
+
+    if(!post){
+        return(
+            <>Could not populate post</>
+        )
+    }
     return(
-        <main>
-            post card
+        <main key={post.id}>
+            post
         </main>        
     )
 }

@@ -6,15 +6,15 @@ const CreatePost = ({}) =>{
             <title>Post creation pannel</title>
             <form className={style.postForm}>
                 <input type='file' id='photo' style={{display: 'none'}}/>
-                <label htmlFor='photo'>
+                <label htmlFor='photo' className={style.photoTabBtn}>
                     <Icon.AddPhoto 
                     size={30} color="#646363"  focusColor="rgb(30, 29, 30)" title='Add photo'/>
                 </label>
                 
                 <textarea placeholder='Whats on your mind today!' />
-                <div>
+                <div className={style.postTabBtn}>
                     <Icon.Send 
-                    size={30} color="#646363"  focusColor="rgb(30, 29, 30)" title='Create Post'/>
+                    size={30} color="#646363"  focusColor="#fff" title='Create Post'/>
                 </div>
             </form>
             

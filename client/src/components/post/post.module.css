@@ -4,7 +4,7 @@ justify-content: center;
 position: relative;
 }
 .postForm{
-    position:absolute;
+    
     display: flex;
     flex-direction: row;
     padding: 10px;
@@ -15,14 +15,15 @@ position: relative;
     justify-content: center;
 
     align-items: center;
-    width: 60%;
+    width: 70%;
     margin: 10px;
     background-color: #f2f2f2;
     box-shadow: 0px 7px 12px 4px #bab9b633;
 
 }
 .postForm textarea{
-    min-width: 90%;
+    min-width: 80%;
+    min-height: 100px;
     font-size: larger;
     border: none;
     outline: none;
@@ -31,3 +32,27 @@ position: relative;
     background-color: #646363;
 
 } 
+
+.postTabBtn{
+    
+    border-radius: 30px;
+    padding: 5px;
+    background-color: rgb(208, 208, 208);
+    box-shadow: 0px 4px 12px 0px #07070733;
+    margin: 20px;
+}
+.postTabBtn:hover{
+    background-color: rgb(255, 34, 0); 
+}
+.photoTabBtn{
+    border-radius: 30px;
+    padding: 5px;
+    background-color: rgb(208, 208, 208);
+    box-shadow: 0px 4px 12px 0px #07070733;
+    margin: 20px;
+}
+.photoTabBtn:hover{
+
+    background-color: rgb(250, 250, 250);
+
+}

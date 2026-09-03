@@ -3,6 +3,7 @@ import { SideBar } from '../../components/feedSidebar/sidebar';
 import style from './feed.module.css';
 import { useEffect, useState } from 'react';
 import { CreatePost } from '../../components/post/createPost';
+import { PostCard } from '../../components/post/postCard';
 
 const FeedPage = ({})=>{
     const {saveFeed,auth, isAuthenticated} = useOutletContext();
@@ -22,7 +23,7 @@ const FeedPage = ({})=>{
                     
                 </div>
                 <div className={style.postContainer}>
-                    post
+                    <PostCard />
                 </div>                
             </div>
 
