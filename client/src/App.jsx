@@ -6,8 +6,8 @@ import { WelcomePage } from './pages/welcome-page/welcome.jsx'
 import style from './App.module.css'
 
 function App() {
-  //const [initAuth, setInitAuth] = useState(false);
   const [auth, setAuth] = useState(null);
+  const [loadingAuth, setLoadingAuth] = useState(true);
   const [feed, setFeed] = useState(null);
   const [dataLoading, setDataLoading]= useState(true);
   const goTo = useNavigate();
@@ -23,7 +23,7 @@ function App() {
   const isAuthenticated = () =>{
     if(!auth) goTo('/')
   }
-  /*
+  
   // AUTHENTICATION API
   const refresh = async ()=>{
     try{
@@ -37,7 +37,7 @@ function App() {
       if(response.status === 401)throw new Error(`${response.statusText}`)
       const result = await response.json()
       
-      notify.success('Session Restored')
+      //notify.success('Session Restored')
       setAuth({
         user:result.user,
         accessToken: result.accessToken
@@ -53,6 +53,7 @@ function App() {
       localStorage.clear()
     }
   }
+  
   //re-authenticate//handels both 401 and 403 casses
   const reAuth = async (response)=>{
     if(response.status !== 401) return;
@@ -69,7 +70,7 @@ function App() {
         console.log(err.message)
         localStorage.clear();
         //notify.error( err.message);
-        redirect('/');
+        goTo('/');
     }
   }
   //RESTapi request constructor:
@@ -152,7 +153,7 @@ function App() {
       })
       //if on retry still 401 wipe data and prompt log in
       if(retryResponse.status === 401){
-        setAuth(nnull)
+        setAuth(null)
         localStorage.clear();
         //wsio.disconnect()
         goTo('/')
@@ -167,26 +168,39 @@ function App() {
   useEffect(()=>{
     const initAuth = async() =>{
       try{
-        //const result = await refresh();
+        const result = await refresh();
 
         if(result && result.accessToken){
           goTo('/feed')
         }else{
           throw new Error('Could not restor session, please log in')
         }
-        setInitAuth(false);
       }catch(err){
         //notify.warn(err.message)
-        localStorage.clear();
+        localStorage.removeItem('has_session');
         goTo('/')
       }finally{
-        setInitAuth(false);
+        setLoadingAuth(false);
       }
     }
-    if(!auth) initAuth();
+
+    initAuth();
   },[])
   useEffect(()=>{
-  },[auth])*/
+    if (!auth?.user) {
+      setDataLoading(false);
+      return;
+    }else{
+      goTo('/feed')
+    }
+    //fetch app data
+
+  },[auth])
+  // render while loading
+  if(loadingAuth || dataLoading){
+    return <div>Loading ...</div>
+  }
+//main render 
   return (
     <main className={style.appContainer}>
       <div className={style.topnavContainer}>
@@ -198,6 +212,8 @@ function App() {
           isAuthenticated,
           saveFeed,
           onLoginSuccess,
+          goTo,
+          callApi,
         }}/>      
       </div>
 

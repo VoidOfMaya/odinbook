@@ -1,64 +1,52 @@
 import { useOutletContext } from 'react-router-dom';
 import { SideBar } from '../../components/feedSidebar/sidebar';
 import style from './feed.module.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CreatePost } from '../../components/post/createPost';
 import { PostCard } from '../../components/post/postCard';
 
 const FeedPage = ({})=>{
-    const {saveFeed,auth, isAuthenticated} = useOutletContext();
-    const [user, setUser] = useState(null)
-    const fakePost = {
-        id: 1,
-        content: "i didnt slee super well last night but im happy to be early, nothing like morning rise",
-        photoUrl: null,
-        createdAt: "03-09-2026",
-        editedAt: null,
-        visibility: true,
-        likes: 16,
-        author:{
-            id: 2,
-            name: "Mathew Boze",
-            photo: null,
-        },
-        comments:[
-            {
-                id: 1,
-                content: "yeah it be like that sometimes so understandable",
-                likes: 2,
-                author:{
-                    id: 15,
-                    name: "david Joo",
-                    photo:null,   
-                }
-            },
-            {
-                id: 2,
-                content: "OMG FELTTTTTTT!!!!",
-                likes: 16,
-                author:{
-                    id: auth.user.id,
-                    name: auth.user.name,
-                    photo:auth.user.photo,   
-                }
-            },
-            {
-                id: 3,
-                content: "must be that damn phone!",
-                likes: 0,
-                author:{
-                    id: 15,
-                    name: "juan ortiga",
-                    photo:null,   
-                }
-            },
+    const {saveFeed, auth, isAuthenticated, goTo, callApi} = useOutletContext();
 
-        ]
+    const nextCursor = useRef(null)
+    const [posts, setPosts] = useState(null);
+    const [user, setUser] = useState(null)
+
+    const getFirstFeedChunk = async()=>{
+        try{
+            const response = await callApi({
+                method: 'GET',
+                path: `feed/?limit=25`,
+                requiresAuth: true,
+                //body: options.body,
+                token: auth.accessToken,
+                retry: true,
+                includeCred:true
+            })
+            if(!response.ok)throw new Error('Could not retrieve feed');
+            const result = await response.json(); 
+            nextCursor.current = result.nextCursor
+            setPosts(result.feed)  
+                
+        }catch(err){
+            console.log(err.message)
+        }
 
     }
+
     useEffect(()=>{
-        isAuthenticated()
-        setUser(auth.user)
+        isAuthenticated();
+        //SETS USER
+        if(auth){
+            setUser(auth.user);
+            
+        }else{
+            goTo('/')
+        }
+        //console.log(user);
+        //POPULATE FEED
+        getFirstFeedChunk();
+        console.log(posts)
     },[])
     return(
         <main className={style.mainContainer}>
@@ -71,7 +59,14 @@ const FeedPage = ({})=>{
                     
                 </div>
                 <div className={style.postContainer}>
-                    <PostCard  post={fakePost} auth={auth}/>
+                    {posts? (
+                        posts.map(post=>{
+                            return(<PostCard  post={fakePost} user={user}/>)
+                        })
+                    ):(
+                        <h2 style={{color:"#aeaeae"}}>No Posts Found!</h2>
+                    )}
+                    
                 </div>                
             </div>
 

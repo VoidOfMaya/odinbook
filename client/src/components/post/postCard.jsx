@@ -2,7 +2,7 @@ import { useOutletContext } from 'react-router-dom';
 import { Icon } from '../iconhelper/icons';
 import { Comment } from '../Comments/CommentCard';
 import style from './post.module.css';
-const PostCard = ({post ,auth}) =>{
+const PostCard = ({post ,user}) =>{
     //if(!post){
     //    return(
     //        <>Could not populate post</>
@@ -27,7 +27,7 @@ const PostCard = ({post ,auth}) =>{
 
 
                 <div className={style.AuthorOptions}>
-                    {post.author.id === auth?.user?.id&&(
+                    {post.author.id === user?.id&&(
                         <>
                             <Icon.Delete color='#828282' focusColor='#10101'/>
                             <Icon.EditMessage  color='#828282' focusColor='#10101'/>
