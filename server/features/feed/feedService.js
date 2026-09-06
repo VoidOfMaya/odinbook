@@ -27,6 +27,13 @@ const getfeed = async(friends, limit = 15, cursor = null)=>{
                     },
                     take: 3,
                 },
+                User:{
+                    select:{
+                        id: true,
+                        name: true,
+                        photo: true,
+                    }
+                }
             }
         })        
     }else{
@@ -47,6 +54,13 @@ const getfeed = async(friends, limit = 15, cursor = null)=>{
                     },
                     take: 3,
                 },
+                User:{
+                    select:{
+                        id: true,
+                        name: true,
+                        photo: true,
+                    }
+                }
             }         
         })  
     }

@@ -19,7 +19,13 @@ const getFeed = async( req, res, next)=>{
         // get posts by connecitons array id
         const feed = await service.getfeed(friendsIdArray, limit, cursor);
         if(!feed)throw new ApiError(500, "Could not find comments");
-        console.log(feed)
+        //loggingpost ids
+        const postIdArray = feed.chunk.map(post=>{
+            return post.id
+        });
+        console.log('chunk contains:')
+        console.log(postIdArray)
+        console.log(`next cursor: ${feed.nextCursor.id}`)
         // get offset value for next comment chunk
         if(feed.chunk.length === 0 && !feed.cursor) throw new ApiError(404, "No Posts Found!")
         res.status(200)

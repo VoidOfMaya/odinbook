@@ -1,21 +1,33 @@
 import { faker} from "@faker-js/faker";
-import { prisma } from "../lib/prisma";
+import { prisma } from "../lib/prisma.js";
+import bcrypt from "bcryptjs";
+import { useId } from "react";
 
 // this seed is needed for filling up a demo project
 const seedDemo = async()=>{
   // Clear existing data (optional, but prevents duplicates)
-  await prisma.user.deleteMany()
+  await prisma.$transaction(async (pris) =>{
+    await pris.comment.deleteMany()
+    await pris.post.deleteMany()
+    await pris.userFriends.deleteMany()
+    await pris.user.deleteMany({
+      where:{githubId: null}
+    })    
+  })
+
   //CREATE GUEST ACCOUNT
+  console.log('start: Creating guest account')
   await prisma.user.create({
     data:{
       email: 'GuestUser@guest.com',
       name: 'Guest User',
-      password: await bcrypt('Guest@us3r', 10)
+      password: await bcrypt.hash('Guest@us3r', 10)
     }
   })
- 
+  console.log('Complete: Creating guest account')
+  console.log('start: populate demo accounts')
   const userData = [];
-  //loads 8 viEWABLE ACCOUNTS
+  //loads 8 VIEWABLE ACCOUNTS
   for(let i = 0 ; i < 10 ; i++){
     if(i >= 8){
       userData.push({
@@ -41,6 +53,9 @@ const seedDemo = async()=>{
   await prisma.user.createMany({
     data: userData
   })
+  console.log('finish: populate demo accounts')
+  console.log('start: intialize friendships data')
+  console.log('start: setting guest friendships')
   //fetch all users that are not guest or developer
   const demoUsers = await prisma.user.findMany({
     where: {
@@ -64,11 +79,48 @@ const seedDemo = async()=>{
       id: true
     }
   })
- 
 
-  //define connection: 3 active/ 2 pending / 1 blocked   
+  const friendships = [];
+
+  for(let i = 0; i < 7; i++){
+    if(i < 3){
+      friendships.push({
+        status: 'ACTIVE',
+        userId: guest.id,
+        friendId: demoUsers[i].id
+      })
+    }
+    if(i >= 3 && i < 6){
+      friendships.push({
+        status: 'PENDING',
+        userId: guest.id,
+        friendId: demoUsers[i].id
+      })   
+    }
+      if(i === 6){
+      friendships.push({
+        status: 'BLOCKED',
+        userId: guest.id,
+        friendId: demoUsers[i].id
+      })   
+    }
+    if( i > 6){
+      friendships.push({
+        status: 'DECLINED',
+        userId: guest.id,
+        friendId: demoUsers[i].id
+      })      
+    }
+
+  }
+  await prisma.userFriends.createMany({
+    data:friendships
+  })
+  console.log('finish: setting guest friendships')
+  console.log('start: setting dev friendships')
+  //define connection: 4 active {one user is private}/ 2 pending / 1 blocked   
   // for devuser : where email => MayaOfTheVoid@gmail.com
-  const devUser = await prisma.user.findUnique({
+  const devUser = await prisma.user.findFirst({
     where: {
       githubId: {not: null}
     },
@@ -77,8 +129,46 @@ const seedDemo = async()=>{
       id: true
     }
   })
+    const devFriendships = [];
+
+  for(let i = 0; i < 10; i++){
+    if(i >= 3 && i < 6){
+      devFriendships.push({
+        status: 'ACTIVE',
+        userId: devUser.id,
+        friendId: demoUsers[i].id
+      })
+    }
+    if(i >= 6 && i < 8){
+      devFriendships.push({
+        status: 'PENDING',
+        userId: devUser.id,
+        friendId: demoUsers[i].id
+      })   
+    }
+      if(i === 8){
+      devFriendships.push({
+        status: 'BLOCKED',
+        userId: devUser.id,
+        friendId: demoUsers[i].id
+      })   
+    }
+    if( i === 9){
+      devFriendships.push({
+        status: 'ACTIVE',
+        userId: devUser.id,
+        friendId: demoUsers[i].id
+      })      
+    }
+
+  }
+  await prisma.userFriends.createMany({
+    data: devFriendships
+  })
+  console.log('finish: setting dev friendships')
+  console.log('finish:intialize friendship data')
   //define random fake friendships between fake users
-  //create 8 visible posts per user + two hidden of which 5 are with photos
+  //create 8 visible posts per user + 3 hidden of which 5 are with photos
   const postData = [];
 
   demoUsers.forEach(user=>{
@@ -88,7 +178,7 @@ const seedDemo = async()=>{
           content: faker.lorem.paragraph(),
           photoUrl: i%2 === 0 ? faker.image.urlPicsumPhotos(): null,
           authorId: user.id,
-          visibilty: false 
+          visibility: false 
         })
       }else{
         postData.push({
