@@ -77,9 +77,14 @@ position: relative;
     align-items: end;  
 }
 .postContent{
-    margin-bottom: 5px;
-    
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px;   
     /*border-bottom: 2px solid rgba(10, 10, 10, 0);*/
+}
+.postPhoto{
+    max-width: 400px;
+    max-height: 400px;    
 }
 .postOptions{
     display: flex;

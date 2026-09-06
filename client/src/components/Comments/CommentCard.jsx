@@ -2,7 +2,7 @@ import style from './comment.module.css'
 import { Icon } from '../iconhelper/icons'
 const Comment = ({comment, auth})=>{
     return(
-        <main key={comment.id}>
+        <main>
             <div className={style.commentMeta}>
                 <div style={{display: 'flex',alignItems:'end'}}>
                     {comment.author.photo? (
