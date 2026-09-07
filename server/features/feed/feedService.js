@@ -13,18 +13,20 @@ const getfeed = async(friends, limit = 15, cursor = null)=>{
                     in: friends
                 }   
             },
-            orderBy:{
-                createdAt: 'desc'
-            },
+            orderBy:[
+                {createdAt:'desc'},
+                {id: 'desc'}
+            ],
             take: Number(limit)+ 1,
             cursor: {
                 id: Number(cursor),
             },
             include:{
                 comments:{
-                    orderBy:{
-                        createdAt:'desc'
-                    },
+                    orderBy:[
+                        {createdAt:'desc'},
+                        {id: 'desc'}
+                    ],
                     take: 3,
                 },
                 User:{
@@ -43,15 +45,17 @@ const getfeed = async(friends, limit = 15, cursor = null)=>{
                     in: friends
                 }   
             },
-            orderBy:{
-                createdAt: 'desc'
-            },
+            orderBy:[
+                {createdAt:'desc'},
+                {id: 'desc'}
+            ],
             take: Number(limit)+ 1, 
             include:{
                 comments:{
-                    orderBy:{
-                        createdAt:'desc'
-                    },
+                    orderBy:[
+                        {createdAt:'desc'},
+                        {id: 'desc'}
+                    ],
                     take: 3,
                 },
                 User:{

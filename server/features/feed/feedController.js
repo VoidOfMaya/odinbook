@@ -21,15 +21,19 @@ const getFeed = async( req, res, next)=>{
         if(!feed)throw new ApiError(500, "Could not find comments");
         //loggingpost ids
         const postIdArray = feed.chunk.map(post=>{
-            return post.id
+            return [post.id, post.createdAt]
         });
         console.log('chunk contains:')
         console.log(postIdArray)
-        console.log(`next cursor: ${feed.nextCursor.id}`)
+        console.log(`next cursor: ${[feed.nextCursor.id, feed.nextCursor.createdAt]}`)
         // get offset value for next comment chunk
         if(feed.chunk.length === 0 && !feed.cursor) throw new ApiError(404, "No Posts Found!")
+        
+        //validate if  there are more posts
+        let hasMore= true;
+        if(feed.chunk.length < limit) hasMore = false;
         res.status(200)
-        .json({feed: feed.chunk, nextCursor: feed.nextCursor.id || null})
+        .json({feed: feed.chunk, nextCursor: feed.nextCursor.id || null, hasMore: hasMore})
     }catch(err){
         next(err)
     }
