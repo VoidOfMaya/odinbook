@@ -8,9 +8,12 @@
     position: relative;
 }
 .topnavContainer{
-    flex: 1;
+
+    flex: 0 0 auto;
     padding: 5px;
 }
 .pageContainer{
-    flex: 19;
+  
+    flex: 1;
+    min-height: 0;
 }

@@ -3,7 +3,7 @@ import { Icon } from '../iconhelper/icons';
 import { Comment } from '../Comments/CommentCard';
 import style from './post.module.css';
 import { useEffect } from 'react';
-const PostCard = ({post ,user}) =>{
+const PostCard = ({post ,user, lastCardRef}) =>{
     //if(!post){
     //    return(
     //        <>Could not populate post</>
@@ -13,7 +13,7 @@ const PostCard = ({post ,user}) =>{
     useEffect(()=>{
     },[])
     return(
-        <main className={style.postCard}>
+        <main className={style.postCard}ref={lastCardRef && lastCardRef}>
             <div className={style.postMeta}>
                 <div style={{display: 'flex',alignItems:'end'}}>
                     {post.User?.photo? (
