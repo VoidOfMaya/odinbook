@@ -93,7 +93,6 @@ position: relative;
     justify-content: end;
     margin-bottom: 5px;
     padding-bottom: 5px;
-    border-bottom: 1px solid black ;
 }
 .Comments{
     background-color: #e7e6e6;
@@ -114,6 +113,15 @@ position: relative;
     background: rgb(20, 17, 34);
     background: linear-gradient(0deg,rgb(20, 17, 34) 10%, rgba(245, 245, 245, 0) 100%);
     cursor: pointer;
+
+    backdrop-filter: blur(10px);
+
+    mask-image: linear-gradient(
+        to top,
+        black 0%,
+        black 30%,
+        transparent 100%
+    );
 }
 .openPost:hover{
     background: rgb(42, 50, 81);

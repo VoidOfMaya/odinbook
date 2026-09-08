@@ -3,6 +3,7 @@ import { Icon } from '../iconhelper/icons';
 import { Comment } from '../Comments/CommentCard';
 import style from './post.module.css';
 import { useEffect } from 'react';
+import { formatDateTime } from '../../helpers/dateTime';
 const PostCard = ({post ,user, lastCardRef}) =>{
     //if(!post){
     //    return(
@@ -37,7 +38,7 @@ const PostCard = ({post ,user, lastCardRef}) =>{
                             <Icon.EditMessage  color='#828282' focusColor='#10101'/>
                         </>
                     )}
-                    <h6 style={{color:'#8e8e8e'}}>{post.createdAt}</h6>
+                    <h6 style={{color:'#8e8e8e'}}>{formatDateTime(post.createdAt)}</h6>
                 </div>
             </div>
             <div className={style.postContent}>
@@ -49,11 +50,12 @@ const PostCard = ({post ,user, lastCardRef}) =>{
                 )}
             </div>
             <div className={style.postOptions}>
+                <div>{post.likes}</div>
                 <Icon.Like color='#828282' focusColor='#10101'/>
                 <Icon.Dislike color='#828282' focusColor='#10101'/>
-                <Icon.Comments color='#828282' focusColor='#10101'/>
             </div>
             <div className={style.Comments}>
+                <h4>Comments:</h4>
                 {post.comments.map(comment=>{
                     return(
                         <Comment key={comment.id} comment={comment} authUser={user}/>

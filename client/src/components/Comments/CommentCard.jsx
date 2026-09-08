@@ -1,6 +1,7 @@
 import style from './comment.module.css'
 import { Icon } from '../iconhelper/icons'
 import { useEffect } from 'react'
+import { formatDateTime } from '../../helpers/dateTime'
 const Comment = ({comment, authUser, postIsInFocus = false})=>{
     useEffect(()=>{
     },[])
@@ -22,14 +23,16 @@ const Comment = ({comment, authUser, postIsInFocus = false})=>{
 
 
                 <div className={style.AuthorOptions}>
-                    <h6 style={{color:'#8e8e8e'}}>{comment.createdAt}</h6>
+                    <h6 style={{color:'#8e8e8e'}}>{formatDateTime(comment.createdAt) }</h6>
                 </div>
             </div>
             <div className={style.commentContent}>
                 <p>{comment.content}</p>
             </div>
+           
             {postIsInFocus?(
                 <div className={style.commentOptions}>
+                    <div>{comment.likes}</div>
                     { comment.authorId === authUser.id&&(
                         <>
                             <Icon.Delete size={25} color='#828282' focusColor='#10101'/>
@@ -41,8 +44,7 @@ const Comment = ({comment, authUser, postIsInFocus = false})=>{
                     <Icon.Dislike size={25} color='#828282' focusColor='#10101'/>
                 </div>                
             ):(
-                <>
-                </>
+                <div className={style.commentOptions}>{comment.likes}</div>    
             )}
 
         </main>
