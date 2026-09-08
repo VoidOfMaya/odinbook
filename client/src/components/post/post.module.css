@@ -64,6 +64,7 @@ position: relative;
     margin: 10px;
     border-radius: 20px;
     width: 80%;
+    position: relative;
 }
 .postMeta{
     display: flex;
@@ -83,8 +84,9 @@ position: relative;
     /*border-bottom: 2px solid rgba(10, 10, 10, 0);*/
 }
 .postPhoto{
-    max-width: 400px;
-    max-height: 400px;    
+    width: 100%;
+    max-height: 400px; 
+    object-fit: cover;   
 }
 .postOptions{
     display: flex;
@@ -97,4 +99,24 @@ position: relative;
     background-color: #e7e6e6;
     padding: 10px;
     border-radius: 20px;
+}
+.openPost{
+    display: flex;
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    border-radius: 0px 0px 20px 20px;
+    width: 100%;
+    justify-content: center;
+    padding: 100px 0px 50px 0px;
+    color: rgb(229, 229, 229);
+    
+    background: rgb(20, 17, 34);
+    background: linear-gradient(0deg,rgb(20, 17, 34) 10%, rgba(245, 245, 245, 0) 100%);
+    cursor: pointer;
+}
+.openPost:hover{
+    background: rgb(42, 50, 81);
+    background: linear-gradient(0deg,rgb(42, 50, 81) 10%, rgba(245, 245, 245, 0) 100%);
+    font-size: larger;
 }

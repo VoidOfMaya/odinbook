@@ -44,7 +44,7 @@ const PostCard = ({post ,user, lastCardRef}) =>{
                 <p>{post.content}</p>
                 {post.photoUrl&&(
                     <div>
-                        <img src={post.photoUrl} className={style.postPhoto}/>
+                        <img src={post.photoUrl} loading='lazy' className={style.postPhoto}/>
                     </div>
                 )}
             </div>
@@ -60,6 +60,7 @@ const PostCard = ({post ,user, lastCardRef}) =>{
                     )
                 })}
             </div>
+            <div className={style.openPost}>View More to interact</div>
         </main>        
     )
 }

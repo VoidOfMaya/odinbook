@@ -1,7 +1,7 @@
 import style from './comment.module.css'
 import { Icon } from '../iconhelper/icons'
 import { useEffect } from 'react'
-const Comment = ({comment, authUser})=>{
+const Comment = ({comment, authUser, postIsInFocus = false})=>{
     useEffect(()=>{
     },[])
     return(
@@ -28,17 +28,23 @@ const Comment = ({comment, authUser})=>{
             <div className={style.commentContent}>
                 <p>{comment.content}</p>
             </div>
-            <div className={style.commentOptions}>
-                {comment.authorId === authUser.id&&(
-                    <>
-                        <Icon.Delete size={25} color='#828282' focusColor='#10101'/>
-                        <Icon.EditMessage size={25} color='#828282' focusColor='#10101'/>
+            {postIsInFocus?(
+                <div className={style.commentOptions}>
+                    { comment.authorId === authUser.id&&(
+                        <>
+                            <Icon.Delete size={25} color='#828282' focusColor='#10101'/>
+                            <Icon.EditMessage size={25} color='#828282' focusColor='#10101'/>
 
-                    </>
-                )}
-                <Icon.Like size={25} color='#828282' focusColor='#10101'/>
-                <Icon.Dislike size={25} color='#828282' focusColor='#10101'/>
-            </div>
+                        </>
+                    )}
+                    <Icon.Like size={25} color='#828282' focusColor='#10101'/>
+                    <Icon.Dislike size={25} color='#828282' focusColor='#10101'/>
+                </div>                
+            ):(
+                <>
+                </>
+            )}
+
         </main>
     )
 }
