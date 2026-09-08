@@ -1,12 +1,15 @@
 import style from './comment.module.css'
 import { Icon } from '../iconhelper/icons'
-const Comment = ({comment, auth})=>{
+import { useEffect } from 'react'
+const Comment = ({comment, authUser})=>{
+    useEffect(()=>{
+    },[])
     return(
         <main>
             <div className={style.commentMeta}>
                 <div style={{display: 'flex',alignItems:'end'}}>
-                    {comment.author.photo? (
-                        <img src={comment.author.photo} 
+                    {comment.User?.photo? (
+                        <img src={comment.User.photo} 
                             height={25}
                             width={25}
                             style={{borderRadius: '20px'}}
@@ -14,7 +17,7 @@ const Comment = ({comment, auth})=>{
                     ):(
                         <Icon.User size={25} />
                     )}
-                    <h5 style={{color:'#454545'}}>@{comment.author.name}</h5>                    
+                    <h5 style={{color:'#454545'}}>@{comment.User?.name}</h5>                    
                 </div>
 
 
@@ -26,7 +29,7 @@ const Comment = ({comment, auth})=>{
                 <p>{comment.content}</p>
             </div>
             <div className={style.commentOptions}>
-                {comment.author.id === auth?.user?.id&&(
+                {comment.authorId === authUser.id&&(
                     <>
                         <Icon.Delete size={25} color='#828282' focusColor='#10101'/>
                         <Icon.EditMessage size={25} color='#828282' focusColor='#10101'/>

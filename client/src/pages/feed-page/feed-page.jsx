@@ -112,6 +112,9 @@ const FeedPage = ({})=>{
         }
         //POPULATE FEED
         getFirstFeedChunk(); 
+        
+        nextCursor.current =null
+        
     },[])
     useEffect(()=>{
     },[posts])
@@ -130,23 +133,20 @@ const FeedPage = ({})=>{
                         posts.map((post, index)=>{
                             if(Number(posts.length - 1) === Number(index)){     
                                 return(
-                                <>
+                                <div key={'last_post'}>
                                     <div ref={lastPostRef} />  
                                     <PostCard key={post.id}  post={post} user={user}/>
                                                                
-                                </>
+                                </div>
                                 )
                             }else{
 
                                 return(<PostCard key={post.id}  post={post} user={user}/>)  
-                            }
-                            
+                            }                          
                         })
+
                     ):(
                         <h2 style={{color:"#aeaeae"}}>No Posts Found!</h2>
-                    )}
-                    {!hasMore.current &&(
-                        <h2>No more Posts!</h2>
                     )}
                     {loadPosts &&(
                         <>

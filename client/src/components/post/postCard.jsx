@@ -11,6 +11,7 @@ const PostCard = ({post ,user, lastCardRef}) =>{
     //}
     if(!post.visibility) return
     useEffect(()=>{
+    
     },[])
     return(
         <main className={style.postCard}ref={lastCardRef && lastCardRef}>
@@ -55,7 +56,7 @@ const PostCard = ({post ,user, lastCardRef}) =>{
             <div className={style.Comments}>
                 {post.comments.map(comment=>{
                     return(
-                        <Comment key={comment.id} comment={comment} auth={auth} />
+                        <Comment key={comment.id} comment={comment} authUser={user}/>
                     )
                 })}
             </div>
