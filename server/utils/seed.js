@@ -190,8 +190,29 @@ const seedDemo = async()=>{
 
     }
   })
-  await prisma.post.createManyAndReturn({
-    data: postData
+  const postIds = await prisma.post.createManyAndReturn({
+    data: postData,
+    select:{
+      id: true
+    }
+  })
+  // requires postsids and user ids
+  const commentData = [];
+  postIds.forEach(postId =>{
+    //on eacg post every user should comment
+    demoUsers.forEach(user=>{
+      for(let i = 0; i < 3; i++){
+        commentData.push({
+          content: faker.lorem.paragraph(),
+          authorId: user.id,
+          postId: postId.id
+        })        
+      }
+
+    })
+  })
+  await prisma.comment.createMany({
+    data: commentData
   })
   // Add your seed data
 

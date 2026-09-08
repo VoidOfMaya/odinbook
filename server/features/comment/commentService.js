@@ -16,21 +16,39 @@ const getComments = async(postId, limit = 1, cursor = null)=>{
     if(cursor){
         rawChunk = await prisma.comment.findMany({
             where: {postId: Number(postId)},
-            orderBy:{
-                createdAt: 'desc'
-            },
+            orderBy:[
+                {createdAt: 'desc'},
+                {id: 'desc'}
+            ],
             take: Number(limit)+ 1,
             cursor: {
                 id: Number(cursor),
+            },
+            include:{
+                User:{
+                    select:{
+                        photo: true,
+                        name: true
+                    }
+                }
             }
         })        
     }else{
         rawChunk = await prisma.comment.findMany({
             where: {postId: Number(postId)},
-            orderBy:{
-                createdAt: 'desc'
-            },
-            take: Number(limit)+ 1,          
+            orderBy:[
+                {createdAt: 'desc'},
+                {id: 'desc'}
+            ],
+            take: Number(limit)+ 1, 
+            include:{
+                User:{
+                    select:{
+                        photo: true,
+                        name: true
+                    }
+                }
+            }         
         })  
     }
     // rawchunk = A B C D E F <=rawchunk.length

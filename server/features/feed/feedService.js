@@ -28,6 +28,14 @@ const getfeed = async(friends, limit = 15, cursor = null)=>{
                         {id: 'desc'}
                     ],
                     take: 3,
+                    include:{
+                        User:{
+                            select:{
+                                name: true,
+                                photo: true,
+                            }
+                        }
+                    }
                 },
                 User:{
                     select:{
@@ -57,6 +65,14 @@ const getfeed = async(friends, limit = 15, cursor = null)=>{
                         {id: 'desc'}
                     ],
                     take: 3,
+                    include:{
+                        User:{
+                            select:{
+                                name: true,
+                                photo: true,
+                            }
+                        }
+                    }
                 },
                 User:{
                     select:{
