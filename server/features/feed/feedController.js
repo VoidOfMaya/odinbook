@@ -33,7 +33,7 @@ const getFeed = async( req, res, next)=>{
         let hasMore= true;
         if(feed.chunk.length < limit) hasMore = false;
         res.status(200)
-        .json({feed: feed.chunk, nextCursor: feed.nextCursor.id || null, hasMore: hasMore})
+        .json({data: feed.chunk, nextCursor: feed.nextCursor.id || null, hasMore: hasMore})
     }catch(err){
         next(err)
     }
