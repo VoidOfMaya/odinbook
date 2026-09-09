@@ -5,6 +5,7 @@
     margin: 10px;
     border-radius: 20px;
     width: 80%;
+    min-width: 600px;
     color: rgb(31, 31, 31);
 
     justify-self: center;

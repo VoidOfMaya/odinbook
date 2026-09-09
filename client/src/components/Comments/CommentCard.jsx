@@ -9,7 +9,7 @@ const CommentCard = ({comment, authUser, postIsInFocus = false})=>{
         <main>
             <div className={style.commentMeta}>
                 <div style={{display: 'flex',alignItems:'end'}}>
-                    {comment.User?.photo? (
+                    {comment?.User?.photo? (
                         <img src={comment.User.photo} 
                             height={25}
                             width={25}

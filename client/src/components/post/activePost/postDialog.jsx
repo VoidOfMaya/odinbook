@@ -4,13 +4,15 @@ import { formatDateTime } from "../../../helpers/dateTime";
 import style from './postDialog.module.css'
 import { Icon } from "../../iconhelper/icons";
 import { CommentCard } from '../../Comments/CommentCard.jsx'
+import { CreateComment } from "../../Comments/createComment.jsx";
 const PostDialog = ({ref, postId})=> {
 
     const {callApi, auth}= useOutletContext();
 
     const [post, setPost]= useState();
-    const   [comments, setComments]= useState();
+    const [comments, setComments]= useState();
     const [isLoadingComment, setIsLoadingComment] = useState(false);
+    const [hasMoreComments, setHasMoreComments] = useState(false);
     
     //comment pagination:-
     const observer = useRef();
@@ -20,7 +22,7 @@ const PostDialog = ({ref, postId})=> {
     const loadRef = useRef(false);
     const counterRef = useRef(0);
 
-  const [loadPosts, setLoadPosts]= useState(false);
+    const [loadPosts, setLoadPosts]= useState(false);
 
     const getFirstCommentChunk = async()=>{  
         //HANDELS FIRST CHUNK LOAD
@@ -39,16 +41,18 @@ const PostDialog = ({ref, postId})=> {
             })
             if(!response.ok)throw new Error('Could not retrieve feed');
             const result = await response.json(); 
-            nextCursor.current = result.nextCursor
+            nextCursor.current = result.nextCursor;
             hasMore.current = result.hasMore
-            setComments(result.comments)
-            setIsLoadingComment(false)  
+            setHasMoreComments(result.hasMore);
+            counterRef.current =+ 1;
+            setComments(result.comments);
+            setIsLoadingComment(false)  ;
                 
         }catch(err){
-            console.log(err.message)
+            console.log(err.message);
         }finally{
             loadRef.current=false;
-            setLoadPosts(false);
+            setIsLoadingComment(false);
         }
 
     }
@@ -56,11 +60,11 @@ const PostDialog = ({ref, postId})=> {
         if(loadRef.current) return console.log('exiting feedGetter function');
 
         loadRef.current = true;
-        setLoadPosts(true);
+        setIsLoadingComment(true);
         try{
             const response = await callApi({
                 method: 'GET',
-                path: `feed/?limit=10&cursor=${cursor}`,
+                path: `post/${postId}/comment/list?limit=10&cursor=${cursor}`,
                 requiresAuth: true,
                 //body: options.body,
                 token: auth.accessToken,
@@ -69,23 +73,24 @@ const PostDialog = ({ref, postId})=> {
             })
             if(!response.ok)throw new Error('Could not retrieve feed');
             const result = await response.json(); 
-            //console.log(result)
-            nextCursor.current = result.nextCursor
+            nextCursor.current = result.nextCursor;
             hasMore.current = result.hasMore
-            setPosts(prevPost =>[...prevPost,...result.feed])  
-            setLoadPosts(false)
+            setHasMoreComments(result.hasMore);
+            counterRef.current =+ 1;
+            setComments(prevComment =>[...prevComment,...result.comments]);
+            setIsLoadingComment(false);
         }catch(err){
             console.log(err.message)
         }finally{
             loadRef.current=false;
-            setLoadPosts(false);
+            setIsLoadingComment(false);
         }
 
     }
 
-    const lastCommentRef = useCallback(post =>{
+    const lastCommentRef = useCallback(comments =>{
         if(!hasMore.current) return ;
-        if(loadPosts)return;
+        if(isLoadingComment)return;
         if(observer.current) observer.current.disconnect();
         
         observer.current = new IntersectionObserver(enteries=>{
@@ -93,15 +98,15 @@ const PostDialog = ({ref, postId})=> {
             if(entry.isIntersecting){
                 counterRef.current += 1;
 
-                console.log(`fetching from cursor: ${nextCursor.current}`)
-                getNextFeedChunk(nextCursor.current)                
+                getNextCommentChunk(nextCursor.current)     
+                console.log(counterRef.current)           
             };
         },{
             root: contentRef.current,
             threshold: 0.1
         });
-        if(post) observer.current.observe(post)
-    },[loadPosts, nextCursor])// may not wortk 
+        if(comments) observer.current.observe(comments)
+    },[isLoadingComment, nextCursor])// may not wortk 
 
     const getPost =async(id)=>{
         try{
@@ -116,7 +121,6 @@ const PostDialog = ({ref, postId})=> {
             })
             if(!response.ok)throw new Error('Could not get post');
             const result = await response.json(); 
-            console.log(result)
             setPost(result.post)
         }catch(err){
             console.log(err.message)
@@ -128,12 +132,8 @@ const PostDialog = ({ref, postId})=> {
         getPost(postId);
         getFirstCommentChunk()
     },[postId])
-    useEffect(()=>{
-        if(comments)console.log(comments)
-    },[comments])
     return(
         <dialog ref={ref} className={style.postCard}>
-            <p>post {postId} goes here</p>
             <main>
                 <div className={style.postMeta}>
                     <div style={{display: 'flex',alignItems:'end'}}>
@@ -149,6 +149,12 @@ const PostDialog = ({ref, postId})=> {
                         <h4 style={{color:'#454545'}}>@{post?.User?.name}</h4>                    
                     </div>
                <div className={style.AuthorOptions}>
+                    <div style={{margin: '10px'}}>
+                       <Icon.Delete color="#7f7f7f"
+                            fn={()=>{
+                                ref.current.close();
+                            }}/> 
+                    </div>
                     {post?.authorId === auth?.user?.id&&(
                         <>
                             <Icon.Delete color='#828282' focusColor='#10101'/>
@@ -171,31 +177,54 @@ const PostDialog = ({ref, postId})=> {
                     <Icon.Like color='#828282' focusColor='#10101'/>
                     <Icon.Dislike color='#828282' focusColor='#10101'/>
                 </div>
-                <div className={style.Comments}>
+                <div className={style.Comments} ref={contentRef}>
                     <h4>Comments:</h4>
-                    {isLoadingComment? (
+                    {isLoadingComment && !comments? (
                         <div style={{display: 'flex',justifyContent: 'center', margin: '5px'}}>
                         <Icon.Spinner />
                         </div>
                     ):(
                         <div className={style.commentContainer}>
-                            {comments?.map(comment=>{
-                                return(
-                                    <CommentCard key={comment.id} 
-                                    comment={comment} 
-                                    authUser={auth.user}
-                                    postIsInFocus={true}
-                                    />
-                    
-                                )
-                            })}                        
+                            {comments?.map((comment, index)=>{
+                                if(Number(comments.length - 1) === Number(index)){ 
+
+                                    return(
+                                        <div key={comment.id} >
+                                            <div ref={lastCommentRef} /> 
+                                            <CommentCard key={comment.id} 
+                                            comment={comment} 
+                                            authUser={auth.user}
+                                            postIsInFocus={true}
+                                            />   
+                                            {!hasMoreComments  && (
+                                              <div style={{display: 'flex',justifyContent: 'center'}}>no More comments</div>   
+                                            )} 
+                                                                               
+                                        </div>
+                                    )
+                                }else{
+                                    return(
+                                        <CommentCard key={comment.id} 
+                                        comment={comment} 
+                                        authUser={auth.user}
+                                        postIsInFocus={true}
+                                        />     
+                                    )                                   
+                                }
+                            })} 
+                            {                          
+                            isLoadingComment&& (
+                                <div style={{display: 'flex',justifyContent: 'center', margin: '5px'}}>
+                                <Icon.Spinner />
+                                </div>
+                            ) }                       
+                        
                         </div>
                         
                     )}
-                    <div>add comment</div>
-
+                    <CreateComment postId={postId} user={auth.user}/>
                 </div>
-
+                
             </main>
         </dialog>
     )
