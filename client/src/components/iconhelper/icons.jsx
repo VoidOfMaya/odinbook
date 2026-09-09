@@ -379,6 +379,12 @@ const AddPhoto = ({fn = null, color ='#27282c', focusColor='#62646b', size=25, t
         </svg>
     )
 }
+//MOVING ICONT
+const Spinner = ({color ='#7d7d7d'})=>{
+    return(
+        <div className={style.loading}></div>
+    )
+}
 const Icon ={
     User,
     Friends,
@@ -397,7 +403,8 @@ const Icon ={
     Comments,
     Eye,
     Inbox,
-    AddPhoto
+    AddPhoto,
+    Spinner
 
 }
 export{

@@ -4,6 +4,8 @@ import style from './feed.module.css';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { CreatePost } from '../../components/post/createPost';
 import { PostCard } from '../../components/post/postCard';
+import { PostDialog } from '../../components/post/activePost/postDialog';
+import { Icon } from '../../components/iconhelper/icons';
 
 const FeedPage = ({})=>{
     const {saveFeed, auth, isAuthenticated, goTo, callApi} = useOutletContext();
@@ -16,6 +18,14 @@ const FeedPage = ({})=>{
     const loadRef = useRef(false);
     const counterRef = useRef(0);
 
+    //post view dialog
+    const dialogRef = useRef();
+    const [activePost, setActivePost] =  useState();
+
+    const selectPost = (post)=>{
+        setActivePost(post)
+    }
+    //state management
     const [posts, setPosts] = useState(null);
     const [user, setUser] = useState(null);
     const [loadPosts, setLoadPosts]= useState(false);
@@ -102,6 +112,7 @@ const FeedPage = ({})=>{
     },[loadPosts, nextCursor])// may not wortk 
 
     useEffect(()=>{
+        if(dialogRef.current.open) dialogRef.current.close();
         isAuthenticated();
         //SETS USER
         if(auth){
@@ -135,13 +146,21 @@ const FeedPage = ({})=>{
                                 return(
                                 <div key={'last_post'}>
                                     <div ref={lastPostRef} />  
-                                    <PostCard key={post.id}  post={post} user={user}/>
+                                    <PostCard key={post.id}  
+                                    post={post} 
+                                    user={user} 
+                                    dialog={dialogRef}
+                                    selectPost={selectPost}/>
                                                                
                                 </div>
                                 )
                             }else{
 
-                                return(<PostCard key={post.id}  post={post} user={user}/>)  
+                                return(<PostCard key={post.id}  
+                                    post={post} 
+                                    user={user} 
+                                    dialog={dialogRef}
+                                    selectPost={selectPost}/>)  
                             }                          
                         })
 
@@ -150,13 +169,14 @@ const FeedPage = ({})=>{
                     )}
                     {loadPosts &&(
                         <>
+                            <Icon.Spinner />
                             LOADING POSTS ...
                         </>
                     )}
                     
                 </div>                
             </div>
-
+            <PostDialog ref={dialogRef} postId={activePost}/>
             
         </main>
     )

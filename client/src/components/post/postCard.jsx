@@ -4,13 +4,12 @@ import { Comment } from '../Comments/CommentCard';
 import style from './post.module.css';
 import { useEffect } from 'react';
 import { formatDateTime } from '../../helpers/dateTime';
-const PostCard = ({post ,user, lastCardRef}) =>{
-    //if(!post){
-    //    return(
-    //        <>Could not populate post</>
-    //    )
-    //}
+import { useState } from 'react';
+const PostCard = ({post ,user, lastCardRef , dialog, selectPost}) =>{
+
     if(!post.visibility) return
+
+    const [inFocus, setInFocus] = useState(false);
     useEffect(()=>{
     
     },[])
@@ -29,7 +28,6 @@ const PostCard = ({post ,user, lastCardRef}) =>{
                     )}
                     <h4 style={{color:'#454545'}}>@{post.User.name}</h4>                    
                 </div>
-
 
                 <div className={style.AuthorOptions}>
                     {post.User.id === user?.id&&(
@@ -62,7 +60,17 @@ const PostCard = ({post ,user, lastCardRef}) =>{
                     )
                 })}
             </div>
-            <div className={style.openPost}>View More to interact</div>
+            <div className={style.openPost}
+                onClick={()=>{
+                    if(!inFocus){
+                        setInFocus(true)
+                        selectPost(post.id)
+                        dialog.current.show();
+                    }else{
+                        setInFocus(false)
+                        dialog.current.close()
+                    }
+                }}>View More to interact</div>
         </main>        
     )
 }
