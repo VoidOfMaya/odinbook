@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-const usePagenation = (getData) =>{
+const usePagenation = (fetchData) =>{
         //define feed management referances
     const observer = useRef();
     const contextRef = useRef(null);
@@ -8,72 +8,54 @@ const usePagenation = (getData) =>{
     const hasMore = useRef(true);
     const loadRef = useRef(false);
     const counterRef = useRef(0);
-    const [loadData, setLoadData]= useState(false);
 
-    const getFirstFeedChunk = async()=>{  
+    const [loadData, setLoadData]= useState(false);
+    const [data, setData] = useState([]);
+
+    const getFirstChunk = async()=>{  
         //HANDELS FIRST CHUNK LOAD
         if (loadRef.current) return;    
-        setLoadPosts(true);
+        setLoadData(true);
         loadRef.current=true;
         try{
-            const response = await callApi({
-                method: 'GET',
-                path: `feed/?limit=10`,
-                requiresAuth: true,
-                //body: options.body,
-                token: auth.accessToken,
-                retry: true,
-                includeCred:true
-            })
-            if(!response.ok)throw new Error('Could not retrieve feed');
-            const result = await response.json(); 
+            const result = await fetchData();
             nextCursor.current = result.nextCursor
             hasMore.current = result.hasMore
-            setPosts(result.feed)
-            setLoadPosts(false)  
+            setData(result.data)
+            setLoadData(false)  
                 
         }catch(err){
             console.log(err.message)
         }finally{
             loadRef.current=false;
-            setLoadPosts(false);
+            setLoadData(false);
         }
 
     }
-    const getNextFeedChunk = async(cursor)=>{
-        if(loadRef.current) return console.log('exiting feedGetter function');
+    const getNextChunk = async()=>{
+        if(loadRef.current) return console.log('exiting getter function');
 
         loadRef.current = true;
-        setLoadPosts(true);
+        setLoadData(true);
         try{
-            const response = await callApi({
-                method: 'GET',
-                path: `feed/?limit=10&cursor=${cursor}`,
-                requiresAuth: true,
-                //body: options.body,
-                token: auth.accessToken,
-                retry: true,
-                includeCred:true
-            })
-            if(!response.ok)throw new Error('Could not retrieve feed');
-            const result = await response.json(); 
+            const result  = await fetchData(nextCursor.current);
             //console.log(result)
             nextCursor.current = result.nextCursor
             hasMore.current = result.hasMore
-            setPosts(prevPost =>[...prevPost,...result.feed])  
-            setLoadPosts(false)
+            setData(prevData =>[...prevData,...result.data])  
+            setLoadData(false)
         }catch(err){
             console.log(err.message)
         }finally{
             loadRef.current=false;
-            setLoadPosts(false);
+            setLoadData(false);
         }
 
     }
 
-    const lastRecordRef = useCallback(post =>{
+    const lastRecordRef = useCallback(dataType =>{
         if(!hasMore.current) return ;
-        if(loadata)return;
+        if(loadData)return;
         if(observer.current) observer.current.disconnect();
         
         observer.current = new IntersectionObserver(enteries=>{
@@ -82,15 +64,26 @@ const usePagenation = (getData) =>{
                 counterRef.current += 1;
 
                 console.log(`fetching from cursor: ${nextCursor.current}`)
-                getNextFeedChunk(nextCursor.current)                
+                getNextChunk(nextCursor.current)                
             };
         },{
             root: contextRef.current,
             threshold: 0.1
         });
-        if(post) observer.current.observe(post)
+        //console.log(data)
+        if(dataType) observer.current.observe(dataType)
     },[loadData, nextCursor])// may not wortk 
-    return{contextRef, lastRecordRef}
+    useEffect(()=>{
+        getFirstChunk()
+    },[])
+    return{
+        data,
+        cursor: nextCursor.current, 
+        hasMore: hasMore.current,
+        loadData, 
+        contextRef, 
+        lastRecordRef
+    }
 }
 export{
     usePagenation

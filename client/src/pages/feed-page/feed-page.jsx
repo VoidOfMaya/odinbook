@@ -6,17 +6,37 @@ import { CreatePost } from '../../components/post/createPost';
 import { PostCard } from '../../components/post/postCard';
 import { PostDialog } from '../../components/post/activePost/postDialog';
 import { Icon } from '../../components/iconhelper/icons';
-
+import { usePagenation } from '../../customhooks/usePagination';
 const FeedPage = ({})=>{
     const {saveFeed, auth, isAuthenticated, goTo, callApi} = useOutletContext();
-    
-    //define feed management referances
-    const observer = useRef();
-    const contentRef = useRef(null);
-    const nextCursor = useRef(null);
-    const hasMore = useRef(true);
-    const loadRef = useRef(false);
-    const counterRef = useRef(0);
+    //required for usePAgenation hook
+    const getData = async(cursor= null, limit= 10)=>{
+        try{
+            const response = await callApi({
+                method: 'GET',
+                path: `feed/?limit=${limit}${cursor ? `&cursor=${cursor}`: ''}`,
+                requiresAuth: true,
+                //body: options.body,
+                token: auth.accessToken,
+                retry: true,
+                includeCred:true
+            })
+            if(!response.ok)throw new Error('callApi error could not retrieve data');
+            return await response.json()
+        }
+        catch(err){
+            console.log(`Could not get data`)
+            console.log(err.message)
+        }
+    }
+    const {     
+        data,
+        cursor, 
+        hasMore,
+        loadData, 
+        contextRef, 
+        lastRecordRef
+    } = usePagenation(getData)
 
     //post view dialog
     const dialogRef = useRef();
@@ -26,90 +46,9 @@ const FeedPage = ({})=>{
         setActivePost(post)
     }
     //state management
-    const [posts, setPosts] = useState(null);
+    //const [posts, setPosts] = useState(null);
     const [user, setUser] = useState(null);
     const [loadPosts, setLoadPosts]= useState(false);
-
-    const getFirstFeedChunk = async()=>{  
-        //HANDELS FIRST CHUNK LOAD
-        if (loadRef.current) return;    
-        setLoadPosts(true);
-        loadRef.current=true;
-        try{
-            const response = await callApi({
-                method: 'GET',
-                path: `feed/?limit=10`,
-                requiresAuth: true,
-                //body: options.body,
-                token: auth.accessToken,
-                retry: true,
-                includeCred:true
-            })
-            if(!response.ok)throw new Error('Could not retrieve feed');
-            const result = await response.json(); 
-            nextCursor.current = result.nextCursor
-            hasMore.current = result.hasMore
-            setPosts(result.feed)
-            setLoadPosts(false)  
-                
-        }catch(err){
-            console.log(err.message)
-        }finally{
-            loadRef.current=false;
-            setLoadPosts(false);
-        }
-
-    }
-    const getNextFeedChunk = async(cursor)=>{
-        if(loadRef.current) return console.log('exiting feedGetter function');
-
-        loadRef.current = true;
-        setLoadPosts(true);
-        try{
-            const response = await callApi({
-                method: 'GET',
-                path: `feed/?limit=10&cursor=${cursor}`,
-                requiresAuth: true,
-                //body: options.body,
-                token: auth.accessToken,
-                retry: true,
-                includeCred:true
-            })
-            if(!response.ok)throw new Error('Could not retrieve feed');
-            const result = await response.json(); 
-            //console.log(result)
-            nextCursor.current = result.nextCursor
-            hasMore.current = result.hasMore
-            setPosts(prevPost =>[...prevPost,...result.feed])  
-            setLoadPosts(false)
-        }catch(err){
-            console.log(err.message)
-        }finally{
-            loadRef.current=false;
-            setLoadPosts(false);
-        }
-
-    }
-
-    const lastPostRef = useCallback(post =>{
-        if(!hasMore.current) return ;
-        if(loadPosts)return;
-        if(observer.current) observer.current.disconnect();
-        
-        observer.current = new IntersectionObserver(enteries=>{
-            const entry= enteries[0];        
-            if(entry.isIntersecting){
-                counterRef.current += 1;
-
-                console.log(`fetching from cursor: ${nextCursor.current}`)
-                getNextFeedChunk(nextCursor.current)                
-            };
-        },{
-            root: contentRef.current,
-            threshold: 0.1
-        });
-        if(post) observer.current.observe(post)
-    },[loadPosts, nextCursor])// may not wortk 
 
     useEffect(()=>{
         if(dialogRef.current.open) dialogRef.current.close();
@@ -122,45 +61,45 @@ const FeedPage = ({})=>{
             goTo('/')
         }
         //POPULATE FEED
-        getFirstFeedChunk(); 
+        //getFirstFeedChunk(); 
         
-        nextCursor.current =null
-        
+        //nextCursor.current =null
     },[])
-    useEffect(()=>{
-    },[posts])
+
     return(
         <main className={style.mainContainer}>
             <div className={style.sidebarContainer}>
                 <SideBar user={user}/>
             </div>
-            <div className={style.contentContainer} ref={contentRef}>
+            <div className={style.contentContainer} ref={contextRef}>
                 <div className={style.postCreate}>
                     <CreatePost />
                     
                 </div>
                 <div className={style.postContainer} >
-                    {posts? (
-                        posts.map((post, index)=>{
-                            if(Number(posts.length - 1) === Number(index)){     
+                    {data? (
+                        data.map((post, index)=>{
+                            if(Number(data.length - 1) === Number(index)){     
                                 return(
-                                <div key={'last_post'}>
-                                    <div ref={lastPostRef} />  
-                                    <PostCard key={post.id}  
-                                    post={post} 
-                                    user={user} 
-                                    dialog={dialogRef}
-                                    selectPost={selectPost}/>
-                                                               
-                                </div>
+                                    <div key={'last_post'} style={{display: "flex", justifyContent: 'center'}}>
+                                        <div ref={lastRecordRef} />  
+                                        <PostCard key={post.id}  
+                                        post={post} 
+                                        user={user} 
+                                        dialog={dialogRef}
+                                        selectPost={selectPost}/>                           
+                                    </div>
                                 )
                             }else{
 
-                                return(<PostCard key={post.id}  
-                                    post={post} 
-                                    user={user} 
-                                    dialog={dialogRef}
-                                    selectPost={selectPost}/>)  
+                                return(
+                                    <PostCard key={post.id}  
+                                        post={post} 
+                                        user={user} 
+                                        dialog={dialogRef}
+                                        selectPost={selectPost}
+                                    />
+                                )  
                             }                          
                         })
 
