@@ -40,9 +40,9 @@
 ```
 -   **feedRouter**
 ```
-    []  GET/feed?limit={}               >get users feed posts with a set quantity
-    []  GET/feed?cursor={}              >get users feed posts from the cursor point   
-    []  GET/feed/latest                 >get users feed newest posts
+    [X]  GET/feed?limit={}               >get users feed posts with a set quantity
+    [X]  GET/feed?cursor={}              >get users feed posts from the cursor point   
+    [X]  GET/feed/latest                 >get users feed newest posts
 ```
 -   **userRouter**
 ```
