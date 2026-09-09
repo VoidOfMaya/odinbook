@@ -48,3 +48,10 @@
     padding: 10px;
     border-radius: 20px;
 }
+.commentContainer{
+    height: 30vh;  
+    display: flex;
+    flex-direction: column;
+    
+    overflow-y: auto;
+}

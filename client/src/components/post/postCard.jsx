@@ -1,6 +1,6 @@
 import { useOutletContext } from 'react-router-dom';
 import { Icon } from '../iconhelper/icons';
-import { Comment } from '../Comments/CommentCard';
+import { CommentCard } from '../Comments/CommentCard';
 import style from './post.module.css';
 import { useEffect } from 'react';
 import { formatDateTime } from '../../helpers/dateTime';
@@ -56,7 +56,7 @@ const PostCard = ({post ,user, lastCardRef , dialog, selectPost}) =>{
                 <h4>Comments:</h4>
                 {post.comments.map(comment=>{
                     return(
-                        <Comment key={comment.id} comment={comment} authUser={user}/>
+                        <CommentCard key={comment.id} comment={comment} authUser={user}/>
                     )
                 })}
             </div>

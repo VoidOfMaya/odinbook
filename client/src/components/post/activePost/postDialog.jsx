@@ -3,13 +3,14 @@ import { useOutletContext } from "react-router-dom";
 import { formatDateTime } from "../../../helpers/dateTime";
 import style from './postDialog.module.css'
 import { Icon } from "../../iconhelper/icons";
-
+import { CommentCard } from '../../Comments/CommentCard.jsx'
 const PostDialog = ({ref, postId})=> {
 
     const {callApi, auth}= useOutletContext();
 
     const [post, setPost]= useState();
-    const [isLoadingComment, setIsLoadingComment] = useState(true)
+    const   [comments, setComments]= useState();
+    const [isLoadingComment, setIsLoadingComment] = useState(false);
     
     //comment pagination:-
     const observer = useRef();
@@ -24,12 +25,12 @@ const PostDialog = ({ref, postId})=> {
     const getFirstCommentChunk = async()=>{  
         //HANDELS FIRST CHUNK LOAD
         if (loadRef.current) return;    
-        setLoadPosts(true);
+        setIsLoadingComment(true);
         loadRef.current=true;
         try{
             const response = await callApi({
                 method: 'GET',
-                path: `feed/?limit=10`,
+                path: `post/${postId}/comment/list?limit=10`,
                 requiresAuth: true,
                 //body: options.body,
                 token: auth.accessToken,
@@ -40,8 +41,8 @@ const PostDialog = ({ref, postId})=> {
             const result = await response.json(); 
             nextCursor.current = result.nextCursor
             hasMore.current = result.hasMore
-            setPosts(result.feed)
-            setLoadPosts(false)  
+            setComments(result.comments)
+            setIsLoadingComment(false)  
                 
         }catch(err){
             console.log(err.message)
@@ -125,7 +126,11 @@ const PostDialog = ({ref, postId})=> {
     useEffect(()=>{
         if(!ref.current.open) return
         getPost(postId);
+        getFirstCommentChunk()
     },[postId])
+    useEffect(()=>{
+        if(comments)console.log(comments)
+    },[comments])
     return(
         <dialog ref={ref} className={style.postCard}>
             <p>post {postId} goes here</p>
@@ -173,15 +178,21 @@ const PostDialog = ({ref, postId})=> {
                         <Icon.Spinner />
                         </div>
                     ):(
-                        <>
-                            {post?.comments?.map(comment=>{
+                        <div className={style.commentContainer}>
+                            {comments?.map(comment=>{
                                 return(
-                                    <Comment key={comment.id} comment={comment} authUser={user}/>
+                                    <CommentCard key={comment.id} 
+                                    comment={comment} 
+                                    authUser={auth.user}
+                                    postIsInFocus={true}
+                                    />
                     
                                 )
                             })}                        
-                        </>
+                        </div>
+                        
                     )}
+                    <div>add comment</div>
 
                 </div>
 

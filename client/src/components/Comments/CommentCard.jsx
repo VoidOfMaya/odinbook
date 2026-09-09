@@ -2,7 +2,7 @@ import style from './comment.module.css'
 import { Icon } from '../iconhelper/icons'
 import { useEffect } from 'react'
 import { formatDateTime } from '../../helpers/dateTime'
-const Comment = ({comment, authUser, postIsInFocus = false})=>{
+const CommentCard = ({comment, authUser, postIsInFocus = false})=>{
     useEffect(()=>{
     },[])
     return(
@@ -51,5 +51,5 @@ const Comment = ({comment, authUser, postIsInFocus = false})=>{
     )
 }
 export{
-    Comment
+    CommentCard
 }
