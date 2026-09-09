@@ -5,6 +5,14 @@ const getPost = async(postId)=>{
     return await prisma.post.findUnique({
         where:{
             id: Number(postId)
+        },
+        include:{
+            User:{
+                select:{
+                    photo: true,
+                    name: true
+                }
+            }
         }
     })
 }
