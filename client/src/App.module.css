@@ -4,11 +4,10 @@
     display: flex;
     flex-direction: column; 
     outline-offset: -4px;
-
     position: relative;
 }
 .topnavContainer{
-
+    z-index: 2;
     flex: 0 0 auto;
     padding: 5px;
 }
@@ -16,4 +15,28 @@
   
     flex: 1;
     min-height: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    background-color: #dcdcdcdd;
+    background: 
+        linear-gradient(
+            -90deg,
+            rgba(248, 248, 248, 1) 0%,
+            rgb(236, 236, 236) 100%
+    );
+}
+.sidebarContainer{  
+    z-index: 2;
+    position: relative;
+    min-width: 4.5em;
+}
+/* customdialog blocking and overlay*/
+.feedOverlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(5px);
+    z-index: 1;
 }

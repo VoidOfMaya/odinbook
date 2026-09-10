@@ -7,7 +7,7 @@ import { CommentCard } from '../../Comments/CommentCard.jsx'
 import { CreateComment } from "../../Comments/createComment.jsx";
 import { usePagenation } from "../../../customhooks/usePagination.jsx";
 
-const PostDialog = ({ref, postId})=> {
+const PostDialog = ({ref, postId, isActive, reset})=> {
 
     const {callApi, auth}= useOutletContext();
     const getData = async(cursor= null, limit= 10)=>{
@@ -36,108 +36,13 @@ const PostDialog = ({ref, postId})=> {
         loadData, 
         contextRef, 
         lastRecordRef
-    } = usePagenation(getData)
+    } = usePagenation(getData, !!postId)
 
     const [post, setPost]= useState();
     const [comments, setComments]= useState();
     const [isLoadingComment, setIsLoadingComment] = useState(false);
     const [hasMoreComments, setHasMoreComments] = useState(false);
-    
-    /*
-    comment pagination:-
-    const observer = useRef();
-    const contentRef = useRef(null);
-    const nextCursor = useRef(null);
-    const hasMore = useRef(true);
-    const loadRef = useRef(false);
-    const counterRef = useRef(0);
 
-    const [loadPosts, setLoadPosts]= useState(false);
-
-    const getFirstCommentChunk = async()=>{  
-        //HANDELS FIRST CHUNK LOAD
-        if (loadRef.current) return;    
-        setIsLoadingComment(true);
-        loadRef.current=true;
-        try{
-            const response = await callApi({
-                method: 'GET',
-                path: `post/${postId}/comment/list?limit=10`,
-                requiresAuth: true,
-                //body: options.body,
-                token: auth.accessToken,
-                retry: true,
-                includeCred:true
-            })
-            if(!response.ok)throw new Error('Could not retrieve feed');
-            const result = await response.json(); 
-            nextCursor.current = result.nextCursor;
-            hasMore.current = result.hasMore
-            setHasMoreComments(result.hasMore);
-            counterRef.current =+ 1;
-            setComments(result.comments);
-            setIsLoadingComment(false)  ;
-                
-        }catch(err){
-            console.log(err.message);
-        }finally{
-            loadRef.current=false;
-            setIsLoadingComment(false);
-        }
-
-    }
-    const getNextCommentChunk = async(cursor)=>{
-        if(loadRef.current) return console.log('exiting feedGetter function');
-
-        loadRef.current = true;
-        setIsLoadingComment(true);
-        try{
-            const response = await callApi({
-                method: 'GET',
-                path: `post/${postId}/comment/list?limit=10&cursor=${cursor}`,
-                requiresAuth: true,
-                //body: options.body,
-                token: auth.accessToken,
-                retry: true,
-                includeCred:true
-            })
-            if(!response.ok)throw new Error('Could not retrieve feed');
-            const result = await response.json(); 
-            nextCursor.current = result.nextCursor;
-            hasMore.current = result.hasMore
-            setHasMoreComments(result.hasMore);
-            counterRef.current =+ 1;
-            setComments(prevComment =>[...prevComment,...result.comments]);
-            setIsLoadingComment(false);
-        }catch(err){
-            console.log(err.message)
-        }finally{
-            loadRef.current=false;
-            setIsLoadingComment(false);
-        }
-
-    }
-
-    const lastCommentRef = useCallback(comments =>{
-        if(!hasMore.current) return ;
-        if(isLoadingComment)return;
-        if(observer.current) observer.current.disconnect();
-        
-        observer.current = new IntersectionObserver(enteries=>{
-            const entry= enteries[0];        
-            if(entry.isIntersecting){
-                counterRef.current += 1;
-
-                getNextCommentChunk(nextCursor.current)     
-                console.log(counterRef.current)           
-            };
-        },{
-            root: contentRef.current,
-            threshold: 0.1
-        });
-        if(comments) observer.current.observe(comments)
-    },[isLoadingComment, nextCursor])// may not wortk 
-    */
     const getPost =async(id)=>{
         try{
             const response = await callApi({
@@ -158,12 +63,19 @@ const PostDialog = ({ref, postId})=> {
     } 
     
     useEffect(()=>{
-        if(!ref.current.open) return
-        getPost(postId);
+        if(isActive) {
+            ref.current.showModal()
+            getPost(postId);
+        }else{
+            ref.current.close()
+            return
+        }
+        
     },[postId])
     return(
-        <dialog ref={ref} className={style.postCard}>
-            <main>
+        <dialog ref={ref}  className={style.dialogWindow}>
+            
+            <main className={style.postCard}>
                 <div className={style.postMeta}>
                     <div style={{display: 'flex',alignItems:'end'}}>
                         {post?.User?.photo? (
@@ -182,6 +94,7 @@ const PostDialog = ({ref, postId})=> {
                        <Icon.Delete color="#7f7f7f"
                             fn={()=>{
                                 ref.current.close();
+                                reset()
                             }}/> 
                     </div>
                     {post?.authorId === auth?.user?.id&&(
@@ -208,7 +121,7 @@ const PostDialog = ({ref, postId})=> {
                 </div>
                 <div className={style.Comments} ref={contextRef}>
                     <h4>Comments:</h4>
-                    {loadData && !data? (
+                    {isLoadingComment && !data? (
                         <div style={{display: 'flex',justifyContent: 'center', margin: '5px'}}>
                         <Icon.Spinner />
                         </div>

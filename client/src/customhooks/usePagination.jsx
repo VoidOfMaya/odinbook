@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-const usePagenation = (fetchData) =>{
+const usePagenation = (fetchData, enabled = true) =>{
         //define feed management referances
     const observer = useRef();
     const contextRef = useRef(null);
@@ -39,7 +39,6 @@ const usePagenation = (fetchData) =>{
         setLoadData(true);
         try{
             const result  = await fetchData(nextCursor.current);
-            //console.log(result)
             nextCursor.current = result.nextCursor
             hasMore.current = result.hasMore
             setData(prevData =>[...prevData,...result.data])  
@@ -52,7 +51,6 @@ const usePagenation = (fetchData) =>{
         }
 
     }
-
     const lastRecordRef = useCallback(dataType =>{
         if(!hasMore.current) return ;
         if(loadData)return;
@@ -70,12 +68,12 @@ const usePagenation = (fetchData) =>{
             root: contextRef.current,
             threshold: 0.1
         });
-        //console.log(data)
         if(dataType) observer.current.observe(dataType)
     },[loadData, nextCursor])// may not wortk 
     useEffect(()=>{
+        if(!enabled) return
         getFirstChunk()
-    },[])
+    },[enabled])
     return{
         data,
         cursor: nextCursor.current, 

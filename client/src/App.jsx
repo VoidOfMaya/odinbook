@@ -2,8 +2,10 @@ import { useEffect, useState, useRef } from 'react'
 import{Outlet, useParams, useNavigate} from 'react-router-dom'
 import { Login } from './components/login.jsx'
 import { TopNav } from './components/topNav/navbar.jsx'
+import { SideBar } from './components/feedSidebar/sidebar.jsx'
 import { WelcomePage } from './pages/welcome-page/welcome.jsx'
 import style from './App.module.css'
+import { Icon } from './components/iconhelper/icons.jsx'
 
 function App() {
   const [auth, setAuth] = useState(null);
@@ -11,6 +13,15 @@ function App() {
   const [feed, setFeed] = useState(null);
   const [dataLoading, setDataLoading]= useState(true);
   const goTo = useNavigate();
+
+  //ACTIVE POST STATES
+  const [activePost, setActivePost] =  useState(null);
+  const selectPost = (post)=>{
+      setActivePost(post)
+  }
+  const resetPost = ()=>{
+      setActivePost(null)
+  }
   //STATE MANAGER FUNCRTIONS
   const saveFeed = (data) =>{
     setFeed(data)
@@ -23,7 +34,6 @@ function App() {
   const isAuthenticated = () =>{
     if(!auth) goTo('/')
   }
-  
   // AUTHENTICATION API
   const refresh = async ()=>{
     try{
@@ -53,7 +63,6 @@ function App() {
       localStorage.clear()
     }
   }
-  
   //re-authenticate//handels both 401 and 403 casses
   const reAuth = async (response)=>{
     if(response.status !== 401) return;
@@ -198,15 +207,23 @@ function App() {
   },[auth])
   // render while loading
   if(loadingAuth || dataLoading){
-    return <div>Loading ...</div>
+    return <div><Icon.Spinner /> Loading ...</div>
   }
 //main render 
   return (
     <main className={style.appContainer}>
       <div className={style.topnavContainer}>
-        <TopNav  auth={auth}/>    
+        <TopNav  auth={auth}/>  
       </div>
       <div className={style.pageContainer}>
+        {auth &&(
+            <div className={style.sidebarContainer}>
+                <SideBar user={auth.user}/>
+            </div>  
+        )}
+        {activePost &&(
+          <div className={style.feedOverlay} />    
+        )}
         <Outlet context={{
           auth,
           isAuthenticated,
@@ -214,6 +231,9 @@ function App() {
           onLoginSuccess,
           goTo,
           callApi,
+          activePost,
+          selectPost,
+          resetPost
         }}/>      
       </div>
 

@@ -5,7 +5,7 @@ import style from './post.module.css';
 import { useEffect } from 'react';
 import { formatDateTime } from '../../helpers/dateTime';
 import { useState } from 'react';
-const PostCard = ({post ,user, lastCardRef , dialog, selectPost}) =>{
+const PostCard = ({post ,user, lastCardRef , dialog, selectPost, activePost}) =>{
 
     if(!post.visibility) return
 
@@ -62,14 +62,9 @@ const PostCard = ({post ,user, lastCardRef , dialog, selectPost}) =>{
             </div>
             <div className={style.openPost}
                 onClick={()=>{
-                    if(!inFocus){
-                        setInFocus(true)
-                        selectPost(post.id)
-                        dialog.current.show();
-                    }else{
-                        setInFocus(false)
-                        dialog.current.close()
-                    }
+                    selectPost(post.id)
+                    dialog.current.showModal();
+    
                 }}>View More to interact</div>
         </main>        
     )

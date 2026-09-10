@@ -8,7 +8,16 @@ import { PostDialog } from '../../components/post/activePost/postDialog';
 import { Icon } from '../../components/iconhelper/icons';
 import { usePagenation } from '../../customhooks/usePagination';
 const FeedPage = ({})=>{
-    const {saveFeed, auth, isAuthenticated, goTo, callApi} = useOutletContext();
+    const {
+        saveFeed, 
+        auth, 
+        isAuthenticated, 
+        goTo, 
+        callApi,
+        activePost,
+        selectPost,
+        resetPost
+    } = useOutletContext();
     //required for usePAgenation hook
     const getData = async(cursor= null, limit= 10)=>{
         try{
@@ -40,19 +49,22 @@ const FeedPage = ({})=>{
 
     //post view dialog
     const dialogRef = useRef();
-    const [activePost, setActivePost] =  useState();
+    //const [activePost, setActivePost] =  useState(null);
 
-    const selectPost = (post)=>{
-        setActivePost(post)
-    }
+    //const selectPost = (post)=>{
+    //    setActivePost(post)
+    //}
+    //const resetPost = ()=>{
+    //    setActivePost(null)
+    //}
     //state management
-    //const [posts, setPosts] = useState(null);
     const [user, setUser] = useState(null);
     const [loadPosts, setLoadPosts]= useState(false);
 
     useEffect(()=>{
-        if(dialogRef.current.open) dialogRef.current.close();
+        
         isAuthenticated();
+        contextRef.current.scrollTop = 0;
         //SETS USER
         if(auth){
             setUser(auth.user);
@@ -64,27 +76,40 @@ const FeedPage = ({})=>{
 
     return(
         <main className={style.mainContainer}>
-            <div className={style.sidebarContainer}>
-                <SideBar user={user}/>
-            </div>
-            <div className={style.contentContainer} ref={contextRef}>
+            <div className={style.contentContainer} 
+                 ref={contextRef}
+                 >
                 <div className={style.postCreate}>
                     <CreatePost />
-                    
                 </div>
                 <div className={style.postContainer} >
                     {data? (
                         data.map((post, index)=>{
                             if(Number(data.length - 1) === Number(index)){     
                                 return(
-                                    <div key={'last_post'} style={{display: "flex", justifyContent: 'center'}}>
-                                        <div ref={lastRecordRef} />  
-                                        <PostCard key={post.id}  
-                                        post={post} 
-                                        user={user} 
-                                        dialog={dialogRef}
-                                        selectPost={selectPost}/>                           
-                                    </div>
+                                    <>
+                                        <div key={'last_post'} style={{display: "flex", justifyContent: 'center'}}>
+                                            <div ref={lastRecordRef} />  
+                                            <PostCard key={post.id}  
+                                            post={post} 
+                                            user={user} 
+                                            dialog={dialogRef}
+                                            selectPost={selectPost}
+                                            activePost={activePost}
+                                            /> 
+                            
+                                        </div>                                    
+                                        {!hasMore  && (
+                                            <div style={{display: 'flex',justifyContent: 'center'}}>
+                                                No more posts! 
+                                            </div>   
+                                        )}
+                                        {loadData && (
+                                            <div>
+                                                <Icon.Spinner />
+                                            </div>
+                                        )}
+                                    </>                                          
                                 )
                             }else{
 
@@ -111,7 +136,14 @@ const FeedPage = ({})=>{
                     
                 </div>                
             </div>
-            <PostDialog ref={dialogRef} postId={activePost}/>
+            {activePost && (
+                <PostDialog 
+                    ref={dialogRef} 
+                    postId={activePost} 
+                    reset={resetPost}
+                    isActive={!!activePost}/>     
+            )}
+
             
         </main>
     )

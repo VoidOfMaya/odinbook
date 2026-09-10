@@ -17,6 +17,13 @@
 .sidebarContainer{  
     position: relative;
 }
+.feedOverlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(5px);
+    z-index: -1;
+}
 .contentContainer{
     flex: 1;  
     display: flex;
