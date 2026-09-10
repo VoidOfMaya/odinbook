@@ -31,6 +31,7 @@ const PostDialog = ({ref, postId, isActive, reset})=> {
     }
     const {     
         data,
+        updateData,
         cursor, 
         hasMore,
         loadData, 
@@ -137,6 +138,7 @@ const PostDialog = ({ref, postId, isActive, reset})=> {
                                             comment={comment} 
                                             authUser={auth.user}
                                             postIsInFocus={true}
+                                            updateComments={updateData}
                                             />   
                                             {!hasMore  && (
                                               <div style={{display: 'flex',justifyContent: 'center'}}>no More comments</div>   
@@ -150,6 +152,7 @@ const PostDialog = ({ref, postId, isActive, reset})=> {
                                         comment={comment} 
                                         authUser={auth.user}
                                         postIsInFocus={true}
+                                        updateComments={updateData}
                                         />     
                                     )                                   
                                 }

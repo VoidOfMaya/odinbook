@@ -2,7 +2,57 @@ import style from './comment.module.css'
 import { Icon } from '../iconhelper/icons'
 import { useEffect } from 'react'
 import { formatDateTime } from '../../helpers/dateTime'
-const CommentCard = ({comment, authUser, postIsInFocus = false})=>{
+import { useOutletContext } from 'react-router-dom'
+const CommentCard = ({comment, authUser, updateComments, postIsInFocus = false})=>{
+    const {auth, callApi}= useOutletContext();
+    const likeComment = async(id, update)=>{
+        try{
+            const response = await callApi({
+                method: 'PATCH',
+                path: `comment/${id}/like`,
+                requiresAuth: true,
+                //body: options.body,
+                token: auth.accessToken,
+                retry: true,
+                includeCred:true
+            })
+            if(!response.ok) throw new Error('Could not preform action')
+            const result = await response.json();
+            update(prev=>{
+                 return prev.map(post=>
+                    post.id === id
+                    ? {...post, likes: result.likeCount}
+                    : post
+                )
+            })
+        }catch(err){
+            console.log(err.message)
+        }
+    }
+    const dislikeComment= async(id, update)=>{
+        try{
+            const response = await callApi({
+                method: 'PATCH',
+                path: `comment/${id}/dislike`,
+                requiresAuth: true,
+                //body: options.body,
+                token: auth.accessToken,
+                retry: true,
+                includeCred:true
+            })
+            if(!response.ok) throw new Error('Could not preform action')
+            const result = await response.json();
+            update(prev=>{
+                 return prev.map(post=>
+                    post.id === id
+                    ? {...post, likes: result.likeCount}
+                    : post
+                )
+            })
+        }catch(err){
+            console.log(err.message)
+        }
+    }
     useEffect(()=>{
     },[])
     return(
@@ -40,8 +90,22 @@ const CommentCard = ({comment, authUser, postIsInFocus = false})=>{
 
                         </>
                     )}
-                    <Icon.Like size={25} color='#828282' focusColor='#10101'/>
-                    <Icon.Dislike size={25} color='#828282' focusColor='#10101'/>
+                    <Icon.Like 
+                        size={25} 
+                        color='#828282' 
+                        focusColor='#10101'
+                        fn={()=>{
+                            likeComment(comment.id, updateComments)
+                        }}
+                    />
+                    <Icon.Dislike 
+                        size={25} 
+                        color='#828282' 
+                        focusColor='#10101'
+                        fn={()=>{
+                            dislikeComment(comment.id, updateComments)
+                        }}   
+                    />
                 </div>                
             ):(
                 <div className={style.commentOptions}>{comment.likes} Likes</div>    
