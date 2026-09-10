@@ -89,7 +89,7 @@ const likeComment = async (req, res, next)=>{
     try{
         const comment = await service.likeComment(id);
         if(!comment) throw new ApiError(500, " could not like comment");
-        res.status(200).json({message: 'comment liked!'})
+        res.status(200).json({message: 'comment liked!', likeCount: comment.likes})
         
     }catch(err){
         next(err)
@@ -102,7 +102,7 @@ const dislikeComment = async (req, res, next)=>{
     try{
         const comment = await service.dislikeComment(id);
         if(!comment) throw new ApiError(500, " could not like comment");
-        res.status(200).json({message: 'comment disliked!'})
+        res.status(200).json({message: 'comment disliked!', likeCount: comment.likes})
         
     }catch(err){
         next(err)
