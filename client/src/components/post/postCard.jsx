@@ -5,10 +5,67 @@ import style from './post.module.css';
 import { useEffect } from 'react';
 import { formatDateTime } from '../../helpers/dateTime';
 import { useState } from 'react';
-const PostCard = ({post ,user, lastCardRef , dialog, selectPost, activePost}) =>{
-
+import { PostDialog } from './activePost/postDialog';
+const PostCard = ({
+    post ,
+    user, 
+    lastCardRef , 
+    dialog, 
+    selectPost, 
+    activePost,
+    updatePost
+}) =>{
+    const {auth ,callApi}= useOutletContext();
     if(!post.visibility) return
-
+    
+    const likePost = async(id, update)=>{
+        try{
+            const response = await callApi({
+                method: 'PATCH',
+                path: `post/${id}/like`,
+                requiresAuth: true,
+                //body: options.body,
+                token: auth.accessToken,
+                retry: true,
+                includeCred:true
+            })
+            if(!response.ok) throw new Error('Could not preform action')
+            const result = await response.json();
+            update(prev=>{
+                 return prev.map(post=>
+                    post.id === id
+                    ? {...post, likes: result.likeCount}
+                    : post
+                )
+            })
+        }catch(err){
+            console.log(err.message)
+        }
+    }
+    const dislikePost = async(id, update)=>{
+        try{
+            const response = await callApi({
+                method: 'PATCH',
+                path: `post/${id}/dislike`,
+                requiresAuth: true,
+                //body: options.body,
+                token: auth.accessToken,
+                retry: true,
+                includeCred:true
+            })
+            if(!response.ok) throw new Error('Could not preform action')
+            const result = await response.json();
+            update(prev=>{
+                 return prev.map(post=>
+                    post.id === id
+                    ? {...post, likes: result.likeCount}
+                    : post
+                )
+            })
+        }catch(err){
+            console.log(err.message)
+        }
+    }
     const [inFocus, setInFocus] = useState(false);
     useEffect(()=>{
     
@@ -48,9 +105,21 @@ const PostCard = ({post ,user, lastCardRef , dialog, selectPost, activePost}) =>
                 )}
             </div>
             <div className={style.postOptions}>
-                <div>{post.likes}</div>
-                <Icon.Like color='#828282' focusColor='#10101'/>
-                <Icon.Dislike color='#828282' focusColor='#10101'/>
+                <div style={{alignContent: 'center'}}>{post.likes}</div>
+                <Icon.Like 
+                    color='#828282' 
+                    focusColor='#10101'
+                    fn={()=>{
+                        likePost(post.id, updatePost)
+                    }}
+                />
+                <Icon.Dislike 
+                    color='#828282' 
+                    focusColor='#10101'
+                    fn={()=>{
+                        dislikePost(post.id, updatePost)
+                    }}                    
+                />
             </div>
             <div className={style.Comments}>
                 <h4>Comments:</h4>

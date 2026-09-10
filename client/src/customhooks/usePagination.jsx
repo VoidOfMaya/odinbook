@@ -11,7 +11,10 @@ const usePagenation = (fetchData, enabled = true) =>{
 
     const [loadData, setLoadData]= useState(false);
     const [data, setData] = useState([]);
-
+    // data altering endpoint
+    const updateData = (newData)=>{
+        setData(newData)
+    }
     const getFirstChunk = async()=>{  
         //HANDELS FIRST CHUNK LOAD
         if (loadRef.current) return;    
@@ -76,6 +79,7 @@ const usePagenation = (fetchData, enabled = true) =>{
     },[enabled])
     return{
         data,
+        updateData,
         cursor: nextCursor.current, 
         hasMore: hasMore.current,
         loadData, 

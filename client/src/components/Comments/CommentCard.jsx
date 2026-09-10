@@ -44,7 +44,7 @@ const CommentCard = ({comment, authUser, postIsInFocus = false})=>{
                     <Icon.Dislike size={25} color='#828282' focusColor='#10101'/>
                 </div>                
             ):(
-                <div className={style.commentOptions}>{comment.likes}</div>    
+                <div className={style.commentOptions}>{comment.likes} Likes</div>    
             )}
 
         </main>

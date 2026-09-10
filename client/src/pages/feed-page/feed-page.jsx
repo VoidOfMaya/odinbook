@@ -40,23 +40,18 @@ const FeedPage = ({})=>{
     }
     const {     
         data,
+        updateData,
         cursor, 
         hasMore,
         loadData, 
         contextRef, 
         lastRecordRef
     } = usePagenation(getData)
-
+    // local post state management
+    const [posts, setPosts]= useState([]);
     //post view dialog
     const dialogRef = useRef();
-    //const [activePost, setActivePost] =  useState(null);
 
-    //const selectPost = (post)=>{
-    //    setActivePost(post)
-    //}
-    //const resetPost = ()=>{
-    //    setActivePost(null)
-    //}
     //state management
     const [user, setUser] = useState(null);
     const [loadPosts, setLoadPosts]= useState(false);
@@ -73,7 +68,9 @@ const FeedPage = ({})=>{
             goTo('/')
         }
     },[])
-
+    useEffect(()=>{
+        setPosts(data)
+    },[data])
     return(
         <main className={style.mainContainer}>
             <div className={style.contentContainer} 
@@ -95,7 +92,7 @@ const FeedPage = ({})=>{
                                             user={user} 
                                             dialog={dialogRef}
                                             selectPost={selectPost}
-                                            activePost={activePost}
+                                            updatePost={updateData}
                                             /> 
                             
                                         </div>                                    
@@ -119,6 +116,7 @@ const FeedPage = ({})=>{
                                         user={user} 
                                         dialog={dialogRef}
                                         selectPost={selectPost}
+                                        updatePost={updateData}
                                     />
                                 )  
                             }                          
