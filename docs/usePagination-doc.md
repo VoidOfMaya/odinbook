@@ -21,12 +21,13 @@ The hook requires a callback function responsible for fetching the data.
 ```js
 const {
     data,
+    updateData,
     cursor,
     hasMore,
     loadData,
     contextRef,
     lastRecordRef
-} = usePagination(fetchData);
+} = usePagination(fetchData, boolenableValue);
 ```
 
 The returned values can then be used by the consuming component.
@@ -98,7 +99,10 @@ fetchPosts(nextCursor);
 The consuming component does **not** need to manually manage this cursor.
 
 ---
-
+# Boolean Value
+  by default the second argument this hook takes is true meaning it will run the hook
+  on each rerender, hjowever this may not always be the desired behavior, for example
+  conditionally rendered components that utilize this hook , we dont allways want to mount and start fetching data when our component has not yet become relevant
 # Return Values
 
 ## `data`
@@ -130,7 +134,12 @@ data = [A, B, C, D, E, F]
 The component therefore only needs to render `data` and does not need to keep track of individual pages.
 
 ---
-
+## `updateData`
+    is an endpoint function allowing user to pass through data 
+    to update elements inside of the data state itself, this is used
+    to insure a single source of truth and simplifying data updates on interactions
+    without having to create a different state and trying to allways keep both in sync
+    
 ## `cursor`
 
 ```js
@@ -294,6 +303,7 @@ const FeedPage = () => {
 
     const {
         data,
+        updateData,
         hasMore,
         loadData,
         contextRef,
@@ -306,7 +316,7 @@ const FeedPage = () => {
                 if(data.length -1 === index){
                     retrurb(
                         <>
-                            <div ref={lastRecordRef} /> 
+                    }=>[]        <div ref={lastRecordRef} /> 
                             <Post key={post.id} post={post} /> 
                         </> 
                      )
