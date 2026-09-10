@@ -60,10 +60,6 @@ const FeedPage = ({})=>{
         }else{
             goTo('/')
         }
-        //POPULATE FEED
-        //getFirstFeedChunk(); 
-        
-        //nextCursor.current =null
     },[])
 
     return(

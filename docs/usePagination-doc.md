@@ -287,7 +287,6 @@ When this element enters the intersection area, the hook automatically requests 
 A dedicated sentinel is generally preferable to attaching the ref directly to the last data item because it keeps pagination independent from the structure of the rendered data.
 
 ---
-
 # Complete Usecase Example
 
 ```jsx

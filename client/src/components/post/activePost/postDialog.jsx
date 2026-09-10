@@ -5,16 +5,46 @@ import style from './postDialog.module.css'
 import { Icon } from "../../iconhelper/icons";
 import { CommentCard } from '../../Comments/CommentCard.jsx'
 import { CreateComment } from "../../Comments/createComment.jsx";
+import { usePagenation } from "../../../customhooks/usePagination.jsx";
+
 const PostDialog = ({ref, postId})=> {
 
     const {callApi, auth}= useOutletContext();
+    const getData = async(cursor= null, limit= 10)=>{
+        try{
+            const response = await callApi({
+                method: 'GET',
+                path: `post/${postId}/comment/list?limit=${limit}${cursor ? `&cursor=${cursor}`: ''}`,
+                requiresAuth: true,
+                //body: options.body,
+                token: auth.accessToken,
+                retry: true,
+                includeCred:true
+            })
+            if(!response.ok)throw new Error('callApi error could not retrieve data');
+            return await response.json()
+        }
+        catch(err){
+            console.log(`Could not get data`)
+            console.log(err.message)
+        }
+    }
+    const {     
+        data,
+        cursor, 
+        hasMore,
+        loadData, 
+        contextRef, 
+        lastRecordRef
+    } = usePagenation(getData)
 
     const [post, setPost]= useState();
     const [comments, setComments]= useState();
     const [isLoadingComment, setIsLoadingComment] = useState(false);
     const [hasMoreComments, setHasMoreComments] = useState(false);
     
-    //comment pagination:-
+    /*
+    comment pagination:-
     const observer = useRef();
     const contentRef = useRef(null);
     const nextCursor = useRef(null);
@@ -107,7 +137,7 @@ const PostDialog = ({ref, postId})=> {
         });
         if(comments) observer.current.observe(comments)
     },[isLoadingComment, nextCursor])// may not wortk 
-
+    */
     const getPost =async(id)=>{
         try{
             const response = await callApi({
@@ -130,7 +160,6 @@ const PostDialog = ({ref, postId})=> {
     useEffect(()=>{
         if(!ref.current.open) return
         getPost(postId);
-        getFirstCommentChunk()
     },[postId])
     return(
         <dialog ref={ref} className={style.postCard}>
@@ -177,26 +206,26 @@ const PostDialog = ({ref, postId})=> {
                     <Icon.Like color='#828282' focusColor='#10101'/>
                     <Icon.Dislike color='#828282' focusColor='#10101'/>
                 </div>
-                <div className={style.Comments} ref={contentRef}>
+                <div className={style.Comments} ref={contextRef}>
                     <h4>Comments:</h4>
-                    {isLoadingComment && !comments? (
+                    {loadData && !data? (
                         <div style={{display: 'flex',justifyContent: 'center', margin: '5px'}}>
                         <Icon.Spinner />
                         </div>
                     ):(
                         <div className={style.commentContainer}>
-                            {comments?.map((comment, index)=>{
-                                if(Number(comments.length - 1) === Number(index)){ 
+                            {data?.map((comment, index)=>{
+                                if(Number(data.length - 1) === Number(index)){ 
 
                                     return(
                                         <div key={comment.id} >
-                                            <div ref={lastCommentRef} /> 
+                                            <div ref={lastRecordRef} /> 
                                             <CommentCard key={comment.id} 
                                             comment={comment} 
                                             authUser={auth.user}
                                             postIsInFocus={true}
                                             />   
-                                            {!hasMoreComments  && (
+                                            {!hasMore  && (
                                               <div style={{display: 'flex',justifyContent: 'center'}}>no More comments</div>   
                                             )} 
                                                                                
