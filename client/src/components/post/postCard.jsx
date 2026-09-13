@@ -123,12 +123,20 @@ const PostCard = ({
                 />
             </div>
             <div className={style.Comments}>
-                <h4>Comments:</h4>
+                <h4 style={{color: 'rgb(156, 156, 156)'}}>Comments:</h4>
+                {console.log(post.comments.length)}
                 {post.comments.map(comment=>{
+                    
                     return(
                         <CommentCard key={comment.id} comment={comment} authUser={user}/>
                     )
                 })}
+                {post.comments.length === 0&&
+                (
+                    <h5 style={{color: 'rgb(121, 121, 121)'}}>
+                        be the first to comment!
+                    </h5>
+                )}
             </div>
             <div className={style.openPost}
                 onClick={()=>{
