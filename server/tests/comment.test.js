@@ -108,7 +108,7 @@ describe('/comment',()=>{
             })
 
             expect(response.status).toBe(200);
-            expect(response.body.comments).toBeDefined();
+            expect(response.body.data).toBeDefined();
             expect(response.body.nextCursor).toBeDefined();
         })
         // -GET/post/{id}/comments/commentlist?limit=3&cursor={nextCursor}
@@ -126,7 +126,7 @@ describe('/comment',()=>{
                     cursor: nextCursor || null
                 })
                 nextCursor = response.body.nextCursor
-                response.body.comments.forEach(comment=>{
+                response.body.data.forEach(comment=>{
                     commentsArray.push(comment)
                 })                
             }

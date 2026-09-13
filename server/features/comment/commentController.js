@@ -13,6 +13,8 @@ const getComments = async(req, res, next)=>{
     }
     const {limit, cursor} = matchedData(req); 
     try{
+        const hascomments = await service.hasComments(postId);
+        if(!hascomments)res.status(404).json({message: 'No comments found'})
         //if limit is not available get only 1 comment
         const postComments = await service.getComments(postId, limit, cursor);
         if(!postComments)throw new ApiError(500, "Could not find comments");
@@ -24,11 +26,10 @@ const getComments = async(req, res, next)=>{
         const commentIdArr = postComments.chunk.map(comment=>{
             return [comment.id, comment.createdAt]
         });
-        console.log('comments chunk contains:')
-        console.log(commentIdArr)
-        console.log(`next cursor: ${[postComments.nextCursor.id, postComments.nextCursor.createdAt]}`)
-        console.log(`has more?: ${hasMore}`)
-
+        //console.log('comments chunk contains:')
+        //console.log(commentIdArr)
+        //console.log(`next cursor: ${[postComments?.nextCursor?.id, postComments.nextCursor.createdAt]}`)       
+        //console.log(`has more?: ${hasMore}`)
         res.status(200)
         .json({
             data: postComments.chunk,

@@ -9,6 +9,17 @@ const createComment = async (userId, postId, content)=>{
         }
     })
 }
+const hasComments = async(postId)=>{
+    //validate post has comments
+    let hasComments = false;
+    const commentCount = await prisma.comment.count({
+        where:{
+            postId: Number(postId)
+        }
+    })
+    if(commentCount > 0) hasComments = true
+    return hasComments;
+}
 const getComments = async(postId, limit = 1, cursor = null)=>{
     //return a list of comments based on the limit number cursor point
     //then order by date of creation in a descending order
@@ -106,7 +117,8 @@ const service={
     editComment,
     deleteComment,
     likeComment,
-    dislikeComment
+    dislikeComment,
+    hasComments
 }
 export{
     service
