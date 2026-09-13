@@ -11,6 +11,7 @@ const usePagenation = (fetchData, enabled = true) =>{
 
     const [loadData, setLoadData]= useState(false);
     const [data, setData] = useState([]);
+    const [issue, setIssue]= useState(null)
     // data altering endpoint
     const updateData = (newData)=>{
         setData(newData)
@@ -22,6 +23,7 @@ const usePagenation = (fetchData, enabled = true) =>{
         loadRef.current=true;
         try{
             const result = await fetchData();
+            if(result === undefined) throw new Error('Upstream error in provided fetch data callback functions')
             nextCursor.current = result.nextCursor
             hasMore.current = result.hasMore
             setData(result.data)
@@ -29,6 +31,7 @@ const usePagenation = (fetchData, enabled = true) =>{
                 
         }catch(err){
             console.log(err.message)
+            setIssue(err.message)
         }finally{
             loadRef.current=false;
             setLoadData(false);
@@ -42,12 +45,15 @@ const usePagenation = (fetchData, enabled = true) =>{
         setLoadData(true);
         try{
             const result  = await fetchData(nextCursor.current);
+            
+
             nextCursor.current = result.nextCursor
             hasMore.current = result.hasMore
             setData(prevData =>[...prevData,...result.data])  
             setLoadData(false)
         }catch(err){
             console.log(err.message)
+            setIssue(err.message)
         }finally{
             loadRef.current=false;
             setLoadData(false);
@@ -77,6 +83,9 @@ const usePagenation = (fetchData, enabled = true) =>{
         if(!enabled) return
         getFirstChunk()
     },[enabled])
+    if(issue){
+        return issue
+    }
     return{
         data,
         updateData,
@@ -84,7 +93,7 @@ const usePagenation = (fetchData, enabled = true) =>{
         hasMore: hasMore.current,
         loadData, 
         contextRef, 
-        lastRecordRef
+        lastRecordRef,
     }
 }
 export{

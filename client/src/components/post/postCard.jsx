@@ -86,15 +86,16 @@ const PostCard = ({
                     <h4 style={{color:'#454545'}}>@{post.User.name}</h4>                    
                 </div>
 
-                <div className={style.AuthorOptions}>
+                <div className={style.Options}>
                     {post.User.id === user?.id&&(
-                        <>
+                        <div className={style.AuthorOptions}>
                             <Icon.Delete color='#828282' focusColor='#10101'/>
                             <Icon.EditMessage  color='#828282' focusColor='#10101'/>
-                        </>
+                        </div>
                     )}
-                    <h6 style={{color:'#8e8e8e'}}>{formatDateTime(post.createdAt)}</h6>
+                    <h6 style={{color:'#8e8e8e'}}>{formatDateTime(post.createdAt)}</h6>    
                 </div>
+                
             </div>
             <div className={style.postContent}>
                 <p>{post.content}</p>
@@ -132,7 +133,7 @@ const PostCard = ({
             <div className={style.openPost}
                 onClick={()=>{
                     selectPost(post.id)
-                    dialog.current.showModal();
+                    //dialog.current.showModal();
     
                 }}>View More to interact</div>
         </main>        

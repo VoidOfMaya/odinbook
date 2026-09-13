@@ -21,7 +21,8 @@ const PostDialog = ({ref, postId, isActive, reset})=> {
                 retry: true,
                 includeCred:true
             })
-            if(!response.ok)throw new Error('callApi error could not retrieve data');
+            if(!response.ok)throw new Error(`Error: ${response.status},no comments where found`);
+
             return await response.json()
         }
         catch(err){
@@ -90,21 +91,32 @@ const PostDialog = ({ref, postId, isActive, reset})=> {
                         )}
                         <h4 style={{color:'#454545'}}>@{post?.User?.name}</h4>                    
                     </div>
-               <div className={style.AuthorOptions}>
+                <div className={style.AuthorOptions}>
                     <div style={{margin: '10px'}}>
-                       <Icon.Delete color="#7f7f7f"
+                       {/*<Icon.Delete color="#7f7f7f" title="Close window"
                             fn={()=>{
                                 ref.current.close();
                                 reset()
-                            }}/> 
+                            }}
+                        />*/} 
+                        <h5 style={{color: 'rgb(147, 151, 147)', cursor: 'pointer'}}
+                            onClick={()=>{
+                            ref.current.close();
+                            reset()    
+                            }}
+                        >
+                            close X
+                        </h5>
                     </div>
+                <div className={style.Options}>
                     {post?.authorId === auth?.user?.id&&(
-                        <>
-                            <Icon.Delete color='#828282' focusColor='#10101'/>
-                            <Icon.EditMessage  color='#828282' focusColor='#10101'/>
-                        </>
+                        <div style={{display: 'flex'}}>
+                            <Icon.Delete color='#828282' focusColor='#10101' title="Remove post"/>
+                            <Icon.EditMessage  color='#828282' focusColor='#10101' title="Edit post"/>
+                        </div>
                     )}
-                    <h6 style={{color:'#8e8e8e'}}>{formatDateTime(post?.createdAt)}</h6>
+                    <h6 style={{color:'#8e8e8e'}}>{formatDateTime(post?.createdAt)}</h6>    
+                </div>
                 </div>
                 </div>
                 <div className={style.postContent}>

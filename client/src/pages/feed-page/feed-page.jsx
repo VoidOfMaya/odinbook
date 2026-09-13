@@ -1,4 +1,4 @@
-import { useOutletContext } from 'react-router-dom';
+import { redirect, useOutletContext } from 'react-router-dom';
 import { SideBar } from '../../components/feedSidebar/sidebar';
 import style from './feed.module.css';
 import { useEffect, useRef, useState, useCallback } from 'react';
@@ -70,6 +70,10 @@ const FeedPage = ({})=>{
     },[])
     useEffect(()=>{
         setPosts(data)
+        if(data.length === 0){
+            console.log('something went wrong with data')
+            redirect('/')
+        }
     },[data])
     return(
         <main className={style.mainContainer}>
@@ -77,7 +81,12 @@ const FeedPage = ({})=>{
                  ref={contextRef}
                  >
                 <div className={style.postCreate}>
-                    <CreatePost />
+                    <CreatePost updatePost={(newPost)=>{
+                        updateData(prev=>({
+                                newPost, ...prev
+                            })
+                        )
+                    }}/>
                 </div>
                 <div className={style.postContainer} >
                     {data? (
