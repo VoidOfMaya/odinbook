@@ -26,7 +26,7 @@ const createPost = async (req, res, next)=>{
                 throw new Error('errors','internal Error: cloudinary url faulty, try again later!' )
             }            
         }
-        const post = await service.newPost(req.user.id, data.content, result.secure_url)//takes userId, content,  photo=null
+        const post = await service.newPost(req.user.id, data.content, result?.secure_url || null)//takes userId, content,  photo=null
         return res.status(201).json({message: "post created!", post: post})
     }catch(err){
         next(err);

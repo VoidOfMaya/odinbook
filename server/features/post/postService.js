@@ -22,6 +22,14 @@ const newPost= async (authorId, content, photo= null)=>{
             authorId: Number(authorId),
             content: String(content),
             photoUrl: photo
+        },
+        include:{
+            User:{
+                select:{
+                    photo: true,
+                    name: true
+                }
+            }
         }
     })
 }

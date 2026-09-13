@@ -71,7 +71,7 @@ describe('/post',()=>{
                 content: faker.lorem.paragraph()
             });
             post = response.body.post;
-            expect(response.status).toBe(201)            
+            expect(response.status).toBe(201)         
         })
     })
     //  PATCH/post/{id}                 >edit post at id  where current user is author
