@@ -1,11 +1,5 @@
 .mainContainer{
-    background-color: #f8f8f8dd;
-    background: 
-        linear-gradient(
-            90deg,
-            rgba(248, 248, 248, 1) 0%,
-            rgba(245, 245, 245, 1) 100%
-    );
+    background: transparent;
     height: 100%;
     color: #010101;
     display: flex;

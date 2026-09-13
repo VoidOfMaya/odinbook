@@ -216,11 +216,15 @@ function App() {
         <TopNav  auth={auth}/>  
       </div>
       <div className={style.pageContainer}>
-        {auth &&(
+        {auth
+          ?(
             <div className={style.sidebarContainer}>
                 <SideBar user={auth.user}/>
-            </div>  
-        )}
+            </div>
+          ):(
+            <div className={style.sidebarContainer}>
+            </div>            
+          )}
         {activePost &&(
           <div className={style.feedOverlay} />    
         )}
