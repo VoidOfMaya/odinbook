@@ -51,6 +51,15 @@ position: relative;
     box-shadow: 0px 4px 12px 0px #07070733;
     margin: 20px;
     width: 40px;
+    position: relative;
+}
+.photoPreviewContainer{
+    position: relative;
+}
+.previewImg{
+    width: 100px;
+    height: 100px;
+    object-fit: cover;    
 }
 .photoTabBtn:hover{
 
