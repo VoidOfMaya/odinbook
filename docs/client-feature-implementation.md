@@ -232,41 +232,41 @@ dependency order rather than strictly by page.
 
 ### Phase 1 --- Application Foundation
 
--   [ ] App layout
--   [ ] Top navigation
--   [ ] Side navigation
--   [ ] Routing
--   [ ] Global authentication state
--   [ ] Continuous authentication
--   [ ] Authentication protection
+-   [x] App layout
+-   [x] Top navigation
+-   [x] Side navigation
+-   [x] Routing
+-   [x] Global authentication state
+-   [x] Continuous authentication
+-   [x] Authentication protection
 
 ### Phase 2 --- Authentication
 
 -   [ ] Register
 -   [ ] Local login
--   [ ] GitHub login
+-   [x] GitHub login
 -   [ ] Guest login
--   [ ] Logout
--   [ ] Redirect authenticated users to feed
+-   [x] Logout
+-   [x] Redirect authenticated users to feed
 
 ### Phase 3 --- Feed
 
--   [ ] Initial feed loading
--   [ ] Post pagination
--   [ ] Post rendering
+-   [x] Initial feed loading
+-   [x] Post pagination
+-   [x] Post rendering
 -   [ ] Create post
 -   [ ] Photo upload
--   [ ] Post engagement dialog
+-   [x] Post engagement dialog
 -   [ ] Post edit/delete
--   [ ] Post like/dislike
+-   [x] Post like/dislike
 
 ### Phase 4 --- Comments
 
--   [ ] Comment loading
--   [ ] Comment pagination
+-   [x] Comment loading
+-   [x] Comment pagination
 -   [ ] Create comment
 -   [ ] Comment edit/delete
--   [ ] Comment like/dislike
+-   [x] Comment like/dislike
 -   [ ] Efficient individual-comment updates
 
 ### Phase 5 --- User Profile
