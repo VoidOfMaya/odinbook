@@ -380,9 +380,9 @@ const AddPhoto = ({fn = null, color ='#27282c', focusColor='#62646b', size=25, t
     )
 }
 //MOVING ICONT
-const Spinner = ({color ='#7d7d7d'})=>{
+const Spinner = ({color ='#7d7d7d',size=20})=>{
     return(
-        <div className={style.loading}></div>
+        <div className={style.loading} style={{padding:`${size}px`}}></div>
     )
 }
 const Icon ={
