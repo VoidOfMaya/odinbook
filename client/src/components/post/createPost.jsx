@@ -12,30 +12,45 @@ const CreatePost = ({updatePost}) =>{
     //create new post
     const  uploadPost = async() =>{
         setIsSending(true)
-        try{        
+        console.log(newPost.content)
+        try{  
+            //turning newpost to formData
+            const formData = new FormData();
+            formData.append('content', newPost.content);
+            formData.append('photo', newPost.photo);
+            console.log(formData)
+            //sending call to server
             const response = await callApi({
                 method: 'POST',
                 path: `post/`,
                 requiresAuth: true,
-                body: {
-                    photo: newPost.photo,
-                    content: newPost.content
-                },
+                body: formData,
                 token: auth.accessToken,
                 retry: true,
                 includeCred:true
             })
             if(!response.ok)throw new Error('Could not upload post')
             const result = await response.json();
-            updatePost(result.post)
+            updatePost(prev =>[result.post, ...prev])
         }catch(err){
             console.log(err.message)
         }
-        setIsSending(false)
+        setIsSending(false);
+        setPreviewUrl(null);
+        setNewPost({content:'',photo:null})
     }
     useEffect(()=>{
-        
-    },[newPost])
+        if (!newPost.photo) {
+            //if photo is deselected/is null then set preview to null
+            setPreviewUrl(null);
+            return;
+        }
+        //handells setting a preview image  when a photo is selected
+        const url = URL.createObjectURL(newPost.photo);
+        setPreviewUrl(url);
+
+        return () => URL.revokeObjectURL(url);
+    },[newPost.photo])
     return(
         <main className={style.CreatePostContainer}>
             <title>Post creation pannel</title>
@@ -43,33 +58,20 @@ const CreatePost = ({updatePost}) =>{
                 <input 
                     type='file' 
                     id='photo' 
+                    accept="image/*"
                     style={{display: 'none'}}
                     onChange={(e)=>{
-                        setNewPost(prev =>({
-                            ...prev,photo: e.target.files[0]
-                        }))
-                        setPreviewUrl(URL.createObjectURL(newPost.photo))
-                    }}/>
-                    {/*                      
-                    <>
-                            <img 
-                                src={`${previewUrl}`} 
-                                className={style.previewImg}
-                            />
-                            <div >
-                                <Icon.Delete 
-                                    title='Deselect photo'
-                                    fn={()=>{
-                                        setPreviewUrl(null)
-                                        setNewPost(prev=>({
-                                            ...prev,photo: null
-                                        }));
-                                    }}
-                                />                                
-                            </div>
+                        const file = e.target.files[0];
+                        if(!file) return;
+                        if(!file.type.startsWith('image/')){
+                            console.warn('file type error: please select a photo file')
+                            return;
+                        }
 
-                    </>
-                    */}
+                        setNewPost(prev =>({
+                            ...prev,photo: file
+                        }))
+                    }}/>
                 {!previewUrl?
                     (
                         <label htmlFor='photo' className={style.photoTabBtn}>
@@ -78,9 +80,6 @@ const CreatePost = ({updatePost}) =>{
                                 color="#646363"  
                                 focusColor="rgb(30, 29, 30)" 
                                 title='Add photo'
-                                fn={(e)=>{
-                                    setPreviewUrl()
-                                }}
                             />                        
                         </label>
                     ):(
@@ -101,7 +100,6 @@ const CreatePost = ({updatePost}) =>{
                                     focusColor='rgba(254, 254, 254, 0.99)'
                                     size={40}
                                     fn={()=>{
-                                        setPreviewUrl(null)
                                         setNewPost(prev=>({
                                             ...prev,photo: null
                                         }));

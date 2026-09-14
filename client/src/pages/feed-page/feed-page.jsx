@@ -69,6 +69,7 @@ const FeedPage = ({})=>{
         }
     },[])
     useEffect(()=>{
+        
         setPosts(data)
         if(data.length === 0){
             console.log('something went wrong with data')
@@ -81,12 +82,7 @@ const FeedPage = ({})=>{
                  ref={contextRef}
                  >
                 <div className={style.postCreate}>
-                    <CreatePost updatePost={(newPost)=>{
-                        updateData(prev=>({
-                                newPost, ...prev
-                            })
-                        )
-                    }}/>
+                    <CreatePost updatePost={updateData}/>
                 </div>
                 <div className={style.postContainer} >
                     {data? (

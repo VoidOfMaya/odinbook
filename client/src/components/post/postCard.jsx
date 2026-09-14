@@ -17,6 +17,7 @@ const PostCard = ({
 }) =>{
     const {auth ,callApi}= useOutletContext();
     if(!post.visibility) return
+    const [inFocus, setInFocus] = useState(false);
     
     const likePost = async(id, update)=>{
         try{
@@ -66,7 +67,27 @@ const PostCard = ({
             console.log(err.message)
         }
     }
-    const [inFocus, setInFocus] = useState(false);
+    const deletePost = async (id, update)=>{
+        try{
+            const response = await callApi({
+                method: 'DELETE',
+                path: `post/${id}`,
+                requiresAuth: true,
+                //body: options.body,
+                token: auth.accessToken,
+                retry: true,
+                includeCred:true
+            })
+            if(!response.ok) throw new Error('Could not preform action')
+            const result = await response.json();
+            update(prev=>{
+                 return prev.filter(post => post.id !== id)
+            })
+        }catch(err){
+            console.log(err.message)
+        }
+    }
+    
     useEffect(()=>{
     
     },[])
@@ -87,10 +108,20 @@ const PostCard = ({
                 </div>
 
                 <div className={style.Options}>
+                    {/*POST Author Options*/}
                     {post.User.id === user?.id&&(
                         <div className={style.AuthorOptions}>
-                            <Icon.Delete color='#828282' focusColor='#10101'/>
-                            <Icon.EditMessage  color='#828282' focusColor='#10101'/>
+                            <Icon.Delete 
+                                color='#828282' 
+                                focusColor='#10101'
+                                fn={()=>{
+                                    deletePost(post.id,updatePost);
+                                }}
+                            />
+                            <Icon.EditMessage  
+                                color='#828282' 
+                                focusColor='#10101'
+                            />
                         </div>
                     )}
                     <h6 style={{color:'#8e8e8e'}}>{formatDateTime(post.createdAt)}</h6>    
@@ -124,14 +155,12 @@ const PostCard = ({
             </div>
             <div className={style.Comments}>
                 <h4 style={{color: 'rgb(156, 156, 156)'}}>Comments:</h4>
-                {console.log(post.comments.length)}
-                {post.comments.map(comment=>{
-                    
+                {post?.comments?.map(comment=>{
                     return(
                         <CommentCard key={comment.id} comment={comment} authUser={user}/>
                     )
                 })}
-                {post.comments.length === 0&&
+                {post?.comments?.length === 0&&
                 (
                     <h5 style={{color: 'rgb(121, 121, 121)'}}>
                         be the first to comment!
