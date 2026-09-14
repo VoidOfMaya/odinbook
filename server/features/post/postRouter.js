@@ -11,7 +11,7 @@ postRouter.get('/',async(req, res)=>{
 
 });
 //only auuthenticated usersa 
-postRouter.post('/',validate.content,multerMiddleware,controller.createPost);
+postRouter.post('/',multerMiddleware, validate.content,controller.createPost);
 postRouter.get('/:id',validate.postId,controller.getPost);
 postRouter.patch('/:id/like',validate.postId, controller.like);
 postRouter.patch('/:id/dislike',validate.postId, controller.dislike);

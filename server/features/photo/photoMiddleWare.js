@@ -22,7 +22,7 @@ const upload = multer({storage: storage,limits:
 });
 
 function multerMiddleware (req, res, next){
-    upload.single('file')(req, res, (err)=>{
+    upload.single('photo')(req, res, (err)=>{
         try{
             if (err?.code === "LIMIT_FILE_SIZE") {
                 throw new Error("File exceeds the 10MB size limit.")
