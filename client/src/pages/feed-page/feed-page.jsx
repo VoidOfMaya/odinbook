@@ -56,6 +56,10 @@ const FeedPage = ({})=>{
     const [user, setUser] = useState(null);
     const [loadPosts, setLoadPosts]= useState(false);
 
+    const dataUpdateHandler = (data)=>{
+        updateData(data)
+    }
+
     useEffect(()=>{
         
         isAuthenticated();
@@ -82,12 +86,13 @@ const FeedPage = ({})=>{
                  ref={contextRef}
                  >
                 <div className={style.postCreate}>
-                    <CreatePost updatePost={updateData}/>
+                    <CreatePost updatePost={dataUpdateHandler}/>
                 </div>
                 <div className={style.postContainer} >
-                    {data? (
-                        data.map((post, index)=>{
-                            if(Number(data.length - 1) === Number(index)){     
+                    {posts? (
+                        posts.map((post, index)=>{
+                            if(Number(posts.length - 1) === Number(index)){     
+                               
                                 return(
                                     <>
                                         <div key={'last_post'} style={{display: "flex", justifyContent: 'center'}}>
@@ -114,7 +119,6 @@ const FeedPage = ({})=>{
                                     </>                                          
                                 )
                             }else{
-
                                 return(
                                     <PostCard key={post.id}  
                                         post={post} 
@@ -144,7 +148,9 @@ const FeedPage = ({})=>{
                     ref={dialogRef} 
                     postId={activePost} 
                     reset={resetPost}
-                    isActive={!!activePost}/>     
+                    isActive={!!activePost}
+                    deactivate = {selectPost}
+                    update={updateData}/>     
             )}
 
             
