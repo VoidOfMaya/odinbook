@@ -32,6 +32,7 @@ const createPost = async (req, res, next)=>{
             } 
             console.log(`Debug: -3- secure_url exists? : ${result.secure_url}`)           
             const post = await service.newPost(req.user.id, data.content, result.secure_url)//takes userId, content,  photo
+            console.log(post)
             return res.status(201).json({message: "post created!", post: post})
         }else{
             //handle post without photo

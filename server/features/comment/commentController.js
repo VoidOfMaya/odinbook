@@ -14,7 +14,7 @@ const getComments = async(req, res, next)=>{
     const {limit, cursor} = matchedData(req); 
     try{
         const hascomments = await service.hasComments(postId);
-        if(!hascomments)res.status(404).json({message: 'No comments found'})
+        if(!hascomments)return res.status(404).json({message: 'No comments found'})
         //if limit is not available get only 1 comment
         const postComments = await service.getComments(postId, limit, cursor);
         if(!postComments)throw new ApiError(500, "Could not find comments");

@@ -27,7 +27,8 @@ const newPost= async (authorId, content, photo= null)=>{
             User:{
                 select:{
                     photo: true,
-                    name: true
+                    name: true,
+                    id: true
                 }
             }
         }
