@@ -254,10 +254,10 @@ dependency order rather than strictly by page.
 -   [x] Initial feed loading
 -   [x] Post pagination
 -   [x] Post rendering
--   [ ] Create post
--   [ ] Photo upload
+-   [x] Create post
+-   [x] Photo upload
 -   [x] Post engagement dialog
--   [ ] Post edit/delete
+-   [X] Post edit/delete
 -   [x] Post like/dislike
 
 ### Phase 4 --- Comments
