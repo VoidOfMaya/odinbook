@@ -259,6 +259,7 @@ dependency order rather than strictly by page.
 -   [x] Post engagement dialog
 -   [X] Post edit/delete
 -   [x] Post like/dislike
+-   [X] confirmation window befor delete actions
 
 ### Phase 4 --- Comments
 
