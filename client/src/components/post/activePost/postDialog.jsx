@@ -181,6 +181,7 @@ const PostDialog = ({ref, postId, isActive, reset,deactivate, update})=> {
     },[postId])
     useEffect(()=>{
         if(!post)return
+        console.log(data)
         setContent(post.content)
     },[post])
     return(
@@ -230,21 +231,22 @@ const PostDialog = ({ref, postId, isActive, reset,deactivate, update})=> {
                                                 setEditMode(false);
                                             }}
                                         > save</button>
-                                                                       
-                                    </div>
-
-                                ):(
-                                    <>
                                         <Icon.Delete 
                                             color='#828282' 
                                             focusColor='#10101' 
                                             title="Remove post"
                                             fn={()=>{
+                                                const confirm = window.confirm('are you sure you want to delete this post?')
+                                                if(!confirm) return;
                                                 deletePost(post.id, update)
                                                ref.current.close();
                                                 reset() 
                                             }}
-                                        />
+                                        />                           
+                                    </div>
+
+                                ):(
+                                    <>
                                         <Icon.EditMessage  
                                             color='#828282' 
                                             focusColor='#10101' 
@@ -366,7 +368,13 @@ const PostDialog = ({ref, postId, isActive, reset,deactivate, update})=> {
 
                         </>     
                     )}
-                    <CreateComment postId={postId} user={auth.user}/>
+                    <CreateComment 
+                        postId={postId} 
+                        user={auth.user}
+                        commentCount={!data ? 0 : data.length}
+                        updateActive={updateData}
+                        updateFeed={update}
+                    />
                 </div>
                 
             </main>

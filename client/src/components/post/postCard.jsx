@@ -115,6 +115,8 @@ const PostCard = ({
                                 color='#828282' 
                                 focusColor='#10101'
                                 fn={()=>{
+                                    const confirm = window.confirm('are you sure you want to delete this post?')
+                                    if(!confirm) return;
                                     deletePost(post.id,updatePost);
                                 }}
                             />
