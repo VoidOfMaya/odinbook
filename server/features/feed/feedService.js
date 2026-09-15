@@ -87,10 +87,17 @@ const getfeed = async(friends, limit = 15, cursor = null)=>{
     // rawchunk = A B C D E F <=rawchunk.length
     //chunck    = A B C D E   <= index <rawchunk.length -1
     //cursor    =           F <= index === rawchunk.length
-    const chunk = rawChunk.slice(0, -1)
-    const nextCursor = rawChunk[rawChunk.length - 1]
-    return {chunk, nextCursor};
     
+    const hasMore = rawChunk.length > Number(limit);
+    const chunk = hasMore?
+        rawChunk.slice(0, Number(limit))
+        :
+        rawChunk
+    const nextCursor = hasMore?
+        rawChunk[rawChunk.length - 1]
+        :
+        null
+    return {chunk, nextCursor};
 }
 const service = {
     getfeed,
