@@ -118,10 +118,10 @@ const PostCard = ({
                                     deletePost(post.id,updatePost);
                                 }}
                             />
-                            <Icon.EditMessage  
+                            {/*<Icon.EditMessage  
                                 color='#828282' 
                                 focusColor='#10101'
-                            />
+                            />*/}
                         </div>
                     )}
                     <h6 style={{color:'#8e8e8e'}}>{formatDateTime(post.createdAt)}</h6>    

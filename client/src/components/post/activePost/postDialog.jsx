@@ -7,7 +7,7 @@ import { CommentCard } from '../../Comments/CommentCard.jsx'
 import { CreateComment } from "../../Comments/createComment.jsx";
 import { usePagenation } from "../../../customhooks/usePagination.jsx";
 
-const PostDialog = ({ref, postId, isActive, reset})=> {
+const PostDialog = ({ref, postId, isActive, reset,deactivate, update})=> {
 
     const {callApi, auth}= useOutletContext();
     const getData = async(cursor= null, limit= 10)=>{
@@ -21,6 +21,7 @@ const PostDialog = ({ref, postId, isActive, reset})=> {
                 retry: true,
                 includeCred:true
             })
+            if(response.status === 404) return
             if(!response.ok)throw new Error(`Error: ${response.status},no comments where found`);
 
             return await response.json()
@@ -45,6 +46,9 @@ const PostDialog = ({ref, postId, isActive, reset})=> {
     const [isLoadingComment, setIsLoadingComment] = useState(false);
     const [hasMoreComments, setHasMoreComments] = useState(false);
 
+    const [editMode, setEditMode]= useState(false);
+    const [content, setContent]= useState('')
+    //POST SERVER CRUD
     const getPost =async(id)=>{
         try{
             const response = await callApi({
@@ -63,7 +67,108 @@ const PostDialog = ({ref, postId, isActive, reset})=> {
             console.log(err.message)
         }
     } 
-    
+    const editPost =async(id, update)=>{
+            try{
+            const response = await callApi({
+                method: 'PATCH',
+                path: `post/${id}`,
+                requiresAuth: true,
+                body: {content},
+                token: auth.accessToken,
+                retry: true,
+                includeCred:true
+            })
+            if(!response.ok)throw new Error('Could not update post');
+            const result = await response.json(); 
+            setPost(prev=>({...prev,content: result.post.content}));
+            update(prev=>{
+                 return prev.map(post=>
+                    post.id === id
+                    ? {...post, content: result.post.content}
+                    : post
+                )
+            })
+
+        }catch(err){
+            console.log(err.message)
+        }  
+    }
+    const likePost = async(id, update)=>{
+        try{
+            const response = await callApi({
+                method: 'PATCH',
+                path: `post/${id}/like`,
+                requiresAuth: true,
+                //body: options.body,
+                token: auth.accessToken,
+                retry: true,
+                includeCred:true
+            })
+            if(!response.ok) throw new Error('Could not preform action')
+            const result = await response.json();
+            setPost(prev=>({...prev,likes: result.likeCount}));
+            update(prev=>{
+                 return prev.map(post=>
+                    post.id === id
+                    ? {...post, likes: result.likeCount}
+                    : post
+                )
+            })
+        }catch(err){
+            console.log(err.message)
+        }
+    }
+    const dislikePost = async(id, update)=>{
+        try{
+            const response = await callApi({
+                method: 'PATCH',
+                path: `post/${id}/dislike`,
+                requiresAuth: true,
+                //body: options.body,
+                token: auth.accessToken,
+                retry: true,
+                includeCred:true
+            })
+            if(!response.ok) throw new Error('Could not preform action')
+            const result = await response.json();
+            setPost(prev=>({...prev,likes: result.likeCount}));
+            update(prev=>{
+                 return prev.map(post=>
+                    post.id === id
+                    ? {...post, likes: result.likeCount}
+                    : post
+                )
+            })
+        }catch(err){
+            console.log(err.message)
+        }
+    }
+    const deletePost = async (id, update)=>{
+        try{
+            if(!id) throw new Error ('Post id is not defined')
+            const response = await callApi({
+                method: 'DELETE',
+                path: `post/${id}`,
+                requiresAuth: true,
+                //body: options.body,
+                token: auth.accessToken,
+                retry: true,
+                includeCred:true
+            })
+            if(!response.ok){
+                const result = await response.json()
+                const errors = {...result.error.message}
+                throw new Error(`Error(${response.status}), error message: ${errors}`)
+            }
+            const result = await response.json();
+            update(prev=>{
+                return prev.filter(post => post.id !== id)
+            })
+        }catch(err){
+            console.log(err.message)
+        }
+    }
+    //
     useEffect(()=>{
         if(isActive) {
             ref.current.showModal()
@@ -75,8 +180,9 @@ const PostDialog = ({ref, postId, isActive, reset})=> {
         
     },[postId])
     useEffect(()=>{
-        console.log(data);
-    },[data])
+        if(!post)return
+        setContent(post.content)
+    },[post])
     return(
         <dialog ref={ref}  className={style.dialogWindow}>
             
@@ -96,12 +202,6 @@ const PostDialog = ({ref, postId, isActive, reset})=> {
                     </div>
                 <div className={style.AuthorOptions}>
                     <div style={{margin: '10px'}}>
-                       {/*<Icon.Delete color="#7f7f7f" title="Close window"
-                            fn={()=>{
-                                ref.current.close();
-                                reset()
-                            }}
-                        />*/} 
                         <h5 style={{color: 'rgb(147, 151, 147)', cursor: 'pointer'}}
                             onClick={()=>{
                             ref.current.close();
@@ -114,26 +214,97 @@ const PostDialog = ({ref, postId, isActive, reset})=> {
                 <div className={style.Options}>
                     {post?.authorId === auth?.user?.id&&(
                         <div style={{display: 'flex'}}>
-                            <Icon.Delete color='#828282' focusColor='#10101' title="Remove post"/>
-                            <Icon.EditMessage  color='#828282' focusColor='#10101' title="Edit post"/>
+                            {editMode? 
+                                (
+                                    <div style={{display: "flex",gap: '20px'}}>
+                                        <button
+                                            type="button"
+                                            onClick={()=>{
+                                                setEditMode(false)
+                                            }}
+                                        >Exit editMode </button> 
+                                        <button 
+                                            type="button"
+                                            onClick={()=>{
+                                                editPost(post.id);
+                                                setEditMode(false);
+                                            }}
+                                        > save</button>
+                                                                       
+                                    </div>
+
+                                ):(
+                                    <>
+                                        <Icon.Delete 
+                                            color='#828282' 
+                                            focusColor='#10101' 
+                                            title="Remove post"
+                                            fn={()=>{
+                                                deletePost(post.id, update)
+                                               ref.current.close();
+                                                reset() 
+                                            }}
+                                        />
+                                        <Icon.EditMessage  
+                                            color='#828282' 
+                                            focusColor='#10101' 
+                                            title="Edit post"
+                                            fn={()=>{
+                                                setEditMode(true)
+                                            }}
+                                        />
+                                    </>                                    
+                                )
+                            }
+
                         </div>
                     )}
-                    <h6 style={{color:'#8e8e8e'}}>{formatDateTime(post?.createdAt)}</h6>    
+                    <h6 style={{color:'#8e8e8e',textAlign: 'end'}}>
+                        {formatDateTime(post?.createdAt)}
+                    </h6>    
                 </div>
                 </div>
                 </div>
-                <div className={style.postContent}>
-                    {post?.content}
-                    {post?.photoUrl&&(
-                        <div>
-                            <img src={post.photoUrl} loading='lazy' className={style.postPhoto}/>
-                        </div>
-                    )}    
-                </div>
+                {editMode?(
+                    <div className={style.postContent}>
+                        <textarea  
+                            value={content}
+                            onChange={(e)=>{
+                                setContent(e.target.value)
+                            }}
+                        />  
+                        {post?.photoUrl&&(
+                            <div>
+                                <img src={post.photoUrl} loading='lazy' className={style.postPhoto}/>
+                            </div>
+                        )}                          
+                    </div>
+                ):(
+                    <div className={style.postContent}>
+                        {post?.content}
+                        {post?.photoUrl&&(
+                            <div>
+                                <img src={post.photoUrl} loading='lazy' className={style.postPhoto}/>
+                            </div>
+                        )}    
+                    </div>                    
+                )}
+
                 <div className={style.postOptions}>
                     <div>{post?.likes}</div>
-                    <Icon.Like color='#828282' focusColor='#10101'/>
-                    <Icon.Dislike color='#828282' focusColor='#10101'/>
+                    <Icon.Like 
+                        color='#828282' 
+                        focusColor='#10101'
+                        fn={()=>{
+                            likePost(post.id, update)
+                        }}/>
+                    <Icon.Dislike 
+                        color='#828282' 
+                        focusColor='#10101'
+                        fn={()=>{
+                            dislikePost(post.id, update)
+                        }}
+                    />
                 </div>
                 <div className={style.Comments} ref={contextRef}>
                     <h4>Comments:</h4>

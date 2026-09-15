@@ -48,6 +48,18 @@
     flex-direction: column;
     align-items: end;  
 }
+.AuthorOptions button{
+    background-color: rgb(147, 147, 147);
+    padding: 5px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+
+}
+.AuthorOptions button:hover{
+    background-color: rgb(198, 197, 197);
+
+}
 .postContent{
     display: flex;
     flex-direction: column;

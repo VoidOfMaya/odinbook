@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Icon } from '../iconhelper/icons';
 import style from './post.module.css';
 import { useOutletContext } from 'react-router-dom';
 const CreatePost = ({updatePost}) =>{
+    const fileRef = useRef(null);
     const {auth, callApi}= useOutletContext();
     const [newPost, setNewPost] = useState({content:'',photo:null});
     const [isSending, setIsSending]= useState(false);
@@ -32,13 +33,16 @@ const CreatePost = ({updatePost}) =>{
             if(!response.ok)throw new Error('Could not upload post')
             const result = await response.json();
             updatePost(prev =>[result.post, ...prev])
+            setNewPost({content:'',photo:null})
+            fileRef.current.value = ''
         }catch(err){
             console.log(err.message)
         }
         setIsSending(false);
-        setPreviewUrl(null);
-        setNewPost({content:'',photo:null})
     }
+    useEffect(()=>{
+        setNewPost({content:'',photo:null})
+    },[])
     useEffect(()=>{
         if (!newPost.photo) {
             //if photo is deselected/is null then set preview to null
@@ -56,6 +60,7 @@ const CreatePost = ({updatePost}) =>{
             <title>Post creation pannel</title>
             <form className={style.postForm}>
                 <input 
+                    ref={fileRef}
                     type='file' 
                     id='photo' 
                     accept="image/*"
@@ -113,6 +118,7 @@ const CreatePost = ({updatePost}) =>{
                 
                 <textarea 
                     placeholder='Whats on your mind today!' 
+                    value={newPost.content}
                     onChange={(e)=>{
                         setNewPost(prev=>({
                             ...prev,content: e.target.value
@@ -131,6 +137,7 @@ const CreatePost = ({updatePost}) =>{
                         size={30} color="#646363"  focusColor="#fff" title='Create Post'
                         fn={()=>{
                             uploadPost()
+                            setPreviewUrl(null);
                         }}/>                            
                         )}
 
