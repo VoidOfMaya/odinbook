@@ -21,18 +21,14 @@ const createPost = async (req, res, next)=>{
     const data = matchedData(req);
     try{
         let result = null;
-        console.log(`Debug: -1- is file in request? : ${req.file !== undefined}`)
         if(req.file){
             //handle posts with photo
             result = await cloudUpload(req.file.buffer);
-            console.log(`Debug: -2- is upload result valid? : ${result !== undefined}`)
             //checks if cloudinary  returned the correct objects
             if(!result.secure_url){ 
                 throw new Error('errors','internal Error: cloudinary url faulty, try again later!' )
-            } 
-            console.log(`Debug: -3- secure_url exists? : ${result.secure_url}`)           
+            }       
             const post = await service.newPost(req.user.id, data.content, result.secure_url)//takes userId, content,  photo
-            console.log(post)
             return res.status(201).json({message: "post created!", post: post})
         }else{
             //handle post without photo

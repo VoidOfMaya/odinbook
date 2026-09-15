@@ -24,6 +24,7 @@ const getComments = async(postId, limit = 1, cursor = null)=>{
     //return a list of comments based on the limit number cursor point
     //then order by date of creation in a descending order
     let rawChunk;
+    console.log(postId)
     if(cursor){
         rawChunk = await prisma.comment.findMany({
             where: {postId: Number(postId)},
@@ -65,8 +66,16 @@ const getComments = async(postId, limit = 1, cursor = null)=>{
     // rawchunk = A B C D E F <=rawchunk.length
     //chunck    = A B C D E   <= index <rawchunk.length -1
     //cursor    =           F <= index === rawchunk.length
-    const chunk = rawChunk.slice(0, -1)
-    const nextCursor = rawChunk[rawChunk.length - 1]
+    
+    const hasMore = rawChunk.length > Number(limit);
+    const chunk = hasMore?
+        rawChunk.slice(0, Number(limit))
+        :
+        rawChunk
+    const nextCursor = hasMore?
+        rawChunk[rawChunk.length - 1]
+        :
+        null
     return {chunk, nextCursor};
     
 }
