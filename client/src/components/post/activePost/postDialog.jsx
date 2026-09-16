@@ -48,6 +48,10 @@ const PostDialog = ({ref, postId, isActive, reset,deactivate, update})=> {
 
     const [editMode, setEditMode]= useState(false);
     const [content, setContent]= useState('')
+
+    //edit comment state
+    const [commentId, setCommentId] = useState(null);
+
     //POST SERVER CRUD
     const getPost =async(id)=>{
         try{
@@ -168,7 +172,87 @@ const PostDialog = ({ref, postId, isActive, reset,deactivate, update})=> {
             console.log(err.message)
         }
     }
-    //
+    //RENDER FUNCTIONS
+    const populateComments = () =>{
+        return(
+            <>
+            <h4>Comments:</h4>
+            {/*DATA STILL LOADING CASE*/}
+            {isLoadingComment && !data? (
+                <div style={{display: 'flex',justifyContent: 'center', margin: '5px'}}>
+                <Icon.Spinner />
+                </div>
+            ):(
+                <>{/*DATA HAS LOADED CASE*/}
+                    {!data? (
+                        <>{/*NO COMMENTS FOUND CASE*/}
+                            <h5
+                                style={{
+                                    color: "rgb(171, 171, 171)",
+                                    padding: '10px'
+                                }}
+                            > no comments found</h5>
+                        </>    
+                    ):(
+                        <div className={style.commentContainer}>
+                            {/*POPULATE COMMENTS*/}
+                            {data?.map((comment, index)=>{
+                                if(Number(data.length - 1) === Number(index)){
+                                    {/*COMMENT CARD IS THE LAST COMMENT*/} 
+                                    return(
+                                        <div key={comment.id} >
+                                            <div ref={lastRecordRef} /> 
+                                            <CommentCard key={comment.id} 
+                                            postId={postId}
+                                            comment={comment} 
+                                            authUser={auth.user}
+                                            postIsInFocus={true}
+                                            updateComments={updateData}
+                                            updateFeed= {update}
+                                            setEditCommentId={setCommentId}
+                                            editCommentId={commentId}
+                                            />   
+                                            {!hasMore  && (
+                                            <div style={{display: 'flex',justifyContent: 'center'}}>no More comments</div>   
+                                            )}                                                         
+                                        </div>
+                                    )
+                                }else{
+                                    {/*COMMENT CARD*/}
+                                    return(
+                                        <CommentCard key={comment.id} 
+                                        postId={postId}
+                                        comment={comment} 
+                                        authUser={auth.user}
+                                        postIsInFocus={true}
+                                        updateComments={updateData}
+                                        updateFeed= {update}
+                                        setEditCommentId={setCommentId}
+                                        editCommentId={commentId}
+                                        />     
+                                    )                                   
+                                }
+                            })} 
+                            {    
+                            /*COMMENT LOADING INDICATOR*/                     
+                            isLoadingComment&& (
+                                
+                                <div style={{display: 'flex',justifyContent: 'center', margin: '5px'}}>
+                                <Icon.Spinner />
+                                </div>
+                            ) }                                       
+                        </div>
+                    )}
+                </>     
+                )}
+            </>
+        )
+    }
+    useEffect(()=>{
+        //if comment is a number then  turn od edit mode if not then edit mode is off
+        //commentId can only be two states either null or a number type variable
+        commentId
+    },[commentId])
     useEffect(()=>{
         if(isActive) {
             ref.current.showModal()
@@ -308,76 +392,17 @@ const PostDialog = ({ref, postId, isActive, reset,deactivate, update})=> {
                     />
                 </div>
                 <div className={style.Comments} ref={contextRef}>
-                    <h4>Comments:</h4>
-                    {isLoadingComment && !data? (
-                        <div style={{display: 'flex',justifyContent: 'center', margin: '5px'}}>
-                        <Icon.Spinner />
-                        </div>
-                    ):(
-                        <>
-                            {!data? (
-                                <>
-                                    <h5
-                                        style={{
-                                            color: "rgb(171, 171, 171)",
-                                            padding: '10px'
-                                        }}
-                                    > no comments found</h5>
-                                </>    
-                            ):(
-                                <div className={style.commentContainer}>
 
-                                    {data?.map((comment, index)=>{
-                                        
-                                        if(Number(data.length - 1) === Number(index)){ 
-
-                                            return(
-                                                <div key={comment.id} >
-                                                    <div ref={lastRecordRef} /> 
-                                                    <CommentCard key={comment.id} 
-                                                    postId={postId}
-                                                    comment={comment} 
-                                                    authUser={auth.user}
-                                                    postIsInFocus={true}
-                                                    updateComments={updateData}
-                                                    updateFeed= {update}
-                                                    />   
-                                                    {!hasMore  && (
-                                                    <div style={{display: 'flex',justifyContent: 'center'}}>no More comments</div>   
-                                                    )} 
-                                                                                    
-                                                </div>
-                                            )
-                                        }else{
-                                            return(
-                                                <CommentCard key={comment.id} 
-                                                postId={postId}
-                                                comment={comment} 
-                                                authUser={auth.user}
-                                                postIsInFocus={true}
-                                                updateComments={updateData}
-                                                updateFeed= {update}
-                                                />     
-                                            )                                   
-                                        }
-                                    })} 
-                                    {                          
-                                    isLoadingComment&& (
-                                        <div style={{display: 'flex',justifyContent: 'center', margin: '5px'}}>
-                                        <Icon.Spinner />
-                                        </div>
-                                    ) }                       
-                                
-                                </div>
-                            )}
-
-                        </>     
-                    )}
+                    {populateComments()}
+                    
                     <CreateComment 
                         postId={postId} 
                         user={auth.user}
                         updateActive={updateData}
                         updateFeed={update}
+                        setEditCommentId={setCommentId}
+                        editCommentId={commentId}
+
                     />
                 </div>
                 

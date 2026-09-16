@@ -2,17 +2,22 @@ import style from './comment.module.css';
 import { Icon } from '../iconhelper/icons';
 import { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-const CreateComment = ({postId, user, commentCount,updateActive, updateFeed}) =>{
+const CreateComment = ({
+    postId, 
+    user, 
+    commentCount,
+    updateActive, 
+    updateFeed,
+    setEditCommentId,
+    editCommentId,
+
+}) =>{
     //creates a comment and updates comments !
     const {auth, callApi} = useOutletContext();
     const [isSending, setIsSending]= useState(false)
     const [content, setContent]= useState('')
 
     const shiftFeedComment =(postId, newComment)=>{
-        //get the 3 comments from the feed post based on id
-        //push the new comment to the top
-        //remove the last comment
-        //update feed post with updated comments
         updateFeed(prev =>
             prev.map(post =>
                 post.id === postId
@@ -38,22 +43,18 @@ const CreateComment = ({postId, user, commentCount,updateActive, updateFeed}) =>
             updateActive(prev =>[result.comment, ...prev])
             //insures feed data only has 3 comments
             shiftFeedComment(postId, result.comment)
-            
-            /*
-{
-                prev.map(post =>{
-                    post.id === postId
-                    ? [...post.comments, result.comment]
-                    : post
-                })
-            }
-            */
+
         }catch(err){
             console.log(err.message)
         }
     }
+    const editExistingComment = async ()=>{
+
+    }
     useEffect(()=>{
-        console.log(commentCount)
+        console.log(editCommentId)
+    },[editCommentId])
+    useEffect(()=>{
     },[])
     useEffect(()=>{
         
@@ -71,7 +72,10 @@ const CreateComment = ({postId, user, commentCount,updateActive, updateFeed}) =>
                     }}
                 >
                     {content.length}/750
-                </h6>             
+                </h6>  
+                {editCommentId?(
+                    <div style={{color: 'red', position:'absolute'}}>editing {editCommentId}</div>
+                ):('')}           
                 <textarea 
                     placeholder='Whats on your mind today!' 
                     value={content}

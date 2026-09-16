@@ -9,7 +9,10 @@ const CommentCard = ({
     authUser, 
     updateComments, 
     updateFeed, 
-    postIsInFocus = false})=>{
+    postIsInFocus = false,
+    editCommentId,
+    setEditCommentId,
+})=>{
     const {auth, callApi}= useOutletContext();
     const likeComment = async(id, update)=>{
         try{
@@ -126,7 +129,26 @@ const CommentCard = ({
                     { comment.authorId === authUser.id&&(
                         <>
                             <Icon.Delete size={25} color='#828282' focusColor='#10101'/>
-                            <Icon.EditMessage size={25} color='#828282' focusColor='#10101'/>
+                            <Icon.EditMessage 
+                                size={25} 
+                                color='#828282' 
+                                focusColor='#10101'
+                                fn={()=>{
+                                    //if exists and id not equal to commentid
+                                    //if trying to edit a different comment while already
+                                    //  editing
+                                    if(editCommentId){
+                                        if(editCommentId !== comment.id){
+                                            setEditCommentId(comment.id)                                            
+                                        }else{
+                                            setEditCommentId(null)  
+                                        }
+                                    }else{
+                                        
+                                        setEditCommentId(comment.id)  
+                                    }  
+                                }}
+                            />
 
                         </>
                     )}
