@@ -6,6 +6,15 @@ const createComment = async (userId, postId, content)=>{
             postId: Number(postId),
             authorId: Number(userId),
             content: String(content),
+        },
+        include:{
+            User:{
+                select:{
+                        photo: true,
+                        name: true,
+                        id: true                    
+                }
+            }
         }
     })
 }
@@ -40,7 +49,8 @@ const getComments = async(postId, limit = 1, cursor = null)=>{
                 User:{
                     select:{
                         photo: true,
-                        name: true
+                        name: true,
+                        id:true
                     }
                 }
             }
