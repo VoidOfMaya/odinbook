@@ -75,7 +75,7 @@ const FeedPage = ({})=>{
     useEffect(()=>{
         
         setPosts(data)
-        if(data.length === 0){
+        if(data === undefined || data.length === 0){
             console.log('something went wrong with data')
             redirect('/')
         }

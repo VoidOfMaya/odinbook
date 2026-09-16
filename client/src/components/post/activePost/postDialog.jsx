@@ -327,7 +327,9 @@ const PostDialog = ({ref, postId, isActive, reset,deactivate, update})=> {
                                 </>    
                             ):(
                                 <div className={style.commentContainer}>
+
                                     {data?.map((comment, index)=>{
+                                        
                                         if(Number(data.length - 1) === Number(index)){ 
 
                                             return(
@@ -371,7 +373,6 @@ const PostDialog = ({ref, postId, isActive, reset,deactivate, update})=> {
                     <CreateComment 
                         postId={postId} 
                         user={auth.user}
-                        commentCount={!data ? 0 : data.length}
                         updateActive={updateData}
                         updateFeed={update}
                     />

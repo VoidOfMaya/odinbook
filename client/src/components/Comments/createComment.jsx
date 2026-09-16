@@ -7,6 +7,20 @@ const CreateComment = ({postId, user, commentCount,updateActive, updateFeed}) =>
     const {auth, callApi} = useOutletContext();
     const [isSending, setIsSending]= useState(false)
     const [content, setContent]= useState('')
+
+    const shiftFeedComment =(postId, newComment)=>{
+        //get the 3 comments from the feed post based on id
+        //push the new comment to the top
+        //remove the last comment
+        //update feed post with updated comments
+        updateFeed(prev =>
+            prev.map(post =>
+                post.id === postId
+                ? {...post, comments:[newComment, ...post.comments].slice(0, 3)}
+                : post
+            )    
+        )
+    }
     const createComment = async (postId)=>{
         try{
             const response = await callApi({
@@ -20,12 +34,20 @@ const CreateComment = ({postId, user, commentCount,updateActive, updateFeed}) =>
             })
             if(!response.ok) throw new Error('Could not preform action')
             const result = await response.json();
+            //updates  pagination data for comments
             updateActive(prev =>[result.comment, ...prev])
             //insures feed data only has 3 comments
+            shiftFeedComment(postId, result.comment)
             
-            if(commentCountcommentCount >3 ){
-                updateFeed(prev =>[result.comment, ...prev])
+            /*
+{
+                prev.map(post =>{
+                    post.id === postId
+                    ? [...post.comments, result.comment]
+                    : post
+                })
             }
+            */
         }catch(err){
             console.log(err.message)
         }
