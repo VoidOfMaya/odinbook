@@ -181,7 +181,6 @@ const PostDialog = ({ref, postId, isActive, reset,deactivate, update})=> {
     },[postId])
     useEffect(()=>{
         if(!post)return
-        console.log(data)
         setContent(post.content)
     },[post])
     return(
@@ -336,10 +335,12 @@ const PostDialog = ({ref, postId, isActive, reset,deactivate, update})=> {
                                                 <div key={comment.id} >
                                                     <div ref={lastRecordRef} /> 
                                                     <CommentCard key={comment.id} 
+                                                    postId={postId}
                                                     comment={comment} 
                                                     authUser={auth.user}
                                                     postIsInFocus={true}
                                                     updateComments={updateData}
+                                                    updateFeed= {update}
                                                     />   
                                                     {!hasMore  && (
                                                     <div style={{display: 'flex',justifyContent: 'center'}}>no More comments</div>   
@@ -350,10 +351,12 @@ const PostDialog = ({ref, postId, isActive, reset,deactivate, update})=> {
                                         }else{
                                             return(
                                                 <CommentCard key={comment.id} 
+                                                postId={postId}
                                                 comment={comment} 
                                                 authUser={auth.user}
                                                 postIsInFocus={true}
                                                 updateComments={updateData}
+                                                updateFeed= {update}
                                                 />     
                                             )                                   
                                         }

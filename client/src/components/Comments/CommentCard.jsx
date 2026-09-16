@@ -3,7 +3,13 @@ import { Icon } from '../iconhelper/icons'
 import { useEffect } from 'react'
 import { formatDateTime } from '../../helpers/dateTime'
 import { useOutletContext } from 'react-router-dom'
-const CommentCard = ({comment, authUser, updateComments, postIsInFocus = false})=>{
+const CommentCard = ({
+    postId,
+    comment, 
+    authUser, 
+    updateComments, 
+    updateFeed, 
+    postIsInFocus = false})=>{
     const {auth, callApi}= useOutletContext();
     const likeComment = async(id, update)=>{
         try{
@@ -19,17 +25,34 @@ const CommentCard = ({comment, authUser, updateComments, postIsInFocus = false})
             if(!response.ok) throw new Error('Could not preform action')
             const result = await response.json();
             update(prev=>{
-                 return prev.map(post=>
-                    post.id === id
-                    ? {...post, likes: result.likeCount}
-                    : post
+                return prev.map(comment=>
+                    comment.id === id
+                    ? {...comment, likes: result.likeCount}
+                    : comment
                 )
+            })
+            updateFeed(prev=>{
+                //requires both postId and commentId
+                return prev.map(post=>{
+                    if(post.id === postId){
+                        return {
+                            ...post,
+                            comments:post.comments.map(comment =>
+                                comment.id === id
+                                ?{...comment, likes: result.likeCount}
+                                : comment  
+                            )
+                        }
+                    }else{
+                        return post
+                    }
+                })
             })
         }catch(err){
             console.log(err.message)
         }
     }
-    const dislikeComment= async(id, update)=>{
+    const dislikeComment= async(id, update)=>{""
         try{
             const response = await callApi({
                 method: 'PATCH',
@@ -48,6 +71,23 @@ const CommentCard = ({comment, authUser, updateComments, postIsInFocus = false})
                     ? {...post, likes: result.likeCount}
                     : post
                 )
+            })
+            updateFeed(prev=>{
+                //requires both postId and commentId
+                return prev.map(post=>{
+                    if(post.id === postId){
+                        return {
+                            ...post,
+                            comments:post.comments.map(comment =>
+                                comment.id === id
+                                ?{...comment, likes: result.likeCount}
+                                : comment  
+                            )
+                        }
+                    }else{
+                        return post
+                    }
+                })
             })
         }catch(err){
             console.log(err.message)
