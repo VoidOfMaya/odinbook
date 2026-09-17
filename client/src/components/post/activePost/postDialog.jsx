@@ -289,7 +289,6 @@ const PostDialog = ({ref, postId, isActive, reset,deactivate, update})=> {
     useEffect(()=>{
         
         if(!deleteComment) return
-        console.log(deleteComment)
         deleteCommentById(deleteComment)
         setDeleteComment(null)
     },[deleteComment])
