@@ -94,6 +94,15 @@ const editComment = async(id, content)=>{
         where: {id: Number(id)},
         data:{
             content: String(content),
+        },
+        include:{
+            User:{
+                select:{
+                    photo: true,
+                    name: true,
+                    id:true
+                }
+            }
         }
     })
 }

@@ -30,7 +30,6 @@ const getComments = async(req, res, next)=>{
         //console.log(commentIdArr)
         //console.log(`next cursor: ${[postComments?.nextCursor?.id, postComments.nextCursor.createdAt]}`)       
         //console.log(`has more?: ${hasMore}`)
-        console.log(postComments.chunk)
         res.status(200)
         .json({
             data: postComments.chunk,

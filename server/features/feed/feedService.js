@@ -33,6 +33,7 @@ const getfeed = async(friends, limit = 15, cursor = null)=>{
                             select:{
                                 name: true,
                                 photo: true,
+                                id: true
                             }
                         }
                     }
@@ -70,6 +71,7 @@ const getfeed = async(friends, limit = 15, cursor = null)=>{
                             select:{
                                 name: true,
                                 photo: true,
+                                id: true
                             }
                         }
                     }
