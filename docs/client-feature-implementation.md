@@ -265,10 +265,10 @@ dependency order rather than strictly by page.
 
 -   [x] Comment loading
 -   [x] Comment pagination
--   [ ] Create comment
--   [ ] Comment edit/delete
+-   [X] Create comment
+-   [x] Comment edit/delete
 -   [x] Comment like/dislike
--   [ ] Efficient individual-comment updates
+-   [x] Efficient individual-comment updates
 
 ### Phase 5 --- User Profile
 
