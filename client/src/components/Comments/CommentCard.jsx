@@ -10,8 +10,9 @@ const CommentCard = ({
     updateComments, 
     updateFeed, 
     postIsInFocus = false,
-    editCommentId,
-    setEditCommentId,
+    editComment,
+    setEditComment,
+    setDeleteComment
 })=>{
     const {auth, callApi}= useOutletContext();
     const likeComment = async(id, update)=>{
@@ -27,6 +28,7 @@ const CommentCard = ({
             })
             if(!response.ok) throw new Error('Could not preform action')
             const result = await response.json();
+            // update dialog window comments
             update(prev=>{
                 return prev.map(comment=>
                     comment.id === id
@@ -34,6 +36,7 @@ const CommentCard = ({
                     : comment
                 )
             })
+            //update feed post comments
             updateFeed(prev=>{
                 //requires both postId and commentId
                 return prev.map(post=>{
@@ -55,7 +58,7 @@ const CommentCard = ({
             console.log(err.message)
         }
     }
-    const dislikeComment= async(id, update)=>{""
+    const dislikeComment= async(id, update)=>{
         try{
             const response = await callApi({
                 method: 'PATCH',
@@ -69,10 +72,10 @@ const CommentCard = ({
             if(!response.ok) throw new Error('Could not preform action')
             const result = await response.json();
             update(prev=>{
-                 return prev.map(post=>
-                    post.id === id
-                    ? {...post, likes: result.likeCount}
-                    : post
+                 return prev.map(comment=>
+                    comment.id === id
+                    ? {...comment, likes: result.likeCount}
+                    : comment
                 )
             })
             updateFeed(prev=>{
@@ -128,7 +131,14 @@ const CommentCard = ({
                     <div>{comment.likes}</div>
                     { comment.authorId === authUser.id&&(
                         <>
-                            <Icon.Delete size={25} color='#828282' focusColor='#10101'/>
+                            <Icon.Delete 
+                                size={25} 
+                                color='#828282' 
+                                focusColor='#10101'
+                                fn={()=>{
+                                    const confirm = window.confirm('this action will permenantly delete your comment!')
+                                    confirm && setDeleteComment(comment.id)
+                                }}/>
                             <Icon.EditMessage 
                                 size={25} 
                                 color='#828282' 
@@ -137,15 +147,15 @@ const CommentCard = ({
                                     //if exists and id not equal to commentid
                                     //if trying to edit a different comment while already
                                     //  editing
-                                    if(editCommentId){
-                                        if(editCommentId !== comment.id){
-                                            setEditCommentId(comment.id)                                            
+                                    if(editComment.id !== null){
+                                        if(editComment.id !== comment.id){
+                                            setEditComment({id: comment.id, content: comment.content})                                            
                                         }else{
-                                            setEditCommentId(null)  
+                                            setEditComment({id: null, content:''})  
                                         }
                                     }else{
                                         
-                                        setEditCommentId(comment.id)  
+                                        setEditComment({id: comment.id, content: comment.content})  
                                     }  
                                 }}
                             />

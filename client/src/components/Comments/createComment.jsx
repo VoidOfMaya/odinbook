@@ -8,8 +8,9 @@ const CreateComment = ({
     commentCount,
     updateActive, 
     updateFeed,
-    setEditCommentId,
-    editCommentId,
+    setEditComment,
+    editComment,
+    
 
 }) =>{
     //creates a comment and updates comments !
@@ -18,13 +19,28 @@ const CreateComment = ({
     const [content, setContent]= useState('')
 
     const shiftFeedComment =(postId, newComment)=>{
-        updateFeed(prev =>
-            prev.map(post =>
-                post.id === postId
-                ? {...post, comments:[newComment, ...post.comments].slice(0, 3)}
-                : post
-            )    
-        )
+        editComment.id
+        ?   updateFeed(prev =>
+                prev.map(post =>
+                    post.id === postId
+                    ? {
+                        ...post, 
+                        comments: post.comments.map(comment =>
+                            comment.id === editComment.id
+                            ? {...comment, content: content}
+                            : comment
+                        )
+                    }
+                    : post
+                )    
+            )
+        :   updateFeed(prev =>
+                prev.map(post =>
+                    post.id === postId
+                    ? {...post, comments:[newComment, ...post.comments].slice(0, 3)}
+                    : post
+                )    
+            )
     }
     const createComment = async (postId)=>{
         try{
@@ -48,12 +64,40 @@ const CreateComment = ({
             console.log(err.message)
         }
     }
-    const editExistingComment = async ()=>{
+    const editExistingComment = async (commentId)=>{
+        try{
+            const response = await callApi({
+                method: 'PATCH',
+                path: `comment/${commentId}`,
+                requiresAuth: true,
+                body: {content: content},
+                token: auth.accessToken,
+                retry: true,
+                includeCred:true
+            })
+            if(!response.ok) throw new Error('Could not preform action')
+            const result = await response.json();
+            //updates  pagination data for comments
+            updateActive(prev =>
+                prev.map(comment =>
+                    comment.id === commentId
+                    ? {...comment, content: result.comment.content}
+                    : comment
+                )   
+            )
+            //insures feed data only has 3 comments
+            shiftFeedComment(postId, result.comment)
 
+        }catch(err){
+            console.log(err.message)
+        }
     }
     useEffect(()=>{
-        console.log(editCommentId)
-    },[editCommentId])
+        console.log(editComment.id)
+        editComment.id
+        ? setContent(editComment.content)
+        : setContent('')
+    },[editComment])
     useEffect(()=>{
     },[])
     useEffect(()=>{
@@ -73,8 +117,8 @@ const CreateComment = ({
                 >
                     {content.length}/750
                 </h6>  
-                {editCommentId?(
-                    <div style={{color: 'red', position:'absolute'}}>editing {editCommentId}</div>
+                {editComment.id?(
+                    <div style={{color: 'red', position:'absolute'}}>editing {editComment.id}</div>
                 ):('')}           
                 <textarea 
                     placeholder='Whats on your mind today!' 
@@ -93,7 +137,9 @@ const CreateComment = ({
                             focusColor="#fff" 
                             title='Create Post'
                             fn={()=>{
-                                createComment(postId)
+                                editComment.id
+                                ?editExistingComment(editComment.id)
+                                :createComment(postId)
                             }}
                         />                        
                     )}

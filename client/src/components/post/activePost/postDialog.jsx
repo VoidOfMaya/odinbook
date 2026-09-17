@@ -50,8 +50,11 @@ const PostDialog = ({ref, postId, isActive, reset,deactivate, update})=> {
     const [content, setContent]= useState('')
 
     //edit comment state
-    const [commentId, setCommentId] = useState(null);
-
+    const [editComment, setEditComment] = useState({id: null, content: ''});
+    
+    //delete comment states
+    const [deleteComment, setDeleteComment]= useState(null);
+ 
     //POST SERVER CRUD
     const getPost =async(id)=>{
         try{
@@ -172,6 +175,39 @@ const PostDialog = ({ref, postId, isActive, reset,deactivate, update})=> {
             console.log(err.message)
         }
     }
+    //COMMENT SERVER CRUD
+   const deleteCommentById = async(id)=>{
+        try{
+            const response = await callApi({
+                method: 'DELETE',
+                path: `comment/${id}`,
+                requiresAuth: true,
+                token: auth.accessToken,
+                retry: true,
+                includeCred:true
+            })
+            if(!response.ok) throw new Error('Could not preform action')
+            const result = await response.json();
+            //create new list of comments without comment at id
+            const updatedComments = data.filter(comment=> comment.id !== id)
+            //update local content state with updatedcomments array
+            //effectively replacing data with itself - comment
+            updateData(updatedComments)
+            //update feed state
+            update(prev=>{
+                //pass updated comments list and slice the top 3 for feed
+                return prev.map(post=>{
+                    return post.id === postId
+                    ?   {...post,comments: updatedComments.slice(0,3)}
+                    :   post
+                })
+            })
+        }catch(err){
+            console.log(err.message)
+        }
+    }
+
+
     //RENDER FUNCTIONS
     const populateComments = () =>{
         return(
@@ -209,8 +245,9 @@ const PostDialog = ({ref, postId, isActive, reset,deactivate, update})=> {
                                             postIsInFocus={true}
                                             updateComments={updateData}
                                             updateFeed= {update}
-                                            setEditCommentId={setCommentId}
-                                            editCommentId={commentId}
+                                            setEditComment={setEditComment}
+                                            editComment={editComment}
+                                            setDeleteComment ={setDeleteComment}
                                             />   
                                             {!hasMore  && (
                                             <div style={{display: 'flex',justifyContent: 'center'}}>no More comments</div>   
@@ -227,8 +264,9 @@ const PostDialog = ({ref, postId, isActive, reset,deactivate, update})=> {
                                         postIsInFocus={true}
                                         updateComments={updateData}
                                         updateFeed= {update}
-                                        setEditCommentId={setCommentId}
-                                        editCommentId={commentId}
+                                        setEditComment={setEditComment}
+                                        editComment={editComment}
+                                        setDeleteComment ={setDeleteComment}
                                         />     
                                     )                                   
                                 }
@@ -249,10 +287,12 @@ const PostDialog = ({ref, postId, isActive, reset,deactivate, update})=> {
         )
     }
     useEffect(()=>{
-        //if comment is a number then  turn od edit mode if not then edit mode is off
-        //commentId can only be two states either null or a number type variable
-        commentId
-    },[commentId])
+        
+        if(!deleteComment) return
+        console.log(deleteComment)
+        deleteCommentById(deleteComment)
+        setDeleteComment(null)
+    },[deleteComment])
     useEffect(()=>{
         if(isActive) {
             ref.current.showModal()
@@ -400,8 +440,8 @@ const PostDialog = ({ref, postId, isActive, reset,deactivate, update})=> {
                         user={auth.user}
                         updateActive={updateData}
                         updateFeed={update}
-                        setEditCommentId={setCommentId}
-                        editCommentId={commentId}
+                        setEditComment={setEditComment}
+                        editComment={editComment}
 
                     />
                 </div>
