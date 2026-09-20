@@ -8,7 +8,8 @@ feedRouter.get('/',
     validate.limit,
     validate.cursor,
     controller.getFeed);
-feedRouter.get('/me',
+feedRouter.get('/profile/:id',
+    validate.userId,
     validate.limit,
     validate.cursor,
     controller.getMyFeed)
