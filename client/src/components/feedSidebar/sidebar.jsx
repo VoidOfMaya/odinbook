@@ -1,10 +1,15 @@
 import { Icon } from "../iconhelper/icons"
 import style from './sidebar.module.css'
-const SideBar = ({user})=>{
+const SideBar = ({user, redirect})=>{
+     
     //options should include active friends and pending requests
     return(
         <main className={style.mainContainer}>
-            <div className={style.userDisplay}>
+            <div className={style.userDisplay}
+                onClick={()=>{             
+                    redirect('/profile/me')
+                }}
+            >
                 {user?.photo ?(
                     <img src={user.photo}
                         height={40}

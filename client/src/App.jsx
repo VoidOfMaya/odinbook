@@ -219,7 +219,7 @@ function App() {
         {auth
           ?(
             <div className={style.sidebarContainer}>
-                <SideBar user={auth.user}/>
+                <SideBar user={auth.user} redirect={goTo}/>
             </div>
           ):(
             <div className={style.sidebarContainer}>

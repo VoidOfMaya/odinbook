@@ -7,6 +7,7 @@ import { Login } from './components/login.jsx'
 import { GitLogin } from './components/gitlogin.jsx'
 import { FeedPage } from './pages/feed-page/feed-page.jsx'
 import { WelcomePage } from './pages/welcome-page/welcome.jsx'
+import { ProfilePage } from './pages/user-profile/profile.jsx'
 
 
 //page routing
@@ -15,7 +16,7 @@ const router = createBrowserRouter([
     children: [
       {path: '/', element: <WelcomePage />},
       {path:'/feed', element: <FeedPage />},
-      {path:'/profile', element: <FeedPage/>},
+      {path:'/profile/:userId', element: <ProfilePage/>},
       {path:'/search', element: <Login />},
       {path:'/login/github', element: <GitLogin />}
     ],
