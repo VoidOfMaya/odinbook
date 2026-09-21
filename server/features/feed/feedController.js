@@ -33,7 +33,7 @@ const getFeed = async( req, res, next)=>{
         let hasMore= true;
         if(feed.chunk.length < limit) hasMore = false;
         res.status(200)
-        .json({data: feed.chunk, nextCursor: feed.nextCursor.id || null, hasMore: hasMore})
+        .json({data: feed.chunk, nextCursor: feed.nextCursor?.id || null, hasMore: hasMore})
     }catch(err){
         next(err)
     }
@@ -41,16 +41,21 @@ const getFeed = async( req, res, next)=>{
 const getMyFeed = async(req, res, next)=>{
     const errors = validationResult(req);
     if(!errors.isEmpty()) throw new ApiError(400,"validation Error",errors.array())
-    const {limit, cursor, userId}= matchedData(req);
+    const {limit, cursor, id}= matchedData(req);
     //const id = req.user.id;
     try{ 
+        
         // supplie id as a single index array, getFeed expects an array of ids to work
-        const feed = await service.getfeed([userId], limit, cursor);
+        const feed = await service.getfeed([Number(id)], limit, cursor);
         if(!feed)throw new ApiError(500, "Could not find comments");
         console.log(feed)
         // get offset value for next comment chunk
+        //validate if  there are more posts
+        let hasMore= true;
+        if(feed.chunk.length < limit) hasMore = false;
+        console.log(feed.chunk.length)
         res.status(200)
-        .json({feed: feed.chunk, nextCursor: feed.nextCursor.id || null})
+        .json({feed: feed.chunk, nextCursor: feed.nextCursor?.id || null, hasMore: hasMore})
     }catch(err){
         next(err)
     }
