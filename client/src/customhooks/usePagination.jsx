@@ -23,6 +23,7 @@ const usePagenation = (fetchData, enabled = true) =>{
         loadRef.current=true;
         try{
             const result = await fetchData();
+            //console.log(result)
             if(result === undefined) throw new Error('Upstream error in provided fetch data callback functions')
             nextCursor.current = result.nextCursor
             hasMore.current = result.hasMore
