@@ -16,13 +16,18 @@ const getUser = async(id)=>{
 }
 const updateMyData= async(id, data, photo = null)=>{
     const user = await prisma.user.findUnique({where:{id: Number(id)}})
-    await prisma.user.update({
+    return prisma.user.update({
         where: {id: Number(id)},
         data:{
             name: data.name ===''? user.name: data.name,
             bio:   data.bio === ''? user.bio : data.bio,
             photo: photo
         },
+        select:{
+            name: true,
+            bio: true,
+            photo: true
+        }
     })
 
 }

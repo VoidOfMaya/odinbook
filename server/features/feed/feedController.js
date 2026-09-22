@@ -54,8 +54,11 @@ const getMyFeed = async(req, res, next)=>{
         let hasMore= true;
         if(feed.chunk.length < limit) hasMore = false;
         console.log(feed.chunk.length)
-        res.status(200)
-        .json({feed: feed.chunk, nextCursor: feed.nextCursor?.id || null, hasMore: hasMore})
+        res.status(200).json({
+            data: feed.chunk, 
+            nextCursor: feed.nextCursor?.id || null, 
+            hasMore: hasMore
+        })
     }catch(err){
         next(err)
     }
