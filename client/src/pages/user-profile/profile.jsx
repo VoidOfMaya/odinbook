@@ -7,7 +7,14 @@ import { PostCard } from '../../components/post/postCard';
 
 const ProfilePage =({})=>{
     const {userId}= useParams();
-    const {auth, callApi, activePost, selectPost, resetPost}= useOutletContext();
+    const {
+        auth,
+        updateAuthUser,
+        callApi, 
+        activePost, 
+        selectPost, 
+        resetPost
+    }= useOutletContext();
     
     const fileRef = useRef(null);
     //user metadata states
@@ -62,7 +69,7 @@ const ProfilePage =({})=>{
     //handle edit user profile 
     const handleUserEdit = async(data) =>{
         //check if edit info is different then authenticated user data
-        const formData = new formData();
+        const updateData = new FormData();
 
         //if no change found assign field as empty string else 
         //assign changed data to upload object
@@ -71,26 +78,27 @@ const ProfilePage =({})=>{
         console.log(userMeta)
         try{  
             //turning newpost to formData
-            const formData = new FormData();
-            formData.append('name', userMeta.name === auth.user.name? '': userMeta.name);
-            formData.append('bio', userMeta.bio === auth.user.bio? '': userMeta.name);
-            formData.append('photo', newPost.photo);
-            console.log(formData)
+            updateData.append('name', userMeta.name === auth.user.name? '': userMeta.name);
+            updateData.append('bio', userMeta.bio === auth.user.bio? '': userMeta.bio);
+            updateData.append('photo', userMeta.photo === auth.user.photo? '': userMeta.photo);
+            console.log(updateData)
             //sending call to server
-            //const response = await callApi({
-            //    method: 'POST',
-            //    path: `post/`,
-            //    requiresAuth: true,
-            //    body: formData,
-            //    token: auth.accessToken,
-            //    retry: true,
-            //    includeCred:true
-            //})
-            //if(!response.ok)throw new Error('Could not upload post')
-            //const result = await response.json();
-            //updatePost(prev =>[result.post, ...prev])
-            //setNewPost({content:'',photo:null})
-            //fileRef.current.value = ''
+            const response = await callApi({
+                method: 'PATCH',
+                path: `user/me`,
+                requiresAuth: true,
+                body: updateData,
+                token: auth.accessToken,
+                retry: true,
+                includeCred:true
+            })
+            if(!response.ok)throw new Error('Could not upload post')
+            const result = await response.json();
+            const updated = result.userData
+            // if update successfull update user dat at app auth.user level
+            updateAuthUser(updated.name,updated.bio,updated.photo)
+            setNewPost({content:'',photo:null})
+            fileRef.current.value = ''
         }catch(err){
             console.log(err.message)
         }
@@ -107,6 +115,10 @@ const ProfilePage =({})=>{
         }
         
     },[userId])
+    {/* update user profile if auth.user cahnges
+    useEffect(()=>{
+        if(!auth) return
+    },[auth.user])*/}
     useEffect(()=>{
         if(!data) return
         setMyPosts(data)
@@ -235,21 +247,24 @@ const ProfilePage =({})=>{
                                 }}>
                                 </textarea>
                                 <div className={style.userOptions} >
-                                                                {isSending
-                                ?(
-                                    <div style={{position: 'absolute'}}>
-                                        <Icon.Spinner size={10} />
-                                    </div>
-                                ):(
-                                    <>
-                                        {/*<Icon.Send 
-                                        size={30} color="#646363"  focusColor="#fff" title='Create Post'
-                                        fn={()= >{
-                                            uploadPost()
-                                            setPreviewUrl(null);
-                                        }}/>*/}  
-                                        <button type='button'>Save changes</button> 
-                                    </>                         
+                                {isSending?(
+                                        <div style={{position: 'absolute'}}>
+                                            <Icon.Spinner size={10} />
+                                        </div>
+                                    ):(
+                                        <>
+                                            {/*<Icon.Send 
+                                            size={30} color="#646363"  focusColor="#fff" title='Create Post'
+                                            fn={()= >{
+                                                uploadPost()
+                                                setPreviewUrl(null);
+                                            }}/>*/}  
+                                            <button type='button'
+                                                onClick={()=>{
+                                                    handleUserEdit()
+                                                }}
+                                            >Save changes</button> 
+                                        </>                         
                                 )}
                                     <Icon.Logout title='Exit Edit mode' fn={()=>{
                                         setEditMode(false)

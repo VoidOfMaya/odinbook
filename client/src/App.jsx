@@ -6,6 +6,7 @@ import { SideBar } from './components/feedSidebar/sidebar.jsx'
 import { WelcomePage } from './pages/welcome-page/welcome.jsx'
 import style from './App.module.css'
 import { Icon } from './components/iconhelper/icons.jsx'
+import { use } from 'passport'
 
 function App() {
   const [auth, setAuth] = useState(null);
@@ -14,6 +15,17 @@ function App() {
   const [dataLoading, setDataLoading]= useState(true);
   const goTo = useNavigate();
 
+  //USER DATA STATE 
+  const updateAuthUser = (name, bio, photo) =>{
+    setAuth(prev=>({
+      ...prev,user:{
+        ...prev.user,
+        name: name === prev.user.name? prev.user.name : name,
+        bio: bio === prev.user.bio? prev.user.bio : bio,
+        photo: photo === prev.user.photo? prev.user.photo : photo,
+      }
+    }))
+  }
   //ACTIVE POST STATES
   const [activePost, setActivePost] =  useState(null);
   const selectPost = (post)=>{
@@ -195,16 +207,19 @@ function App() {
 
     initAuth();
   },[])
+  //handles auth authentication logic
   useEffect(()=>{
-    if (!auth?.user) {
+    if (!auth?.accessToken) return;
+    //goTo('/feed')
+    //fetch app data
+  },[auth?.accessToken])
+  //handels auth user data changes
+  useEffect(()=>{
+    if(!auth?.user) {
       setDataLoading(false);
       return;
-    }else{
-      goTo('/feed')
     }
-    //fetch app data
-
-  },[auth])
+  },[auth?.user])
   // render while loading
   if(loadingAuth || dataLoading){
     return <div><Icon.Spinner /> Loading ...</div>
@@ -230,6 +245,7 @@ function App() {
         )}
         <Outlet context={{
           auth,
+          updateAuthUser,
           isAuthenticated,
           saveFeed,
           onLoginSuccess,
