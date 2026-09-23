@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Icon } from '../../components/iconhelper/icons';
 import { usePagenation } from '../../customhooks/usePagination';
 import { PostCard } from '../../components/post/postCard';
+import { PostDialog } from '../../components/post/activePost/postDialog';
 
 const ProfilePage =({})=>{
     const {userId}= useParams();
@@ -97,12 +98,12 @@ const ProfilePage =({})=>{
             const updated = result.userData
             // if update successfull update user dat at app auth.user level
             updateAuthUser(updated.name,updated.bio,updated.photo)
-            setNewPost({content:'',photo:null})
             fileRef.current.value = ''
         }catch(err){
             console.log(err.message)
         }
         setIsSending(false);
+        editMode(false);
     }
     useEffect(()=>{
         console.log(userId)

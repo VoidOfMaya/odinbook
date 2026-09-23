@@ -6,7 +6,6 @@ import { SideBar } from './components/feedSidebar/sidebar.jsx'
 import { WelcomePage } from './pages/welcome-page/welcome.jsx'
 import style from './App.module.css'
 import { Icon } from './components/iconhelper/icons.jsx'
-import { use } from 'passport'
 
 function App() {
   const [auth, setAuth] = useState(null);
@@ -210,7 +209,7 @@ function App() {
   //handles auth authentication logic
   useEffect(()=>{
     if (!auth?.accessToken) return;
-    //goTo('/feed')
+    goTo('/feed')
     //fetch app data
   },[auth?.accessToken])
   //handels auth user data changes
