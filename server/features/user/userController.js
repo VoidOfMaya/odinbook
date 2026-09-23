@@ -31,6 +31,7 @@ const updateProfile = async(req, res, next)=>{
             throw new Error('errors','internal Error: cloudinary url faulty, try again later!' )
         }       
         const userUpdate = await service.updateMyData(req.user.id, data, result.secure_url)//takes userId, content,  photo
+        console.log(userUpdate)
         return res.status(200).json({
             message: 'Profile updated successfully', 
             userData: userUpdate
@@ -38,6 +39,7 @@ const updateProfile = async(req, res, next)=>{
     }else{
         //handle post without photo
         const userUpdate = await service.updateMyData(req.user.id, data)//takes userId, content,  photo=null
+        console.log(userUpdate)
         return res.status(200).json({
             message: 'Profile updated successfully', 
             userData: userUpdate
@@ -57,6 +59,7 @@ const getUser = async(req,res, next)=>{
     const data = matchedData(req);  
    
     try{
+        console.log('accessing user data')
         // validate if user is private
         
         const userData = await service.getUser(data.id);

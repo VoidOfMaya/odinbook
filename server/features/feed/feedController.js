@@ -23,9 +23,9 @@ const getFeed = async( req, res, next)=>{
         const postIdArray = feed.chunk.map(post=>{
             return [post.id, post.createdAt]
         });
-        console.log('chunk contains:')
-        console.log(postIdArray)
-        console.log(`next cursor: ${[feed.nextCursor.id, feed.nextCursor.createdAt]}`)
+        //console.log('chunk contains:')
+        //console.log(postIdArray)
+        //console.log(`next cursor: ${[feed.nextCursor.id, feed.nextCursor.createdAt]}`)
         // get offset value for next comment chunk
         if(feed.chunk.length === 0 && !feed.cursor) throw new ApiError(404, "No Posts Found!")
         
