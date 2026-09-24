@@ -15,7 +15,7 @@ const PostCard = ({
     activePost,
     updatePost
 }) =>{
-    const {auth ,callApi}= useOutletContext();
+    const {auth ,callApi, goTo}= useOutletContext();
     if(!post.visibility) return
     const [inFocus, setInFocus] = useState(false);
     
@@ -94,15 +94,28 @@ const PostCard = ({
     return(
         <main className={style.postCard}ref={lastCardRef && lastCardRef}>
             <div className={style.postMeta}>
-                <div style={{display: 'flex',alignItems:'end'}}>
+                <div 
+                    style={{
+                        display: 'flex',
+                        alignItems:'end',
+                        cursor: 'pointer',
+                    }}
+                    
+                    onClick={()=>{
+                        post.User.id === auth.user.id
+                            ? goTo(`/profile/me`)
+                            : goTo(`/profile/${post.User.id}`)
+                    }}    
+                >
                     {post.User?.photo? (
                         <img src={post.User.photo} 
                             height={40}
                             width={40}
+                            title='View Profile'
                             style={{borderRadius: '25px'}}
                         />
                     ):(
-                        <Icon.User size={40} />
+                        <Icon.User size={40} title='View Profile'/>
                     )}
                     <h4 style={{color:'#454545'}}>@{post.User.name}</h4>                    
                 </div>

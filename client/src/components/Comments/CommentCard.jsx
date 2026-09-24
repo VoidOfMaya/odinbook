@@ -14,7 +14,7 @@ const CommentCard = ({
     setEditComment,
     setDeleteComment
 })=>{
-    const {auth, callApi}= useOutletContext();
+    const {auth, callApi, goTo}= useOutletContext();
     const likeComment = async(id, update)=>{
         try{
             const response = await callApi({
@@ -104,15 +104,27 @@ const CommentCard = ({
     return(
         <main>
             <div className={style.commentMeta}>
-                <div style={{display: 'flex',alignItems:'end'}}>
+                <div 
+                    style={{
+                        display: 'flex',
+                        alignItems:'end',
+                        cursor: 'pointer',
+                    }}
+                    onClick={()=>{
+                        comment.User.id === auth.user.id
+                            ? goTo(`/profile/me`)
+                            : goTo(`/profile/${comment.User.id}`)
+                    }}    
+                >
                     {comment?.User?.photo? (
                         <img src={comment.User.photo} 
                             height={25}
                             width={25}
+                            title='View Profile'
                             style={{borderRadius: '20px'}}
                         />
                     ):(
-                        <Icon.User size={25} />
+                        <Icon.User size={25} title='View Profile'/>
                     )}
                     <h5 style={{color:'#454545'}}>@{comment.User?.name}</h5>                    
                 </div>

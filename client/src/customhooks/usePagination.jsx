@@ -12,10 +12,15 @@ const usePagenation = (fetchData, enabled = true) =>{
     const [loadData, setLoadData]= useState(false);
     const [data, setData] = useState([]);
     const [issue, setIssue]= useState(null)
+    const [reload, setReload]= useState(true);
     // data altering endpoint
     const updateData = (newData)=>{
         setData(newData)
     }
+    const trigger =()=>{
+        setReload(!reload)
+    }
+    // internal hook function
     const getFirstChunk = async()=>{  
         //HANDELS FIRST CHUNK LOAD
         if (loadRef.current) return;    
@@ -83,7 +88,7 @@ const usePagenation = (fetchData, enabled = true) =>{
     useEffect(()=>{
         if(!enabled) return
         getFirstChunk()
-    },[enabled])
+    },[enabled, reload])
     if(issue){
         return issue
     }
@@ -95,6 +100,7 @@ const usePagenation = (fetchData, enabled = true) =>{
         loadData, 
         contextRef, 
         lastRecordRef,
+        trigger,
     }
 }
 export{

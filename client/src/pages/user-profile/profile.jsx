@@ -22,6 +22,8 @@ const ProfilePage =({})=>{
     const [editMode, setEditMode] = useState(false)
     const [previewUrl, setPreviewUrl]= useState(null)
     const [isSending, setIsSending]= useState(false);
+    //state where user is different then Auth.user
+    const [user, setUser]= useState({});
 
     const [ userMeta, setUserMeta] = useState({
         name: auth.user.name,
@@ -65,8 +67,102 @@ const ProfilePage =({})=>{
         hasMore,
         loadData, 
         contextRef, 
-        lastRecordRef
+        lastRecordRef,
+        trigger
     } = usePagenation(getData)
+    const fetchUser =async(id)=>{
+        try{
+            if(id === undefined) throw new Error('no valid id provided ')
+            const response = await callApi({
+                method: 'GET',
+                path: `user/${id}`,
+                requiresAuth: true,
+                //body: options.body,
+                token: auth.accessToken,
+                retry: true,
+                includeCred:true
+            })
+            if(!response.ok)throw new Error('callApi error could not retrieve data');
+            const result = await response.json()
+            setUser(result.user)
+        }
+        catch(err){
+            console.log(`Could not get data`)
+            console.log(err.message)
+        }
+    }
+    const populateUserMeta = ()=>{
+        return(
+            <>
+                {userId === "me"?
+                (
+                    <>
+                        <div className={style.userPhoto}>
+                            {auth?.user?.photo ?(
+                                <img src={auth.user.photo}
+                                    width='200em'
+                                    height='200em'
+                                    style={{
+                                        border: '4px solid rgb(183, 183, 183)',
+                                        borderRadius: '100px',
+                                    }}
+                                />
+                            ):(
+                                <Icon.User size={200} />                        
+                                ) 
+                            }
+                        </div>
+                        <div className={style.userInfo}>
+                            <h3 style={{color: 'rgb(93, 93, 93)', textAlign:'start'}}>
+                                @{auth.user.name}
+                            </h3>
+                            <h4 style={{color: 'rgb(93, 93, 93)', textAlign:'start'}}>
+                                Bio:
+                            </h4>
+                            <p>{auth.user.bio}</p>
+                            <div className={style.userOptions}>
+                                <Icon.EditeProfile fn={()=>{
+                                    setEditMode(true)
+                                }}/>                 
+                            </div>
+                        </div>                        
+                    </>
+                ):(
+                    <> 
+                        <div className={style.userPhoto}>
+                            {user?.photo ?(
+                                <img src={user.photo}
+                                    width='200em'
+                                    height='200em'
+                                    style={{
+                                        border: '4px solid rgb(183, 183, 183)',
+                                        borderRadius: '100px',
+                                    }}
+                                />
+                            ):(
+                                <Icon.User size={200} />                        
+                                ) 
+                            }
+                        </div>
+                        <div className={style.userInfo}>
+                            <h3 style={{color: 'rgb(93, 93, 93)', textAlign:'start'}}>
+                                @{user.name}
+                            </h3>
+                            <h4 style={{color: 'rgb(93, 93, 93)', textAlign:'start'}}>
+                                Bio:
+                            </h4>
+                            <p>{user.bio}</p>
+                            <div className={style.userOptions}>
+                                <div style={{display: 'flex'}}>+<Icon.Friends /></div>
+                                <div style={{display: 'flex'}}>-<Icon.Friends /></div>       
+                            </div>
+                        </div>      
+                    </>
+                )}
+            </>
+        )
+
+    }
     //handle edit user profile 
     const handleUserEdit = async(data) =>{
         //check if edit info is different then authenticated user data
@@ -103,18 +199,22 @@ const ProfilePage =({})=>{
             console.log(err.message)
         }
         setIsSending(false);
-        editMode(false);
+        setEditMode(false);
     }
     useEffect(()=>{
         console.log(userId)
+        //if(userId !== undefined) return;
         if(userId === "me"){
             //fetch and paginate user post data
+            console.log('assigning auth user')
+            setUser(auth.user)
+            trigger()//triggers pagination hook to rerender when needed
+        }else{
+            console.log('fetching user data')
+            fetchUser(userId)
         }
-        if(userId !== "me" && userId !== undefined){
-            //fetch selected user data
-            //fetch and paginate user post data
-        }
-        
+
+
     },[userId])
     {/* update user profile if auth.user cahnges
     useEffect(()=>{
@@ -284,47 +384,7 @@ const ProfilePage =({})=>{
                             </div>                           
                         </>
                     ):(
-                        <>
-                            <div className={style.userPhoto}>
-                                {auth?.user?.photo ?(
-                                    <img src={auth.user.photo}
-                                        width='200em'
-                                        height='200em'
-                                        style={{
-                                            border: '4px solid rgb(183, 183, 183)',
-                                            borderRadius: '100px',
-                                        }}
-                                    />
-                                ):(
-                                    <Icon.User size={200} />                        
-                                    ) 
-                                }
-
-                            </div>
-                            <div className={style.userInfo}>
-                            <h3 style={{color: 'rgb(93, 93, 93)', textAlign:'start'}}>
-                                @{auth.user.name}
-                                </h3>
-                            <h4 style={{color: 'rgb(93, 93, 93)', textAlign:'start'}}>
-                                Bio:
-                                </h4>
-                                <p>{auth.user.bio}</p>
-                                <div className={style.userOptions}>
-                                {userId === 'me'? (
-                                    <>
-                                        <Icon.EditeProfile fn={()=>{
-                                            setEditMode(true)
-                                        }}/>
-                                    </>
-                                ):(
-                                    <>  
-                                        <div style={{display: 'flex'}}>+<Icon.Friends /></div>
-                                        <div style={{display: 'flex'}}>-<Icon.Friends /></div>
-                                    </>
-                                )}                    
-                                </div>
-                            </div>                        
-                        </>
+                        <>{populateUserMeta()}</>
                     )}
 
                 </div>

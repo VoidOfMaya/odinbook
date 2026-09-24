@@ -12,6 +12,8 @@ function App() {
   const [loadingAuth, setLoadingAuth] = useState(true);
   const [feed, setFeed] = useState(null);
   const [dataLoading, setDataLoading]= useState(true);
+  //used to determain if user just logged in or token refreshed
+  const prevAccessToken = useRef(auth?.accessToken);
   const goTo = useNavigate();
 
   //USER DATA STATE 
@@ -208,8 +210,15 @@ function App() {
   },[])
   //handles auth authentication logic
   useEffect(()=>{
-    if (!auth?.accessToken) return;
-    goTo('/feed')
+    const previous = prevAccessToken.current;
+    const current = auth?.accessToken;
+
+    if(previous === undefined && current !== undefined){
+      goTo('/feed')      
+    }else{
+
+    }
+    prevAccessToken.current =current;
     //fetch app data
   },[auth?.accessToken])
   //handels auth user data changes
