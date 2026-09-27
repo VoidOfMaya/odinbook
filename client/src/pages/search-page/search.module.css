@@ -29,5 +29,7 @@
     border-radius: 25px 0px 0px 25px;
 }
 .searchResults{
-    background-color: #686868;
+    background-color: #e8e8e8;
+    padding: 10px;
+    border-radius: 10px;
 }

@@ -90,7 +90,10 @@ const usePagenation = (fetchData, enabled = true) =>{
         getFirstChunk()
     },[enabled, reload])
     if(issue){
-        return issue
+        return{ 
+            issue,
+            trigger,
+        }
     }
     return{
         data,

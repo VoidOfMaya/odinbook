@@ -12,6 +12,7 @@
 .loading{
     
     padding: 20px;
+    background-color: transparent;
     width: min-content;
     border: 5px solid transparent;
     border-radius: 25px;
