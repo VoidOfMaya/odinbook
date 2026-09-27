@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import style from './navbar.module.css'
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import { Icon } from "../iconhelper/icons";
 
-const TopNav = ({auth})=>{
+const TopNav = ({auth, redirect})=>{
 
     const {user, setUser} = useState(true);
 
@@ -14,17 +14,36 @@ const TopNav = ({auth})=>{
         <>
         {auth === null ?(
             <main className={style.topNav}>
-                <h1>Haaki</h1>
+                <h1>
+                    Haaki
+                </h1>   
+                
             </main>
             ):(
                 <main className={style.topNav}>
-                    <div className={style.title}>  
+                    <div className={style.title}
+                        onClick={()=>{
+                            redirect('/feed')
+                        }}
+                        aria-label="Haaki Logo"
+                    >  
                         <h1>Haaki</h1> 
+                        <Icon.Haaki 
+                            size={50} 
+                            color="rgb(109, 130, 159)" 
+                            focusColor="rgb(181, 204, 235)"
+                            title="Return to feed"
+                        />
                     </div>             
+                    {/* enable when in small screen mode
                     <ul className={style.navOptions}>
                         <Link to={'/feed'}>Feed</Link>
-                        <Link to={'/search'}>Search</Link>
-                        <Link to={'/profile'}>
+                        <Icon.Search 
+                            color="#5e5e5e" 
+                            focusColor="white"
+                            title="search users"
+                        />
+                        <Link to={'/profile/me'}>
                             {auth?.user?.photo?(
                                 <img src={auth.user.photo}
                                  height={40}
@@ -35,7 +54,8 @@ const TopNav = ({auth})=>{
                             )}
 
                         </Link>
-                    </ul>        
+                    </ul>
+                    */}        
                 </main>
 
         )}

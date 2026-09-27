@@ -12,4 +12,5 @@
 .title{
     display: flex;
     justify-self: start;
+    cursor: pointer;
 }

@@ -45,7 +45,10 @@ const SideBar = ({user, redirect})=>{
                 <Icon.Inbox     
                     size={30} color="#646363"  focusColor="rgb(30, 29, 30)" title="My inbox" />
                 <Icon.Search    
-                    size={30} color="#646363"  focusColor="rgb(30, 29, 30)" title="Search users"/>
+                    size={30} color="#646363"  focusColor="rgb(30, 29, 30)" title="Search users"
+                    fn={()=>{
+                        redirect('/search')
+                    }}/>
                 <Icon.Friends   
                     size={30} color="#646363"  focusColor="rgb(30, 29, 30)" title="My friends"/>
                 

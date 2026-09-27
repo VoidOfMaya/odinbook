@@ -57,7 +57,7 @@ const CreatePost = ({updatePost}) =>{
     },[newPost.photo])
     return(
         <main className={style.CreatePostContainer}>
-            <title>Post creation pannel</title>
+            
             <form className={style.postForm}>
                 <input 
                     ref={fileRef}

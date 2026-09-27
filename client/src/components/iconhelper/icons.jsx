@@ -379,6 +379,30 @@ const AddPhoto = ({fn = null, color ='#27282c', focusColor='#62646b', size=25, t
         </svg>
     )
 }
+//website logo
+const Haaki = ({fn = null, color ='#27282c', focusColor='#62646b', size=25, title='home'})=>{
+    const [focuse, setFocus]= useState(false);
+    return(
+        <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            viewBox="0 0 100 100"
+            role="img"
+            style={{cursor: 'pointer'}} 
+            height={`${size}px`}
+            width={`${size}px`}
+            fill={focuse? focusColor : color}
+                    onMouseEnter={()=>setFocus(true)}
+                    onMouseLeave={()=>setFocus(false)}
+            onClick={()=> fn? fn(): null}
+            >
+                <title>{title}</title>
+            <path d="M18 29 C18 19 26 13 36 13 H64 C74 13 82 19 82 29 V51
+                     C82 61 74 68 64 68 H47 L32 83 V68 H36 C26 68 18 61 
+                     18 51 Z"
+            />
+        </svg>
+    )
+}
 //MOVING ICONT
 const Spinner = ({color ='#7d7d7d',size=20})=>{
     return(
@@ -404,7 +428,8 @@ const Icon ={
     Eye,
     Inbox,
     AddPhoto,
-    Spinner
+    Spinner,
+    Haaki
 
 }
 export{

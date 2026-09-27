@@ -236,7 +236,7 @@ function App() {
   return (
     <main className={style.appContainer}>
       <div className={style.topnavContainer}>
-        <TopNav  auth={auth}/>  
+        <TopNav  auth={auth} redirect={goTo}/>  
       </div>
       <div className={style.pageContainer}>
         {auth

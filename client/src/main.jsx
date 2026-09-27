@@ -8,6 +8,7 @@ import { GitLogin } from './components/gitlogin.jsx'
 import { FeedPage } from './pages/feed-page/feed-page.jsx'
 import { WelcomePage } from './pages/welcome-page/welcome.jsx'
 import { ProfilePage } from './pages/user-profile/profile.jsx'
+import { Search } from './pages/search-page/search.jsx'
 
 
 //page routing
@@ -17,7 +18,7 @@ const router = createBrowserRouter([
       {path: '/', element: <WelcomePage />},
       {path:'/feed', element: <FeedPage />},
       {path:'/profile/:userId', element: <ProfilePage/>},
-      {path:'/search', element: <Login />},
+      {path:'/search', element: <Search/>},
       {path:'/login/github', element: <GitLogin />}
     ],
     errorElement:<div>Page not found</div>

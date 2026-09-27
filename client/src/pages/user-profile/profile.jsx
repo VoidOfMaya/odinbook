@@ -202,24 +202,18 @@ const ProfilePage =({})=>{
         setEditMode(false);
     }
     useEffect(()=>{
-        console.log(userId)
-        //if(userId !== undefined) return;
         if(userId === "me"){
             //fetch and paginate user post data
-            console.log('assigning auth user')
             setUser(auth.user)
             trigger()//triggers pagination hook to rerender when needed
         }else{
-            console.log('fetching user data')
+             // console.log('fetching user data')
             fetchUser(userId)
+            trigger()
         }
 
 
     },[userId])
-    {/* update user profile if auth.user cahnges
-    useEffect(()=>{
-        if(!auth) return
-    },[auth.user])*/}
     useEffect(()=>{
         if(!data) return
         setMyPosts(data)
