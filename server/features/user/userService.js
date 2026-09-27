@@ -70,7 +70,7 @@ const findMatchingUsers= async(name, userId, limit = 15, cursor= null)=>{
     }else{
         rawChunk = await prisma.user.findMany({
             where:{
-                name:{startsWith: String(name)}
+                name:{contains: String(name)}
             },
             orderBy:{
                 createdAt: 'desc'
@@ -97,6 +97,7 @@ const findMatchingUsers= async(name, userId, limit = 15, cursor= null)=>{
     }
     const chunk = rawChunk.slice(0, -1)
     const nextCursor = rawChunk[rawChunk.length - 1]
+
     return {chunk, nextCursor};
 }
 const getAllUsers = async(userId, limit =15, cursor= null)=>{

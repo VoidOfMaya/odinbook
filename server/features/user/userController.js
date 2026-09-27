@@ -2,6 +2,7 @@ import { ApiError } from "../../errorhelper.js";
 import { validationResult, matchedData } from "express-validator";
 import { service } from "./userService.js"
 import {cloudUpload} from '../photo/cloudinary.js'
+import { json } from "express";
 
 const getMe = async(req, res, next)=>{
 
@@ -78,13 +79,16 @@ const searchUsers = async(req, res, next)=>{
     let usersList;
     try{
         console.log(name)
-        if(name === '' || name === undefined || name === null){
-            console.log('fetching user index')
-            usersList = await service.getAllUsers(req.user.id);
-        }else{
-            usersList = await service.findMatchingUsers(name, req.user.id,limit, cursor);            
+        if(!name){
+            console.log(`name value: ${name},status: error`)
+            return res.status(200).json({
+                message: "no search value provided"
+                })
         }
-
+        console.log(`name value: ${name},status: searching`)
+        usersList = await service.findMatchingUsers(name, req.user.id,limit, cursor);            
+        
+        console.log(usersList)
         if(usersList.chunk.length === 0) return res.status(404).json({message: 'User not found'})
         
         //sanitizing data to reflect each users connection status to current user
