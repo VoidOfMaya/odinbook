@@ -94,7 +94,7 @@ const FeedPage = ({})=>{
                             if(Number(posts.length - 1) === Number(index)){     
                                
                                 return(
-                                    <>
+                                    <div key={post.id}>
                                         <div key={'last_post'} style={{display: "flex", justifyContent: 'center'}}>
                                             <div ref={lastRecordRef} />  
                                             <PostCard key={post.id}  
@@ -116,7 +116,7 @@ const FeedPage = ({})=>{
                                                 <Icon.Spinner />
                                             </div>
                                         )}
-                                    </>                                          
+                                    </div>                                          
                                 )
                             }else{
                                 return(
