@@ -32,4 +32,33 @@
     background-color: #e8e8e8;
     padding: 10px;
     border-radius: 10px;
+    width: 70%;
+    justify-items: center;
+}
+.userCard{
+    display: grid;
+    grid-template-columns: 2fr 2fr 1fr;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px 0px 10px 0px;
+    background-color: #f4f4f4;
+}
+.userCard img{
+    border-radius: 50px;
+}
+.tableHead{
+    display: grid;
+    grid-template-columns: 2fr 2fr 1fr;
+    padding: 0px 10px 0px 10px;
+    font-weight: bolder;
+    font-size: large;
+    color: #717171;
+}
+.userOptions{
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
 }

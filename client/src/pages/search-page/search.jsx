@@ -3,6 +3,7 @@ import { useOutletContext } from 'react-router-dom'
 import { usePagenation } from '../../customhooks/usePagination'
 import { Icon } from '../../components/iconhelper/icons'
 import style from './search.module.css'
+import { Card } from './userCard'
 
 const Search =({})=>{
 
@@ -50,21 +51,11 @@ const Search =({})=>{
         trigger,
         lastRecordRef
     } = usePagenation(getData)
-
-    const [result, setResult] = useState([]);
     useEffect(()=>{
-        
-       // trigger();
-    },[searchInput])
-    useEffect(()=>{
-        console.log(data)
-        //setResult(data)
     },[data])
     useEffect(()=>{
         if(issue)console.log(issue)
     },[issue])
-    useEffect(()=>{
-    },[result])
     return(
         <>
             <div className={style.mainContainer}>
@@ -81,34 +72,33 @@ const Search =({})=>{
                     </input>
                     <Icon.Search />
                 </div>
-                <div className={style.searchResults}>
+                <div className={style.searchResults} ref={contextRef}>
                     {loading?(
                         <Icon.Spinner />
                     ):(
-                    <>
-                    {data ?(
                         <>
-                            {data?.map(user =>{
-                                return(
-                                    <div key={user.id}>
-                                        <div>
-                                            <img src={user.photo} />
-                                            <div>name: {user.name}</div>
-                                        </div>
+                            {data ?(
+                                <>
+                                    <div className={style.tableHead}>
+                                        <div>User</div>
+                                        <div>Status</div>
+                                        <div>Options</div>
                                     </div>
-                                )
-                            })}
-                            <div ref={lastRecordRef} />                        
+                                    {data?.map(user =>{
+                                        return(
+                                            <Card key={user.id} data={user} />
+                                        )
+                                    })}
+                                    <div ref={lastRecordRef} />                        
+                                </>
+                            ):(
+                                <div>
+                                    No Results Found!
+                                </div>
+                            )}
                         </>
-                    ):(
-                        <div>
-                            No Results Found!
-                        </div>
                     )}
-
-                    </>
-                    )
-                    }
+                    <div ref={lastRecordRef}></div>
                 </div>
             </div>
         </>

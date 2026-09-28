@@ -94,6 +94,9 @@ const usePagenation = (fetchData, enabled = true) =>{
         return{ 
             issue,
             trigger,
+            loadData, 
+            contextRef, 
+            lastRecordRef,
         }
     }
     return{
