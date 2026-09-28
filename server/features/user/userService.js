@@ -34,16 +34,16 @@ const updateMyData= async(id, data, photo = null)=>{
 const isUserPrivate = async(id)=>{
 
 }
-const findMatchingUsers= async(name, userId, limit = 15, cursor= null)=>{
+const findMatchingUsers= async(name, userId, limit = 20, cursor= null)=>{
     //uuser search pagination
     let rawChunk;
     if(cursor){
         rawChunk = await prisma.user.findMany({
             where:{
-                name:{startsWith: String(name)}
+                name:{contains: String(name), mode: 'insensitive'}
             },
             orderBy:{
-                createdAt: 'desc'
+                id: 'desc'
             },
             select:{
                 id: true,
@@ -70,10 +70,10 @@ const findMatchingUsers= async(name, userId, limit = 15, cursor= null)=>{
     }else{
         rawChunk = await prisma.user.findMany({
             where:{
-                name:{contains: String(name)}
+                name:{contains: String(name), mode: 'insensitive'}
             },
             orderBy:{
-                createdAt: 'desc'
+                id: 'desc'
             },
             select:{
                 id: true,
@@ -95,9 +95,16 @@ const findMatchingUsers= async(name, userId, limit = 15, cursor= null)=>{
             take: Number(limit)+ 1,         
         })  
     }
-    const chunk = rawChunk.slice(0, -1)
-    const nextCursor = rawChunk[rawChunk.length - 1]
-
+    //derive next cursor onlly when record quantity equals limit+ 1
+    const hasMore = rawChunk.length > Number(limit);
+    const chunk = hasMore?
+        rawChunk.slice(0, Number(limit))
+        :
+        rawChunk
+    const nextCursor = hasMore?
+        rawChunk[rawChunk.length - 1]
+        :
+        null
     return {chunk, nextCursor};
 }
 const getAllUsers = async(userId, limit =15, cursor= null)=>{
