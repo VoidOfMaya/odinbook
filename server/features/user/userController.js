@@ -87,8 +87,6 @@ const searchUsers = async(req, res, next)=>{
         }
         console.log(`name value: ${name},status: searching`)
         usersList = await service.findMatchingUsers(name, req.user.id,limit, cursor);            
-        
-        console.log(usersList)
         if(usersList.chunk.length === 0) return res.status(404).json({message: 'User not found'})
         
         //sanitizing data to reflect each users connection status to current user
@@ -96,18 +94,19 @@ const searchUsers = async(req, res, next)=>{
             const sentConnection = user.friendSent;
             const recievedConnection = user.friendsRecieved;
             let status = 'NONE';
-            sentConnection.length > 0? status = sentConnection.status : status;
-            recievedConnection.length > 0?status = recievedConnection.status : status
+            //connection variables are arrays of object, at most containing 1 object for status
+            //access status content through the connection var arrays zero'th index
+            sentConnection.length > 0? status = sentConnection[0].status : status;
+            recievedConnection.length > 0?status = recievedConnection[0].status : status
              
-            const newUser={
+            const sanUser ={  //edited user data
                 id: user.id,
                 name: user.name,
                 photo: user.photo,
                 connection: status
             }
-            return newUser
+            return sanUser
         })
-        console.log(sanitizedUsers)
         return res.status(200).json({
             users: sanitizedUsers,
             nextCursor: usersList.nextCursor !== null
