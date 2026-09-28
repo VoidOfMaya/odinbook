@@ -49,6 +49,7 @@ const findMatchingUsers= async(name, userId, limit = 20, cursor= null)=>{
                 id: true,
                 name: true,
                 photo: true,
+                isPrivate: true,
                 friendSent:{
                     where: {friendId: Number(userId)},
                     select:{
@@ -79,6 +80,7 @@ const findMatchingUsers= async(name, userId, limit = 20, cursor= null)=>{
                 id: true,
                 name: true,
                 photo: true,
+                isPrivate: true,
                 friendSent:{
                     where:{friendId: Number(userId)},
                     select:{
