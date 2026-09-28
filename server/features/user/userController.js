@@ -108,7 +108,7 @@ const searchUsers = async(req, res, next)=>{
             return sanUser
         })
         return res.status(200).json({
-            users: sanitizedUsers,
+            data: sanitizedUsers,
             nextCursor: usersList.nextCursor !== null
                 ? usersList.nextCursor.id
                 : null
