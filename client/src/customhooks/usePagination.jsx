@@ -19,6 +19,7 @@ const usePagenation = (fetchData, enabled = true) =>{
     }
     const trigger =()=>{
         setReload(!reload)
+        setIssue(null)
     }
     // internal hook function
     const getFirstChunk = async()=>{  
@@ -36,7 +37,7 @@ const usePagenation = (fetchData, enabled = true) =>{
             setLoadData(false)  
                 
         }catch(err){
-            console.log(err.message)
+            //console.log(err.message)
             setIssue(err.message)
         }finally{
             loadRef.current=false;
@@ -58,7 +59,7 @@ const usePagenation = (fetchData, enabled = true) =>{
             setData(prevData =>[...prevData,...result.data])  
             setLoadData(false)
         }catch(err){
-            console.log(err.message)
+            //console.log(err.message)
             setIssue(err.message)
         }finally{
             loadRef.current=false;

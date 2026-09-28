@@ -54,13 +54,15 @@ const Search =({})=>{
     const [result, setResult] = useState([]);
     useEffect(()=>{
         
-        trigger();
+       // trigger();
     },[searchInput])
     useEffect(()=>{
-        if(!issue) return
         console.log(data)
         //setResult(data)
     },[data])
+    useEffect(()=>{
+        if(issue)console.log(issue)
+    },[issue])
     useEffect(()=>{
     },[result])
     return(
@@ -72,6 +74,7 @@ const Search =({})=>{
                         value={searchInput}
                         onChange={(e)=>{
                             setSearchInput(e.target.value)
+                            trigger()
                         }}
                     >
 
