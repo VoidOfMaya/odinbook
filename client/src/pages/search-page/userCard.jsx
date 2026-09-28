@@ -37,10 +37,29 @@ const  Card = ({data}) =>{
         <>
             <div className={style.userCard}>
                 <div style={{display: 'flex', alignItems: 'center'}}>
-                    <img src={data.photo}  
-                        height='70px'
-                        width='70px'
-                    />                             
+                    <div
+                        onClick={()=>{
+                            if(data.isPrivate){
+                                alert('can not view private user, request to connect to be able to view user profile')
+                            }
+                        }}
+                    >
+                        <title>view profile</title>
+                        {data.photo? (
+                            <img src={data.photo}  
+                                height='70px'
+                                width='70px'
+                                style={{
+                                    cursor: 'pointer',
+                                    border: `${data.isPrivate? '1px solid red': '1px solid green'}`
+                                }}
+                            /> 
+                        ):(
+                            <Icon.User size={70} title='view Profile'/>
+                        )}                        
+                    </div>
+
+                            
                     <div>@{data.name}</div>                                             
                 </div>
                 <div>

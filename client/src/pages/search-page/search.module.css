@@ -23,6 +23,7 @@
     border: 1px solid rgb(17, 0, 17);
     border-radius: 20px;
     align-items: center;
+
 }
 .searchBar input{
     width: 100%;
@@ -34,6 +35,23 @@
     border-radius: 10px;
     width: 70%;
     justify-items: center;
+    height: 90%;
+    position: relative;
+}
+.tableHead{
+    display: grid;
+    grid-template-columns: 2fr 2fr 1fr;
+    padding: 0px 10px 0px 10px;
+    font-weight: bolder;
+    font-size: large;
+    color: #717171;
+}
+.scrollContainer{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow-y: scroll;
 }
 .userCard{
     display: grid;
@@ -49,14 +67,7 @@
 .userCard img{
     border-radius: 50px;
 }
-.tableHead{
-    display: grid;
-    grid-template-columns: 2fr 2fr 1fr;
-    padding: 0px 10px 0px 10px;
-    font-weight: bolder;
-    font-size: large;
-    color: #717171;
-}
+
 .userOptions{
     display: flex;
     justify-content: space-between;

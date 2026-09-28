@@ -72,33 +72,40 @@ const Search =({})=>{
                     </input>
                     <Icon.Search />
                 </div>
-                <div className={style.searchResults} ref={contextRef}>
-                    {loading?(
-                        <Icon.Spinner />
-                    ):(
-                        <>
-                            {data ?(
-                                <>
-                                    <div className={style.tableHead}>
-                                        <div>User</div>
-                                        <div>Status</div>
-                                        <div>Options</div>
+                <div className={style.searchResults}>
+                    <div className={style.tableHead}>
+                        <div>User</div>
+                        <div>Status</div>
+                        <div>Options</div>
+                    </div>
+                    <div ref={contextRef} className={style.scrollContainer}>
+                        {loading?(
+                            <Icon.Spinner />
+                        ):(
+                            <>
+                                {data ?(
+                                    <>
+
+                                        {data?.map((user, index) =>{
+                                            return(
+                                                <div key={user.id}>
+                                                    {data.length === index +1 && (
+                                                        <div ref={lastRecordRef} />  
+                                                    )}
+                                                    <Card  data={user} />
+                                                </div>
+                                            )
+                                        })}                      
+                                    </>
+                                ):(
+                                    <div>
+                                        No Results Found!
                                     </div>
-                                    {data?.map(user =>{
-                                        return(
-                                            <Card key={user.id} data={user} />
-                                        )
-                                    })}
-                                    <div ref={lastRecordRef} />                        
-                                </>
-                            ):(
-                                <div>
-                                    No Results Found!
-                                </div>
-                            )}
-                        </>
-                    )}
-                    <div ref={lastRecordRef}></div>
+                                )}
+                            </>
+                        )}
+                        <div ref={lastRecordRef}></div>
+                    </div>
                 </div>
             </div>
         </>
