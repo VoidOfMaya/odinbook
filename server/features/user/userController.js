@@ -103,6 +103,7 @@ const searchUsers = async(req, res, next)=>{
                 id: user.id,
                 name: user.name,
                 photo: user.photo,
+                isPrivate: user.isPrivate,
                 connection: status
             }
             return sanUser
