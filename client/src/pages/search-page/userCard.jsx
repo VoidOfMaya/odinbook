@@ -1,6 +1,8 @@
 import style from './search.module.css';
 import { Icon } from '../../components/iconhelper/icons';
+import {useOutletContext } from 'react-router-dom';
 const  Card = ({data}) =>{
+    const {auth ,goTo} = useOutletContext();
     //handles 4 states:-BLOCKED/ACTIVE/PENDING/DECLINED/NONE
     const handleConnectionOptions = (status) =>{
         return(
@@ -34,8 +36,8 @@ const  Card = ({data}) =>{
         )
     }
     const handlePrivacy = (user)=>{
-        if(user.connection === 'ACTIVE') return true
-        if(user.isPrivate) return false
+        if(user.connection === 'ACTIVE') return true //if friendship exists go to user regardless
+        if(user.isPrivate) return false //if privacy is true then return false  to disable interaction
         return true
     }
     return(
@@ -44,9 +46,13 @@ const  Card = ({data}) =>{
                 <div style={{display: 'flex', alignItems: 'center'}}>
                     <div
                         onClick={()=>{
-                            if(data.isPrivate){
+                            if(handlePrivacy(data)){
+                                data.id === auth.user.id
+                                    ? goTo(`/profile/me`)
+                                    : goTo(`/profile/${data.id}`)
+                            }else(
                                 alert('can not view private user, request to connect to be able to view user profile')
-                            }
+                            )
                         }}
                     >
                         <title>view profile</title>
