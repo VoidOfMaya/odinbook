@@ -44,6 +44,7 @@
     padding: 0px 10px 0px 10px;
     font-weight: bolder;
     font-size: large;
+    justify-items: space-around;
     color: #717171;
 }
 .scrollContainer{

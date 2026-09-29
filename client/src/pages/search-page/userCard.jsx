@@ -2,14 +2,43 @@ import style from './search.module.css';
 import { Icon } from '../../components/iconhelper/icons';
 import {useOutletContext } from 'react-router-dom';
 const  Card = ({data}) =>{
-    const {auth ,goTo} = useOutletContext();
+    const {auth ,goTo,callApi} = useOutletContext();
+    // FRIENDSHIP FUNCTIONS
+    const blockUser = async(userId)=>{
+
+    }
+    const unblockUser = async(userId)=>{
+        
+    }
+    const declineConnectionReq = async(Id)=>{
+        
+    }
+    const acceptConnectionReq = async(Id)=>{
+        
+    }
+    const terminateConnection = async(id)=>{
+
+    }
+    const sendConnectionReq =async(userId)=>{
+        
+    }
+
     //handles 4 states:-BLOCKED/ACTIVE/PENDING/DECLINED/NONE
     const handleConnectionOptions = (status) =>{
         return(
             <div className={style.userOptions}>
                 {status === 'BLOCKED' &&(
                     <>
-                        <Icon.Block color='red' focusColor='red' title='click to unblock'/>                  
+                        <Icon.Block 
+                            color='red' 
+                            focusColor='red' 
+                            title='click to unblock'
+                            fn={async()=>{
+                                const confirm = window.confirm('this action will unblock a user and allow them to interact with you again')
+                                if(!confirm) return
+
+                            }}
+                        />                  
                     </>
                 )}   
                 {status === 'ACTIVE' &&(

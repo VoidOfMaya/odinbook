@@ -80,13 +80,16 @@ const Search =({})=>{
                     </div>
                     <div ref={contextRef} className={style.scrollContainer}>
                         {loading?(
-                            <Icon.Spinner />
+                            <div style={{alignSelf: 'center', margin: 'auto'}}>
+                                <Icon.Spinner color='rgb(56, 56, 56)'/>
+                            </div>
                         ):(
                             <>
                                 {data ?(
                                     <>
 
                                         {data?.map((user, index) =>{
+                                            if(user.id === auth.user.id)return
                                             return(
                                                 <div key={user.id}>
                                                     {data.length === index +1 && (
@@ -98,7 +101,7 @@ const Search =({})=>{
                                         })}                      
                                     </>
                                 ):(
-                                    <div>
+                                    <div style={{alignSelf: 'center'}}>
                                         No Results Found!
                                     </div>
                                 )}
