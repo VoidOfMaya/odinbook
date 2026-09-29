@@ -33,6 +33,11 @@ const  Card = ({data}) =>{
             
         )
     }
+    const handlePrivacy = (user)=>{
+        if(user.connection === 'ACTIVE') return true
+        if(user.isPrivate) return false
+        return true
+    }
     return(
         <>
             <div className={style.userCard}>
@@ -45,13 +50,13 @@ const  Card = ({data}) =>{
                         }}
                     >
                         <title>view profile</title>
-                        {data.photo? (
+                        {handlePrivacy(data) && data.photo? (
                             <img src={data.photo}  
                                 height='70px'
                                 width='70px'
                                 style={{
                                     cursor: 'pointer',
-                                    border: `${data.isPrivate? '1px solid red': '1px solid green'}`
+                                    border: `1px solid ${data.isPrivate ? 'red': 'green'}`
                                 }}
                             /> 
                         ):(
