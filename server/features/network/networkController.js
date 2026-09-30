@@ -22,7 +22,7 @@ const updateConnection =async ( req, res, next)=> {
     try{
         //get active friendships for user
         const updateConnection = await  service.updateConnection(connectionId, updateStatus)
-        return res.status(200).json({message: 'Connection statuse updated!'})
+        return res.status(200).json({connectionId: updateConnection})
     }catch(err){
         next(err)
     }

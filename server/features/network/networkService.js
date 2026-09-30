@@ -52,9 +52,12 @@ const getConnections = async(id, status)=>{
     return sanitizedFriendData(friends)
 }
 const updateConnection = async(id, status)=>{
-    await prisma.userFriends.update({
+    return await prisma.userFriends.update({
         where:{ id: Number(id)},
-        data:{ status: String(status)}
+        data:{ status: String(status)},
+        select:{
+            id: true
+        }
     })
 }
 const sanitizedFriendData = (friends) =>{
