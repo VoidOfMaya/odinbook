@@ -78,14 +78,12 @@ const searchUsers = async(req, res, next)=>{
     const {name,limit, cursor} = matchedData(req);  
     let usersList;
     try{
-        console.log(name)
         if(!name){
             console.log(`name value: ${name},status: error`)
             return res.status(200).json({
                 message: "no search value provided"
                 })
         }
-        console.log(`name value: ${name},status: searching`)
         usersList = await service.findMatchingUsers(name, req.user.id,limit, cursor);            
         if(usersList.chunk.length === 0) return res.status(404).json({message: 'User not found'})
         
