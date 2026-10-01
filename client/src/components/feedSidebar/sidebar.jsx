@@ -48,10 +48,15 @@ const SideBar = ({user, redirect, callApi})=>{
                 <Icon.Search    
                     size={30} color="#646363"  focusColor="rgb(30, 29, 30)" title="Search users"
                     fn={()=>{
-                        redirect('/search')
-                    }}/>
+                        redirect('/search');
+                    }}
+                />
                 <Icon.Friends   
-                    size={30} color="#646363"  focusColor="rgb(30, 29, 30)" title="My friends"/>
+                    size={30} color="#646363"  focusColor="rgb(30, 29, 30)" title="My friends"
+                    fn={()=>{
+                        redirect('/myFriends');
+                    }}
+                />
                 
 
             </div>

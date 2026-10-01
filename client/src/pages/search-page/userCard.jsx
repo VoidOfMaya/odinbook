@@ -131,7 +131,7 @@ const  Card = ({data}) =>{
             
         )
     }
-    const handlePrivacy = (user)=>{
+    const isPrivate = (user)=>{
         if(user.connection === 'ACTIVE') return true //if friendship exists go to user regardless
         if(user.isPrivate) return false //if privacy is true then return false  to disable interaction
         return true
@@ -152,7 +152,7 @@ const  Card = ({data}) =>{
                         }}
                     >
                         <title>view profile</title>
-                        {handlePrivacy(data) && data.photo? (
+                        {isPrivate(data) && data.photo? (
                             <img src={data.photo}  
                                 height='70px'
                                 width='70px'

@@ -38,8 +38,8 @@ const Search =({})=>{
             console.log(err.message)
             setLoading(false);
         }
-        setLoading(false);
     }
+    //if search input is empty disable pagiantion
     const { 
         issue,    
         data,

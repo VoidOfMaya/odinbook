@@ -254,18 +254,24 @@ function App() {
         {activePost &&(
           <div className={style.feedOverlay} />    
         )}
-        <Outlet context={{
-          auth,
-          updateAuthUser,
-          isAuthenticated,
-          saveFeed,
-          onLoginSuccess,
-          goTo,
-          callApi,
-          activePost,
-          selectPost,
-          resetPost
-        }}/>      
+        {/*conditionally rendering*/}
+        {loadingAuth || dataLoading? (
+          <div><Icon.Spinner /> Loading ...</div>
+        ):(
+          <Outlet context={{
+            auth,
+            updateAuthUser,
+            isAuthenticated,
+            saveFeed,
+            onLoginSuccess,
+            goTo,
+            callApi,
+            activePost,
+            selectPost,
+            resetPost
+          }}/>   
+        )}
+   
       </div>
 
     </main>

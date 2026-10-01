@@ -1,0 +1,51 @@
+.mainContainer{
+    background-color: #dcdcdcdd;
+    background: 
+        linear-gradient(
+            -90deg,
+            rgba(248, 248, 248, 1) 0%,
+            rgb(236, 236, 236) 100%
+    );
+    height: 100%;
+    color: #010101;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    width: 100%;
+    position: relative; 
+}
+.scrollContainer{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow-y: scroll;
+}
+.userCard{
+    display: grid;
+    grid-template-columns: 3fr  1fr 2fr;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px 0px 10px 0px;
+    background-color: #f4f4f4;
+    grid-template-areas:' user . options';
+}
+.userCard img{
+    border-radius: 50px;
+}
+.friendInfo{
+    display: flex; 
+    align-items: center;
+    grid-area: user;
+}
+
+.userOptions{
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+    grid-area: options;
+}
