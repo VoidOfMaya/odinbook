@@ -31,10 +31,10 @@ const updateConnection =async ( req, res, next)=> {
 const createConnection =async( req, res, next)=>{
     const errors = validationResult(req);
     if(!errors.isEmpty()) throw new ApiError(400,"validation Error",errors.array())
-    const {recipiantId} = matchedData(req);
+    const {recipiantId, status} = matchedData(req);
     try{
         //get active friendships for user
-        const newConnection = await  service.createConnection(req.user.id, recipiantId)
+        const newConnection = await  service.createConnection(req.user.id, recipiantId, status)
         console.log(newConnection)
         if(!newConnection) throw new Error('no Records Founds')
         return res.status(201).json({connectionId: newConnection.id})

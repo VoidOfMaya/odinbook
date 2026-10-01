@@ -79,7 +79,6 @@ const searchUsers = async(req, res, next)=>{
     let usersList;
     try{
         if(!name){
-            console.log(`name value: ${name},status: error`)
             return res.status(200).json({
                 message: "no search value provided"
                 })

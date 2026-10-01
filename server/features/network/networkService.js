@@ -2,12 +2,12 @@ import { ApiError } from "../../errorhelper.js";
 import { prisma } from "../../lib/prisma.js"
 
 
-const createConnection = async(senderId, recipientId)=>{
+const createConnection = async(senderId, recipientId, status = "PENDING")=>{
     
     //validate connection!
     const friends = await prisma.userFriends.findFirst({
         where:{
-            status: {not: "DECLINED"},
+            status: {not: "BLOCKED"},
             OR:[
                 //case A
                 {userId: Number(senderId), friendId:Number(recipientId)},
@@ -15,14 +15,15 @@ const createConnection = async(senderId, recipientId)=>{
                 {userId: Number(recipientId), friendId:Number(senderId)},
             ]
         }
-    })
+    })        
+
     if(friends) throw new ApiError(409,"conflicting connection record was found");
     //create connection:-
     const result = await prisma.userFriends.create({
         data:{
             userId: Number(senderId),
             friendId: Number(recipientId),
-            status: 'PENDING'
+            status: String(status)
         },
         select:{
             id: true

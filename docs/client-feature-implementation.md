@@ -272,18 +272,18 @@ dependency order rather than strictly by page.
 
 ### Phase 5 --- User Profile
 
--   [ ] User profile loading
+-   [X] User profile loading
 -   [ ] Private-profile handling
--   [ ] `/me` handling
--   [ ] User post history
--   [ ] Post pagination
--   [ ] Profile editing
--   [ ] Friend sidebar
--   [ ] Create post from profile
+-   [x] `/me` handling
+-   [x] User post history
+-   [x] Post pagination
+-   [x] Profile editing
+-   [-] Friend sidebar
+-   [-] Create post from profile
 
 ### Phase 6 --- Social Features
 
--   [ ] User search
+-   [X] User search
 -   [ ] Search pagination
 -   [ ] Inbox
 -   [ ] Accept/reject requests
