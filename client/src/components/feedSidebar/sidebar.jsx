@@ -1,7 +1,8 @@
 import { Icon } from "../iconhelper/icons"
 import style from './sidebar.module.css'
 import { usePagenation } from "../../customhooks/usePagination"
-const SideBar = ({user, redirect})=>{
+const SideBar = ({user, redirect, callApi})=>{
+
     const getData = async(cursor= null, limit= 10)=>{
         try{
             const response = await callApi({

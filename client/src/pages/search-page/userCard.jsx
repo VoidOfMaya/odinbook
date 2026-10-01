@@ -4,27 +4,52 @@ import {useOutletContext } from 'react-router-dom';
 const  Card = ({data}) =>{
     const {auth ,goTo,callApi} = useOutletContext();
     // FRIENDSHIP FUNCTIONS
-    const blockUser = async(userId)=>{
-
+    const updateConnection = async(id, status)=>{
+        //handle state updates after preforming action
+        //send an event to update the firendslist channel
+        //send event to refresh  list of search users
+        try{
+            const response = await callApi({
+                method: 'PATCH',
+                path: `network/connection/${id}`,
+                requiresAuth: true,
+                body: {updateStatus: status},
+                token: auth.accessToken,
+                retry: true,
+                includeCred:true
+            });
+            if(!response.ok)throw new Error('callApi error could not retrieve data');
+            return await response.json();
+        }catch(err){
+            console.log(err.message);
+        }
     }
-    const unblockUser = async(userId)=>{
-        
-    }
-    const declineConnectionReq = async(Id)=>{
-        
-    }
-    const acceptConnectionReq = async(Id)=>{
-        
-    }
-    const terminateConnection = async(id)=>{
-
-    }
-    const sendConnectionReq =async(userId)=>{
-        
+    const sendConnectionReq =async(userId, status)=>{
+        //handle state updates after preforming action
+        //send an event to update the inbox channel
+        //send event to refresh  list of search users
+        try{
+            const response = await callApi({
+                method: 'POST',
+                path: 'network/connection',
+                requiresAuth: true,
+                body: {
+                    recipiantId: userId,
+                    status: status
+                },
+                token: auth.accessToken,
+                retry: true,
+                includeCred:true
+            });
+            if(!response.ok)throw new Error('callApi error could not retrieve data');
+            return await response.json();
+        }catch(err){
+            console.log(err.message);
+        }
     }
 
     //handles 4 states:-BLOCKED/ACTIVE/PENDING/DECLINED/NONE
-    const handleConnectionOptions = (status) =>{
+    const handleConnectionOptions = (status, id) =>{
         return(
             <div className={style.userOptions}>
                 {status === 'BLOCKED' &&(
@@ -36,28 +61,70 @@ const  Card = ({data}) =>{
                             fn={async()=>{
                                 const confirm = window.confirm('this action will unblock a user and allow them to interact with you again')
                                 if(!confirm) return
-
+                                updateConnection(id, "DECLINED");
                             }}
                         />                  
                     </>
                 )}   
                 {status === 'ACTIVE' &&(
                     <>
-                        <Icon.Delete title='remove from friends'/>  
-                        <Icon.Block title='block'/>              
+                        <Icon.Delete title='remove from friends'
+                            fn={()=>{
+                                const confirm = window.confirm(' this actioin will terminate the friendship')
+                                if(!confirm) return
+                                updateConnection(id, "DECLINED");
+                            }}
+                        />  
+                        <Icon.Block title='block'
+                            fn={()=>{
+                                const confirm = window.confirm(' this actioin will terminate friendship and BLOCK user')
+                                if(!confirm) return
+                                updateConnection(id, "DECLINED");
+                                updateConnection(id, "BLOCKED");
+
+                            }}
+                        />              
                     </>
                 )}   
                 {status === 'PENDING' &&(
                     <>
-                        <Icon.Plus title='accept friend request' />
-                        <Icon.Delete title='decline friend request'/>  
-                        <Icon.Block title='block'/>              
+                        <Icon.Plus title='accept friend request' 
+                            fn={()=>{
+                                updateConnection(id, "ACTIVE")
+                            }}
+                        />
+                        <Icon.Delete title='decline friend request'
+                            fn={()=>{
+                                updateConnection(id, "DECLINED")
+                            }}
+                        />  
+                        <Icon.Block title='block'
+                            fn={()=>{
+                                const confirm = window.confirm(' this actioin will BLOCK user')
+                                if(!confirm) return
+                                updateConnection(id, "BLOCKED");
+
+                            }}
+                        />              
                     </>
                 )} 
                 {(status === 'DECLINED' || status === 'NONE') &&(
                     <>
-                        <Icon.Plus title='send friend request' />
-                        <Icon.Block title='block'/>              
+                        <Icon.Plus title='send friend request' 
+                        fn={()=>{
+                            sendConnectionReq(id)
+                        }}/>
+                        <Icon.Block title='block'
+                            fn={async()=>{
+                                const confirm = window.confirm(' this action will BLOCK user')
+                                if(!confirm) return
+                                if(status === 'NONE'){
+                                   return sendConnectionReq(id, "BLOCKED");
+                                }
+                                updateConnection(id, "BLOCKED");
+
+                            }}
+                        />              
                     </>
                 )}    
             </div>
@@ -106,7 +173,7 @@ const  Card = ({data}) =>{
                    {data.connection} 
                 </div>
                 <div>
-                   {handleConnectionOptions(data.connection)} 
+                   {handleConnectionOptions(data.connection, data.id)} 
                 </div>
                 
             </div>

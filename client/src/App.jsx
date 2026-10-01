@@ -12,6 +12,9 @@ function App() {
   const [loadingAuth, setLoadingAuth] = useState(true);
   const [feed, setFeed] = useState(null);
   const [dataLoading, setDataLoading]= useState(true);
+  //state management for sidebar elements
+  const [inbox, setInbox] = useState([]);
+  const [friends, setFriends] = useState([]);
   //used to determain if user just logged in or token refreshed
   const prevAccessToken = useRef(auth?.accessToken);
   const goTo = useNavigate();
@@ -242,7 +245,7 @@ function App() {
         {auth
           ?(
             <div className={style.sidebarContainer}>
-                <SideBar user={auth.user} redirect={goTo}/>
+                <SideBar user={auth.user} redirect={goTo} callApi={callApi}/>
             </div>
           ):(
             <div className={style.sidebarContainer}>

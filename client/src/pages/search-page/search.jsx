@@ -51,6 +51,7 @@ const Search =({})=>{
         trigger,
         lastRecordRef
     } = usePagenation(getData)
+    //intialize a socket io event listener to refetch data when a user to user connection changes
     useEffect(()=>{
     },[data])
     useEffect(()=>{
