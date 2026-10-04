@@ -26,30 +26,6 @@ const  Card = ({user, meta}) =>{
             console.log(err.message);
         }
     }
-    const sendConnectionReq =async(userId, status)=>{
-        //handle state updates after preforming action
-        //send an event to update the inbox channel
-        //send event to refresh  list of search users
-        try{
-            const response = await callApi({
-                method: 'POST',
-                path: 'network/connection',
-                requiresAuth: true,
-                body: {
-                    recipiantId: userId,
-                    status: status
-                },
-                token: auth.accessToken,
-                retry: true,
-                includeCred:true
-            });
-            if(!response.ok)throw new Error('callApi error could not retrieve data');
-            return await response.json();
-        }catch(err){
-            console.log(err.message);
-        }
-    }
-
     //handles 4 states:-BLOCKED/ACTIVE/PENDING/DECLINED/NONE
     const handleConnectionOptions = (meta, id) =>{
         return(

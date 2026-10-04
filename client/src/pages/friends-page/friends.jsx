@@ -33,17 +33,13 @@ const FriendsList = ({}) =>{
     useEffect(()=>{
         getFriends()
     },[])
-    useEffect(()=>{
-        console.log(data)
-    },[data])
-
     return(
         <div className={style.mainContainer}>
            {loading?(
             <div><Icon.Spinner /></div>
            ):(
             <div>
-                <h2>my Friends</h2>
+                <h2>Friends</h2>
                 {data.friends?(
                     <>
                         {data?.friends.map((connection) =>{

@@ -15,6 +15,9 @@
     width: 100%;
     position: relative; 
 }
+.mainContainer > div > h2{
+    color: rgb(59, 59, 59)
+}
 .scrollContainer{
     height: 100%;
     display: flex;

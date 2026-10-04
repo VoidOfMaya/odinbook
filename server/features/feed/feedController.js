@@ -48,7 +48,6 @@ const getMyFeed = async(req, res, next)=>{
         // supplie id as a single index array, getFeed expects an array of ids to work
         const feed = await service.getfeed([Number(id)], limit, cursor);
         if(!feed)throw new ApiError(500, "Could not find comments");
-        console.log(feed)
         // get offset value for next comment chunk
         //validate if  there are more posts
         let hasMore= true;

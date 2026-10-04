@@ -55,6 +55,7 @@ const updateProfile = async(req, res, next)=>{
 }
 const getUser = async(req,res, next)=>{
     //validation handler
+    console.log('accessed user controller')
     const errors = validationResult(req);
     if(!errors.isEmpty()) return res.status(400).json({errors : errors.array()})
     const data = matchedData(req);  
@@ -80,7 +81,6 @@ const searchUsers = async(req, res, next)=>{
     try{
         if(!name){
             usersList = await service.getAllUsers(req.user.id,limit, cursor);
-            console.log(usersList.nextCursor)
         }else{
             usersList = await service.findMatchingUsers(name, req.user.id,limit, cursor);              
         }

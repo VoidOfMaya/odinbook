@@ -16,8 +16,9 @@ const checkUserVisibility = async (req, res, next)=>{
                 friendsRecieved:{where:{ status: "ACTIVE"}}
             }
         })
-        //console.log(user);
-        if(user.isPrivate){
+        console.log(user);
+        if(user.isPrivate === false) return next()
+        if(user.isPrivate === true){
             //is authenticated user friends with requested user?
             const isFriend = 
                 user.friendSent.some(record => record.friendId === req.user.id)||
@@ -25,9 +26,10 @@ const checkUserVisibility = async (req, res, next)=>{
             if(isFriend) return next();
             return res.status(403).json({message: 'Forbbiden'})
         }
-        next();
+        if(user.isPrivate === false)
+        return next();
     }catch(err){
-        next(err)
+        return next(err)
     }
 }
 export{

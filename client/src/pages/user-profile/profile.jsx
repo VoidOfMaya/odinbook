@@ -15,7 +15,8 @@ const ProfilePage =({})=>{
         callApi, 
         activePost, 
         selectPost, 
-        resetPost
+        resetPost,
+        goTo
     }= useOutletContext();
     
     const fileRef = useRef(null);
@@ -23,6 +24,7 @@ const ProfilePage =({})=>{
     const [editMode, setEditMode] = useState(false)
     const [previewUrl, setPreviewUrl]= useState(null)
     const [isSending, setIsSending]= useState(false);
+    const [loadingUserMeta, setLoadingUserMEta] = useState(false);
     //state where user is different then Auth.user
     const [user, setUser]= useState({});
 
@@ -33,7 +35,6 @@ const ProfilePage =({})=>{
     })
     //post states
     const dialogRef = useRef(null);
-    const [myPosts, setMyPosts]= useState([]);
     const [loadPosts, setLoadPosts]= useState(false);
 
     //post pagination per user: 
@@ -73,6 +74,7 @@ const ProfilePage =({})=>{
     } = usePagenation(getData)
     const fetchUser =async(id)=>{
         try{
+            setLoadingUserMEta(true)
             if(id === undefined) throw new Error('no valid id provided ')
             const response = await callApi({
                 method: 'GET',
@@ -84,8 +86,9 @@ const ProfilePage =({})=>{
                 includeCred:true
             })
             if(!response.ok)throw new Error('callApi error could not retrieve data');
-            const result = await response.json()
+            const result = await  response.json()
             setUser(result.user)
+             setLoadingUserMEta(false)
         }
         catch(err){
             console.log(`Could not get data`)
@@ -93,25 +96,33 @@ const ProfilePage =({})=>{
         }
     }
     const populateUserMeta = ()=>{
+        if(loadingUserMeta){
+            return(
+                    <> 
+                    <div className={style.userPhoto}>
+                        <Icon.Spinner />
+                    </div>
+                    <div className={style.userInfo}>
+                        <h3 style={{color: 'rgb(93, 93, 93)', textAlign:'start'}}>
+                            @<Icon.Spinner />
+                        </h3>
+                        <h4 style={{color: 'rgb(93, 93, 93)', textAlign:'start'}}>
+                            Bio:
+                        </h4>
+                        <p><Icon.Spinner /></p>
+                        <div className={style.userOptions}>
+                        </div>
+                    </div>      
+                </>     
+            )
+        }
         return(
             <>
                 {userId === "me"?
                 (
                     <>
                         <div className={style.userPhoto}>
-                            {auth?.user?.photo ?(
-                                <img src={auth.user.photo}
-                                    width='200em'
-                                    height='200em'
-                                    style={{
-                                        border: '4px solid rgb(183, 183, 183)',
-                                        borderRadius: '100px',
-                                    }}
-                                />
-                            ):(
-                                <Icon.User size={200} />                        
-                                ) 
-                            }
+                            {<ShowPfp photo={auth.user.photo} size={200}/>}
                         </div>
                         <div className={style.userInfo}>
                             <h3 style={{color: 'rgb(93, 93, 93)', textAlign:'start'}}>
@@ -190,6 +201,7 @@ const ProfilePage =({})=>{
         setIsSending(false);
         setEditMode(false);
     }
+    //handels data fetching for when viewing other users and viewing my profile
     useEffect(()=>{
         if(userId === "me"){
             //fetch and paginate user post data
@@ -200,18 +212,9 @@ const ProfilePage =({})=>{
             fetchUser(userId)
             trigger()
         }
-
-
     },[userId])
-    useEffect(()=>{
-        if(!data) return
-        setMyPosts(data)
-        //console.log(data)
-    },[data])
-    useEffect(()=>{
-        if(!userMeta) return
-        //console.log(userMeta)
-    },[userMeta])
+
+    //handels editing mode 
     useEffect(()=>{
         if (userMeta.photo === auth.user.photo) {
             //if photo is deselected/is null then set preview to null
@@ -367,15 +370,18 @@ const ProfilePage =({})=>{
                             </div>                           
                         </>
                     ):(
-                        <>{populateUserMeta()}</>
+
+                        <>
+                        {populateUserMeta()}
+                        </>
                     )}
 
                 </div>
             
                 <div className={style.userPosts}>
-                    {myPosts? (
-                        myPosts.map((post, index)=>{
-                            if(Number(myPosts.length - 1) === Number(index)){                            
+                    {data? (
+                        data.map((post, index)=>{
+                            if(Number(data.length - 1) === Number(index)){                            
                                 return(
                                     <div className={style.lastPost} key={post.id}>
                                        

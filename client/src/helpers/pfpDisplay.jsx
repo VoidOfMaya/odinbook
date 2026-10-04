@@ -7,7 +7,7 @@ return(
         <img src={photo}  
             height={`${size}px`}
             width={`${size}px`}
-            style={{cursor: 'pointer'}}
+            style={{cursor: 'pointer', borderRadius: `${size / 2}px`}}
         /> 
     ):(
          <Icon.User size={size} title={title}/>

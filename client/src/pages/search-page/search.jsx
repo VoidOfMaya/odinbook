@@ -50,18 +50,18 @@ const Search =({})=>{
         contextRef, 
         trigger,
         lastRecordRef
-    } = usePagenation(getData, searchInput)
+    } = usePagenation(getData)
     //populate screen
     const populateResults = (data)=>{
-        if(searchInput === ''){
-            return(
-                <div className={style.scrollContainer}> 
-                    <div style={{alignSelf: 'center', margin: 'auto'}}>
-                        Empty
-                    </div>
-                </div>
-            )
-        }
+        //if(searchInput === ''){
+        //    return(
+        //        <div className={style.scrollContainer}> 
+        //            <div style={{alignSelf: 'center', margin: 'auto'}}>
+        //                Empty
+        //            </div>
+        //       </div>
+        //    )
+        //}
         if(loading){
             return(
                 <div className={style.scrollContainer}> 

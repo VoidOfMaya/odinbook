@@ -135,10 +135,10 @@ const  Card = ({data}) =>{
         )
     }
     const handlePrivacy = (user)=>{
-        if(user.connection.status === 'ACTIVE') return true //if friendship exists go to user regardless
+        if(user.isPrivate ) return false //if privacy is true then return false  to disable interaction
         if(user.connection.status === 'BLOCKED')return false// cases where user has blocked the other user
-        if(user.isPrivate) return false //if privacy is true then return false  to disable interaction
-        return true
+        if(user.connection.status === 'ACTIVE') return true //if friendship exists go to user regardless
+        return false
     }
     useEffect(()=>{
         //console.log(data)
@@ -150,7 +150,6 @@ const  Card = ({data}) =>{
                     <div
                         onClick={()=>{
                             if(handlePrivacy(data)){
-                                console.log(data)
                                 data.id === auth.user.id
                                     ? goTo(`/profile/me`)
                                     : goTo(`/profile/${data.id}`)
