@@ -3,7 +3,7 @@ import style from './sidebar.module.css'
 import { usePagenation } from "../../customhooks/usePagination"
 const SideBar = ({user, redirect, callApi})=>{
 
-    const getData = async(cursor= null, limit= 10)=>{
+   /* const getData = async(cursor= null, limit= 10)=>{
         try{
             const response = await callApi({
                 method: 'GET',
@@ -24,7 +24,7 @@ const SideBar = ({user, redirect, callApi})=>{
     }
     const {setReload}= usePagenation(getData)
     //options should include active friends and pending requests
-    
+    */
     return(
         <main className={style.mainContainer}>
             <div className={style.userDisplay}
@@ -43,16 +43,34 @@ const SideBar = ({user, redirect, callApi})=>{
                 )}
             </div>
             <div className={style.options}>
+   
+                <Icon.Haaki 
+                    size={50}
+                    color="#646363"  
+                    focusColor="rgb(30, 29, 30)"
+                    title="feed" 
+                    fn={()=> redirect('/feed')}
+                />                    
                 <Icon.Inbox     
-                    size={30} color="#646363"  focusColor="rgb(30, 29, 30)" title="My inbox" />
+                    size={30} 
+                    color="#646363"  
+                    focusColor="rgb(30, 29, 30)" 
+                    title="inbox" 
+                />
                 <Icon.Search    
-                    size={30} color="#646363"  focusColor="rgb(30, 29, 30)" title="Search users"
+                    size={30} 
+                    color="#646363"  
+                    focusColor="rgb(30, 29, 30)" 
+                    title="Search users"
                     fn={()=>{
                         redirect('/search');
                     }}
                 />
                 <Icon.Friends   
-                    size={30} color="#646363"  focusColor="rgb(30, 29, 30)" title="My friends"
+                    size={30} 
+                    color="#646363"  
+                    focusColor="rgb(30, 29, 30)" 
+                    title="friends"
                     fn={()=>{
                         redirect('/myFriends');
                     }}

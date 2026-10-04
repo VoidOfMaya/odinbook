@@ -5,6 +5,7 @@ import { Icon } from '../../components/iconhelper/icons';
 import { usePagenation } from '../../customhooks/usePagination';
 import { PostCard } from '../../components/post/postCard';
 import { PostDialog } from '../../components/post/activePost/postDialog';
+import { ShowPfp } from '../../helpers/pfpDisplay';
 
 const ProfilePage =({})=>{
     const {userId}= useParams();
@@ -130,19 +131,7 @@ const ProfilePage =({})=>{
                 ):(
                     <> 
                         <div className={style.userPhoto}>
-                            {user?.photo ?(
-                                <img src={user.photo}
-                                    width='200em'
-                                    height='200em'
-                                    style={{
-                                        border: '4px solid rgb(183, 183, 183)',
-                                        borderRadius: '100px',
-                                    }}
-                                />
-                            ):(
-                                <Icon.User size={200} />                        
-                                ) 
-                            }
+                            <ShowPfp photo={user?.photo} size={200}/>
                         </div>
                         <div className={style.userInfo}>
                             <h3 style={{color: 'rgb(93, 93, 93)', textAlign:'start'}}>
@@ -388,7 +377,7 @@ const ProfilePage =({})=>{
                         myPosts.map((post, index)=>{
                             if(Number(myPosts.length - 1) === Number(index)){                            
                                 return(
-                                    <>
+                                    <div className={style.lastPost} key={post.id}>
                                        
                                             <div ref={lastRecordRef} />  
                                             <PostCard key={post.id}  
@@ -397,6 +386,7 @@ const ProfilePage =({})=>{
                                             dialog={dialogRef}
                                             selectPost={selectPost}
                                             updatePost={updateData}
+                                            isLast = {true}
                                             /> 
                                                                             
                                         {!hasMore  && (
@@ -409,7 +399,7 @@ const ProfilePage =({})=>{
                                                 <Icon.Spinner />
                                             </div>
                                         )}
-                                    </>                                          
+                                    </div>                                          
                                 )
                             }else{
                                 return(             

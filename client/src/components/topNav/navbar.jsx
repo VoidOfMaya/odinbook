@@ -22,18 +22,9 @@ const TopNav = ({auth, redirect})=>{
             ):(
                 <main className={style.topNav}>
                     <div className={style.title}
-                        onClick={()=>{
-                            redirect('/feed')
-                        }}
                         aria-label="Haaki Logo"
                     >  
                         <h1>Haaki</h1> 
-                        <Icon.Haaki 
-                            size={50} 
-                            color="rgb(109, 130, 159)" 
-                            focusColor="rgb(181, 204, 235)"
-                            title="Return to feed"
-                        />
                     </div>             
                     {/* enable when in small screen mode
                     <ul className={style.navOptions}>

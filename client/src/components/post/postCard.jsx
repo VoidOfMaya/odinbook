@@ -13,7 +13,8 @@ const PostCard = ({
     dialog, 
     selectPost, 
     activePost,
-    updatePost
+    updatePost,
+    isLast = false //handels edge case where card is enclosed inside a div
 }) =>{
     const {auth ,callApi, goTo}= useOutletContext();
     if(!post.visibility) return
@@ -92,7 +93,11 @@ const PostCard = ({
     
     },[])
     return(
-        <main className={style.postCard}ref={lastCardRef && lastCardRef}>
+        <main 
+        className={style.postCard}
+        ref={lastCardRef && lastCardRef}
+        style={{width: isLast? '100%': '90%'}}
+        >
             <div className={style.postMeta}>
                 <div 
                     style={{

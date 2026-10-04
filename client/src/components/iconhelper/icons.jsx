@@ -385,7 +385,7 @@ const Haaki = ({fn = null, color ='#27282c', focusColor='#62646b', size=25, titl
     return(
         <svg 
             xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 100 100"
+            viewBox="10 0 110 110"
             role="img"
             style={{cursor: 'pointer'}} 
             height={`${size}px`}

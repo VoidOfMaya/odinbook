@@ -75,3 +75,8 @@
     padding-top: 250px;
 
 }
+.lastPost{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
