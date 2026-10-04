@@ -50,10 +50,18 @@ const Search =({})=>{
         contextRef, 
         trigger,
         lastRecordRef
-    } = usePagenation(getData)
+    } = usePagenation(getData, searchInput)
     //populate screen
     const populateResults = (data)=>{
-        if(searchInput === '')return;
+        if(searchInput === ''){
+            return(
+                <div className={style.scrollContainer}> 
+                    <div style={{alignSelf: 'center', margin: 'auto'}}>
+                        Empty
+                    </div>
+                </div>
+            )
+        }
         if(loading){
             return(
                 <div className={style.scrollContainer}> 
@@ -102,6 +110,7 @@ const Search =({})=>{
                     <input 
                         type='text'
                         value={searchInput}
+                        placeholder='enter username to search'
                         onChange={(e)=>{
                             setSearchInput(e.target.value)
                             trigger()
@@ -118,38 +127,6 @@ const Search =({})=>{
                         <div>Options</div>
                     </div>
                     {populateResults(data)}
-                    {/* 
-                    <div ref={contextRef} className={style.scrollContainer}>
-                        {loading?(
-                            <div style={{alignSelf: 'center', margin: 'auto'}}>
-                                <Icon.Spinner color='rgb(56, 56, 56)'/>
-                            </div>
-                        ):(
-                            <>
-                                {data ?(
-                                    <>
-
-                                        {data?.map((user, index) =>{
-                                            if(user.id === auth.user.id)return
-                                            return(
-                                                <div key={user.id}>
-                                                    {data.length === index +1 && (
-                                                        <div ref={lastRecordRef} />  
-                                                    )}
-                                                    <Card  data={user} />
-                                                </div>
-                                            )
-                                        })}                      
-                                    </>
-                                ):(
-                                    <div style={{alignSelf: 'center'}}>
-                                        No Results Found!
-                                    </div>
-                                )}
-                            </>
-                        )}
-                        <div ref={lastRecordRef}></div>
-                    </div>*/}
                 </div>
             </div>
         </>
