@@ -79,11 +79,11 @@ const searchUsers = async(req, res, next)=>{
     let usersList;
     try{
         if(!name){
-            return res.status(200).json({
-                message: "no search value provided"
-                })
+            usersList = await service.getAllUsers(req.user.id,limit, cursor);
+            console.log(usersList.nextCursor)
+        }else{
+            usersList = await service.findMatchingUsers(name, req.user.id,limit, cursor);              
         }
-        usersList = await service.findMatchingUsers(name, req.user.id,limit, cursor);            
         if(usersList.chunk.length === 0) return res.status(404).json({message: 'User not found'})
         
         //sanitize + define data shape to reflect each users connection status to current user

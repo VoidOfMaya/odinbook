@@ -53,12 +53,14 @@ const findMatchingUsers= async(name, userId, limit = 20, cursor= null)=>{
                 friendSent:{
                     where: {friendId: Number(userId)},
                     select:{
+                        id: true,
                         status: true
                     }
                 } ,
                 friendsRecieved:{
                     where: {userId: Number(userId)},
                     select:{
+                        id: true,
                         status: true
                     }
                 }
@@ -126,12 +128,14 @@ const getAllUsers = async(userId, limit =15, cursor= null)=>{
                 friendSent:{
                     where: {friendId: Number(userId)},
                     select:{
+                        id: true,
                         status: true
                     }
                 } ,
                 friendsRecieved:{
                     where: {userId: Number(userId)},
                     select:{
+                        id: true,
                         status: true
                     }
                 }
@@ -153,12 +157,14 @@ const getAllUsers = async(userId, limit =15, cursor= null)=>{
                 friendSent:{
                     where:{friendId: Number(userId)},
                     select:{
+                        id: true,
                         status: true
                     }
                 } ,
                 friendsRecieved:{
                     where:{userId: Number(userId)},
                     select:{
+                        id: true,
                         status: true
                     }
                 }
@@ -175,7 +181,8 @@ const getAllUsers = async(userId, limit =15, cursor= null)=>{
     const nextCursor = hasEnoughRecords
         ? rawChunk[rawChunk.length - 1]
         : null;
-    return {chunk, nextCursor};
+    return{chunk, nextCursor};
+  
 }
 const service = {
     getUser,

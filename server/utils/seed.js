@@ -28,13 +28,14 @@ const seedDemo = async()=>{
   console.log('start: populate demo accounts')
   const userData = [];
   //loads 8 VIEWABLE ACCOUNTS
-  for(let i = 0 ; i < 10 ; i++){
+  for(let i = 0 ; i < 20 ; i++){
     if(i >= 8){
       userData.push({
           email: faker.internet.email(),
           name: faker.person.fullName(),
           password: await bcrypt.hash(faker.internet.password(), 10),
           photo: faker.image.avatar(),
+          bio: faker.lorem.sentence(),
           isPrivate: true
           
       })
