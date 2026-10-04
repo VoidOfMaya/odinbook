@@ -43,19 +43,6 @@ const createConnection =async( req, res, next)=>{
     }
 
 }
-/*
-const getPendingRequests = async(req, res, next)=>{
-
-    try{
-        //get active friendships for user
-        const friendsList = await  service.getRequests(req.user.id);
-        return res.status(200).json({friends: friendsList})
-    }catch(err){
-        next(err)
-    }
-
-}
-*/
 const controller = {
     getConnections,
     updateConnection,

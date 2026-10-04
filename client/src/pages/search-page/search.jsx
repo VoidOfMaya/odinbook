@@ -51,6 +51,44 @@ const Search =({})=>{
         trigger,
         lastRecordRef
     } = usePagenation(getData)
+    //populate screen
+    const populateResults = (data)=>{
+        if(searchInput === '')return;
+        if(loading){
+            return(
+                <div className={style.scrollContainer}> 
+                    <div style={{alignSelf: 'center', margin: 'auto'}}>
+                        <Icon.Spinner color='rgb(56, 56, 56)'/>
+                    </div>
+                </div>
+            )
+        }
+        if(!data && !loading){
+            return(
+                <div className={style.scrollContainer}> 
+                    <div style={{alignSelf: 'center'}}>
+                        No Results Found!
+                    </div>
+                </div>
+            )
+        }
+        return(
+            <div ref={contextRef} className={style.scrollContainer}>
+                    {data?.map((user, index) =>{
+                        if(user.id === auth.user.id)return
+                        return(
+                            <div key={user.id}>
+                                {data.length === index +1 && (
+                                    <div ref={lastRecordRef} />  
+                                )}
+                                <Card  data={user} />
+                            </div>
+                        )
+                    })}                      
+                <div ref={lastRecordRef}></div>
+            </div>
+        )
+    }
     //intialize a socket io event listener to refetch data when a user to user connection changes
     useEffect(()=>{
     },[data])
@@ -79,6 +117,8 @@ const Search =({})=>{
                         <div>Status</div>
                         <div>Options</div>
                     </div>
+                    {populateResults(data)}
+                    {/* 
                     <div ref={contextRef} className={style.scrollContainer}>
                         {loading?(
                             <div style={{alignSelf: 'center', margin: 'auto'}}>
@@ -109,7 +149,7 @@ const Search =({})=>{
                             </>
                         )}
                         <div ref={lastRecordRef}></div>
-                    </div>
+                    </div>*/}
                 </div>
             </div>
         </>

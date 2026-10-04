@@ -1,7 +1,9 @@
-const ShowPfp = ({photo, size= 50, title= 'view profile', fn}) =>{
+import { Icon } from "../components/iconhelper/icons"
+
+const ShowPfp = ({photo, status= true, size= 50, title= 'view profile', fn}) =>{
 return(
 <div onClick={()=> fn? fn(): null}>
-    {photo? (
+    {status &&photo? (
         <img src={photo}  
             height={`${size}px`}
             width={`${size}px`}

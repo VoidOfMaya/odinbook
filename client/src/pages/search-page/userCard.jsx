@@ -1,6 +1,8 @@
 import style from './search.module.css';
 import { Icon } from '../../components/iconhelper/icons';
 import {useOutletContext } from 'react-router-dom';
+import { useEffect } from 'react';
+import { ShowPfp } from '../../helpers/pfpDisplay';
 const  Card = ({data}) =>{
     const {auth ,goTo,callApi} = useOutletContext();
     // FRIENDSHIP FUNCTIONS
@@ -49,7 +51,8 @@ const  Card = ({data}) =>{
     }
 
     //handles 4 states:-BLOCKED/ACTIVE/PENDING/DECLINED/NONE
-    const handleConnectionOptions = (status, id) =>{
+    const handleConnectionOptions = (connection, userId) =>{
+        const {status, id} = connection;
         return(
             <div className={style.userOptions}>
                 {status === 'BLOCKED' &&(
@@ -112,7 +115,7 @@ const  Card = ({data}) =>{
                     <>
                         <Icon.Plus title='send friend request' 
                         fn={()=>{
-                            sendConnectionReq(id)
+                            sendConnectionReq(userId)
                         }}/>
                         <Icon.Block title='block'
                             fn={async()=>{
@@ -131,11 +134,14 @@ const  Card = ({data}) =>{
             
         )
     }
-    const isPrivate = (user)=>{
+    const handlePrivacy = (user)=>{
         if(user.connection === 'ACTIVE') return true //if friendship exists go to user regardless
         if(user.isPrivate) return false //if privacy is true then return false  to disable interaction
         return true
     }
+    useEffect(()=>{
+        //console.log(data)
+    },[])
     return(
         <>
             <div className={style.userCard}>
@@ -152,25 +158,17 @@ const  Card = ({data}) =>{
                         }}
                     >
                         <title>view profile</title>
-                        {isPrivate(data) && data.photo? (
-                            <img src={data.photo}  
-                                height='70px'
-                                width='70px'
-                                style={{
-                                    cursor: 'pointer',
-                                    border: `1px solid ${data.isPrivate ? 'red': 'green'}`
-                                }}
-                            /> 
-                        ):(
-                            <Icon.User size={70} title='view Profile'/>
-                        )}                        
+                        <ShowPfp 
+                            photo={data.photo}
+                            size={70}
+                            title='View PRofile'
+                            status={data.connection.status === "BLOCKED"? false : true}
+                        />                        
                     </div>
-
-                            
                     <div>@{data.name}</div>                                             
                 </div>
                 <div>
-                   {data.connection} 
+                   {data.connection.status} 
                 </div>
                 <div>
                    {handleConnectionOptions(data.connection, data.id)} 
