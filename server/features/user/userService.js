@@ -84,12 +84,14 @@ const findMatchingUsers= async(name, userId, limit = 20, cursor= null)=>{
                 friendSent:{
                     where:{friendId: Number(userId)},
                     select:{
+                        id: true,
                         status: true
                     }
                 } ,
                 friendsRecieved:{
                     where:{userId: Number(userId)},
                     select:{
+                        id: true,
                         status: true
                     }
                 }

@@ -86,22 +86,29 @@ const searchUsers = async(req, res, next)=>{
         usersList = await service.findMatchingUsers(name, req.user.id,limit, cursor);            
         if(usersList.chunk.length === 0) return res.status(404).json({message: 'User not found'})
         
-        //sanitizing data to reflect each users connection status to current user
+        //sanitize + define data shape to reflect each users connection status to current user
         const sanitizedUsers= usersList.chunk.map(user=>{
             const sentConnection = user.friendSent;
             const recievedConnection = user.friendsRecieved;
             let status = 'NONE';
+            let ConnectionId = null;
             //connection variables are arrays of object, at most containing 1 object for status
             //access status content through the connection var arrays zero'th index
             sentConnection.length > 0? status = sentConnection[0].status : status;
-            recievedConnection.length > 0?status = recievedConnection[0].status : status
+            recievedConnection.length > 0?status = recievedConnection[0].status : status;
+            // handells setting up the id of the connection itself not users id
+            sentConnection.length > 0? ConnectionId = sentConnection[0].id : ConnectionId;
+            recievedConnection.length > 0?ConnectionId = recievedConnection[0].id : ConnectionId;
              
             const sanUser ={  //edited user data
                 id: user.id,
                 name: user.name,
                 photo: user.photo,
                 isPrivate: user.isPrivate,
-                connection: status
+                connection:{
+                    status: status,
+                    id:ConnectionId
+                }
             }
             return sanUser
         })
