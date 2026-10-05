@@ -48,18 +48,21 @@
 }
 
 .scrollContainer{
+
     height: 100%;
     display: flex;
     flex-direction: column;
     width: 100%;
     overflow-y: scroll;
 }
+
 .userCard{
     display: grid;
+    border: 1px solid #cecece;
     grid-template-columns: 3fr  1fr 2fr;
     justify-content: space-between;
+    align-self: center;
     align-items: center;
-    width: 100%;
     border-radius: 10px;
     padding: 10px;
     margin: 10px 0px 10px 0px;
@@ -80,4 +83,20 @@
     justify-content: space-around;
     gap: 10px;
     grid-area: options;
+}
+.userOptions > div{
+    flex: 1;
+        padding: 5px;
+}
+.interactBtn{
+    display: flex;
+    cursor: pointer;
+    text-align: center;
+}
+.interactBtn > div{
+    flex: 1;
+}
+.interactBtn:hover{
+    background-color: #b7b7b7;
+    color: #fefefe;
 }

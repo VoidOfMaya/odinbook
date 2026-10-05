@@ -40,9 +40,6 @@ const FriendsList = ({}) =>{
     },[typeOption]);
     return(
         <div className={style.mainContainer}>
-           {loading?(
-            <div><Icon.Spinner /></div>
-           ):(
             <div>
                 <div className={style.statusType}>
                     <h3 
@@ -73,23 +70,30 @@ const FriendsList = ({}) =>{
                         Blocked
                     </h3>                    
                 </div>
-
-                {data.friends?(
-                    <>
-                        {data?.friends.map((connection) =>{
-                            if(connection.user.id === auth.user.id)return
-                            return(
-                                <div key={connection.meta.connectionId}>
-                                    <Card  user={connection.user} meta={connection.meta} />
-                                </div>
-                            )
-                        })} 
-                    </>
-                ):(
-                    <>no friendships found</>
-                )}                                     
+           {loading ?(
+            <div style={{ display: 'flex',justifyContent: 'center'}}>
+                <Icon.Spinner />
             </div>
-           )}
+            ):(
+                <div> 
+                    {data.friends?(
+                        <>
+                            {data?.friends.map((connection) =>{
+                                if(connection.user.id === auth.user.id)return
+                                return(
+                                    <div key={connection.meta.connectionId}>
+                                        <Card  user={connection.user} meta={connection.meta} />
+                                    </div>
+                                )
+                            })} 
+                        </>
+                    ):(
+                        <>no friendships found</>
+                    )}
+                </div>
+            )}                                  
+            </div> 
+            
         </div>
     )
 }

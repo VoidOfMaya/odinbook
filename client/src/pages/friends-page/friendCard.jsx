@@ -32,29 +32,73 @@ const  Card = ({user, meta}) =>{
             <div className={style.userOptions}>
                 {meta.status === 'ACTIVE' &&(
                     <>
-                        <Icon.Delete title='remove from friends'
-                            fn={()=>{
-                                const confirm = window.confirm(' this actioin will terminate the friendship')
+                        
+                        <div
+                            className={style.interactBtn}
+                            onClick={()=>{
+                                const confirm = window.confirm(' this action will terminate the friendship')
                                 if(!confirm) return
                                 updateConnection(id, "DECLINED");
                             }}
-                        />  
-                        <Icon.Block title='block'
-                            fn={()=>{
-                                const confirm = window.confirm(' this actioin will terminate friendship and BLOCK user')
+                        >
+                            <Icon.Delete title='remove from friends'/>  
+                            Remove
+                        </div>
+                        <div
+                         className={style.interactBtn}
+                            onClick={()=>{
+                                const confirm = window.confirm(' this action will terminate friendship and BLOCK user')
                                 if(!confirm) return
                                 updateConnection(id, "DECLINED");
                                 updateConnection(id, "BLOCKED");
-
                             }}
-                        />              
+                        >
+                            <Icon.Block  title='block'/>   
+                            Block
+                        </div>
+           
                     </>
-                )}   
-            </div>
-            
+                )} 
+                {meta.status === 'PENDING' &&(
+                    <>
+                        <div
+                            className={style.interactBtn}
+                            onClick={()=>{
+                                updateConnection(id, "ACTIVE");
+                            }}
+                        >Accept</div>
+                        <div
+                            className={style.interactBtn}
+                            onClick={()=>{
+                                updateConnection(id, "DECLINED");
+                            }}
+                        >Decline</div>
+                        <div
+                            className={style.interactBtn}
+                            onClick={()=>{
+                                const confirm = window.confirm(' this actioin will BLOCK user')
+                                if(!confirm) return
+                                updateConnection(id, "DECLINED");
+                                updateConnection(id, "BLOCKED");
+                            }}
+                        >
+                            <Icon.Block title='block' /> 
+                            Block 
+                        </div>             
+                    </>
+                )} 
+                {meta.status === 'BLOCKED' &&(
+                    <div
+                        className={style.interactBtn}
+                        onClick={()=>{
+                            if(!confirm) return
+                            updateConnection(id, "DECLINED");
+                        }}
+                    >Remove Block</div>
+                )} 
+            </div> 
         )
     }
-
     return(
         <>
             <div className={style.userCard}>
