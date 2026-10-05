@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import { Icon } from '../../components/iconhelper/icons';
 const FriendsList = ({}) =>{
     const {auth, callApi}= useOutletContext();
+
+    const [typeOption, setTypeOption] = useState("ACTIVE");
     const [data, setData]= useState({});
     const [loading, setLoading]= useState(false)
     const getFriends= async()=>{
@@ -12,7 +14,7 @@ const FriendsList = ({}) =>{
             setLoading(true);
             const response = await callApi({
                 method: 'GET',
-                path: `network/connection?status=ACTIVE`,
+                path: `network/connection?status=${typeOption}`,
                 requiresAuth: true,
                 //body: options.body,
                 token: auth.accessToken,
@@ -32,14 +34,46 @@ const FriendsList = ({}) =>{
     }
     useEffect(()=>{
         getFriends()
-    },[])
+    },[]);
+    useEffect(()=>{
+        getFriends()
+    },[typeOption]);
     return(
         <div className={style.mainContainer}>
            {loading?(
             <div><Icon.Spinner /></div>
            ):(
             <div>
-                <h2>Friends</h2>
+                <div className={style.statusType}>
+                    <h3 
+                        className={typeOption === 'ACTIVE'? style.optionOn : style.optionOff}
+                        onClick={()=>{
+                            if(typeOption !== 'ACTIVE')
+                            setTypeOption('ACTIVE')
+                        }}
+                    >
+                        Friends
+                    </h3>
+                    <h3 
+                        className={typeOption === 'PENDING'? style.optionOn : style.optionOff}
+                       onClick={()=>{
+                            if(typeOption !== 'PENDING')
+                            setTypeOption('PENDING')
+                        }}
+                    >
+                        pending
+                    </h3>
+                    <h3 
+                        className={typeOption === 'BLOCKED'? style.optionOn : style.optionOff}
+                       onClick={()=>{
+                            if(typeOption !== 'BLOCKED')
+                            setTypeOption('BLOCKED')
+                        }}
+                    >
+                        Blocked
+                    </h3>                    
+                </div>
+
                 {data.friends?(
                     <>
                         {data?.friends.map((connection) =>{

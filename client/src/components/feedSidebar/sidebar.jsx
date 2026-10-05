@@ -70,7 +70,7 @@ const SideBar = ({user, redirect, callApi})=>{
                     size={30} 
                     color="#646363"  
                     focusColor="rgb(30, 29, 30)" 
-                    title="friends"
+                    title="connections"
                     fn={()=>{
                         redirect('/myFriends');
                     }}

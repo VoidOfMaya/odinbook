@@ -7,6 +7,7 @@ return(
         <img src={photo}  
             height={`${size}px`}
             width={`${size}px`}
+            loading="lazy"
             style={{cursor: 'pointer', borderRadius: `${size / 2}px`}}
         /> 
     ):(
