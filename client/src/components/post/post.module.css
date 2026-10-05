@@ -1,10 +1,10 @@
 .CreatePostContainer{
-display: flex;
-justify-content: center;
-position: relative;
-}
-.postForm{
+    display: flex;
+    justify-content: center;
+    position: relative;
     
+}
+.postForm{ 
     display: flex;
     flex-direction: row;
     padding: 10px;
@@ -18,9 +18,8 @@ position: relative;
     width: 70%;
     margin: 10px;
     background-color: #f2f2f2;
-    
+    outline: 1px solid #c7c5c5;
     box-shadow: 0px 7px 12px 4px #bab9b633;
-
 }
 .postForm textarea{
     min-width: 80%;
@@ -79,6 +78,8 @@ position: relative;
     min-height: 300px;
     max-width: 800px;
     position: relative;
+
+    outline: 1px solid #c7c5c5;
 }
 .postMeta{
     display: flex;

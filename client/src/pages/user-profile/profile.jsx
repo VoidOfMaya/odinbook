@@ -38,10 +38,10 @@ const ProfilePage =({})=>{
     const [loadPosts, setLoadPosts]= useState(false);
 
     //post pagination per user: 
-        //required for usePAgenation hook
+    //required for usePAgenation hook
     const getData = async(cursor= null, limit= 10)=>{
         const id = userId === 'me'
-            ? auth.user.id
+            ?auth.user.id
             :userId
         try{
             if(id === undefined) throw new Error('no valid id provided ')
@@ -55,7 +55,9 @@ const ProfilePage =({})=>{
                 includeCred:true
             })
             if(!response.ok)throw new Error('callApi error could not retrieve data');
-            return await response.json()
+            
+            const result = await response.json();
+            return result
         }
         catch(err){
             console.log(`Could not get data`)
@@ -88,7 +90,7 @@ const ProfilePage =({})=>{
             if(!response.ok)throw new Error('callApi error could not retrieve data');
             const result = await  response.json()
             setUser(result.user)
-             setLoadingUserMEta(false)
+            setLoadingUserMEta(false)
         }
         catch(err){
             console.log(`Could not get data`)
@@ -163,6 +165,9 @@ const ProfilePage =({})=>{
                 )}
             </>
         )
+
+    }
+    const populateUserPost =() =>{
 
     }
     //handle edit user profile 
@@ -381,6 +386,7 @@ const ProfilePage =({})=>{
                 </div>
             
                 <div className={style.userPosts}>
+
                     {data? (
                         data.map((post, index)=>{
                             if(Number(data.length - 1) === Number(index)){                            
@@ -421,7 +427,6 @@ const ProfilePage =({})=>{
                                 )  
                             }                          
                         })
-
                     ):(
                         <h2 style={{color:"#aeaeae"}}>No Posts Found!</h2>
                     )}
