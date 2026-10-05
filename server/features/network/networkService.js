@@ -114,6 +114,12 @@ const sanitizedFriendData = (friends) =>{
                     connectionId: connection.id,
                     status: connection.status,
                     isInitiator: true,     
+                },
+                user:{
+                    id: friend.id, 
+                    name: friend.name,
+                    photo: friend.photo,
+                    bio: friend.bio,
                 }
             })
         }
