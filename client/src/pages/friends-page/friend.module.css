@@ -55,7 +55,9 @@
     width: 100%;
     overflow-y: scroll;
 }
-
+.cardsContainer{
+    width: 600px;
+}
 .userCard{
     display: grid;
     border: 1px solid #cecece;
@@ -68,6 +70,7 @@
     margin: 10px 0px 10px 0px;
     background-color: #f4f4f4;
     grid-template-areas:' user . options';
+    width: 100%;
 }
 .userCard img{
     border-radius: 50px;

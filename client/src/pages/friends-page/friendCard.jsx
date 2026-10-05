@@ -27,21 +27,19 @@ const  Card = ({user, meta}) =>{
         }
     }
     //handles 4 states:-BLOCKED/ACTIVE/PENDING/DECLINED/NONE
-    const handleConnectionOptions = (meta, id) =>{
+    const handleConnectionOptions = (meta) =>{
         return(
             <div className={style.userOptions}>
                 {meta.status === 'ACTIVE' &&(
-                    <>
-                        
+                    <> 
                         <div
                             className={style.interactBtn}
                             onClick={()=>{
                                 const confirm = window.confirm(' this action will terminate the friendship')
                                 if(!confirm) return
-                                updateConnection(id, "DECLINED");
+                                updateConnection(meta.connectionId, "DECLINED");
                             }}
                         >
-                            <Icon.Delete title='remove from friends'/>  
                             Remove
                         </div>
                         <div
@@ -49,14 +47,12 @@ const  Card = ({user, meta}) =>{
                             onClick={()=>{
                                 const confirm = window.confirm(' this action will terminate friendship and BLOCK user')
                                 if(!confirm) return
-                                updateConnection(id, "DECLINED");
-                                updateConnection(id, "BLOCKED");
+                                updateConnection(meta.connectionId, "DECLINED");
+                                updateConnection(imeta.connectionId, "BLOCKED");
                             }}
                         >
-                            <Icon.Block  title='block'/>   
                             Block
                         </div>
-           
                     </>
                 )} 
                 {meta.status === 'PENDING' &&(
@@ -64,13 +60,13 @@ const  Card = ({user, meta}) =>{
                         <div
                             className={style.interactBtn}
                             onClick={()=>{
-                                updateConnection(id, "ACTIVE");
+                                updateConnection(meta.connectionId, "ACTIVE");
                             }}
                         >Accept</div>
                         <div
                             className={style.interactBtn}
                             onClick={()=>{
-                                updateConnection(id, "DECLINED");
+                                updateConnection(meta.connectionId, "DECLINED");
                             }}
                         >Decline</div>
                         <div
@@ -78,11 +74,10 @@ const  Card = ({user, meta}) =>{
                             onClick={()=>{
                                 const confirm = window.confirm(' this actioin will BLOCK user')
                                 if(!confirm) return
-                                updateConnection(id, "DECLINED");
-                                updateConnection(id, "BLOCKED");
+                                updateConnection(meta.connectionId, "DECLINED");
+                                updateConnection(meta.connectionId, "BLOCKED");
                             }}
                         >
-                            <Icon.Block title='block' /> 
                             Block 
                         </div>             
                     </>
@@ -92,7 +87,7 @@ const  Card = ({user, meta}) =>{
                         className={style.interactBtn}
                         onClick={()=>{
                             if(!confirm) return
-                            updateConnection(id, "DECLINED");
+                            updateConnection(meta.connectionId, "DECLINED");
                         }}
                     >Remove Block</div>
                 )} 
@@ -115,7 +110,7 @@ const  Card = ({user, meta}) =>{
                 </div>
                 <div></div>
                 <div>
-                   {handleConnectionOptions(meta, user.id)} 
+                   {handleConnectionOptions(meta)} 
                 </div>
                 
             </div>

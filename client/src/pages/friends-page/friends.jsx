@@ -75,7 +75,7 @@ const FriendsList = ({}) =>{
                 <Icon.Spinner />
             </div>
             ):(
-                <div> 
+                <div className={style.cardsContainer}> 
                     {data.friends?(
                         <>
                             {data?.friends.map((connection) =>{

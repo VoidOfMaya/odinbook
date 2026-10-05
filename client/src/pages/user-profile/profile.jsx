@@ -377,16 +377,12 @@ const ProfilePage =({})=>{
                             </div>                           
                         </>
                     ):(
-
                         <>
                         {populateUserMeta()}
                         </>
                     )}
-
                 </div>
-            
                 <div className={style.userPosts}>
-
                     {data? (
                         data.map((post, index)=>{
                             if(Number(data.length - 1) === Number(index)){                            
