@@ -51,9 +51,8 @@ const usePagenation = (fetchData, enabled = true) =>{
         loadRef.current = true;
         setLoadData(true);
         try{
+            console.log(`next cursor is: ${nextCursor.current} of type ${typeof nextCursor.current}`)
             const result  = await fetchData(nextCursor.current);
-            
-
             nextCursor.current = result.nextCursor
             hasMore.current = result.hasMore
             setData(prevData =>[...prevData,...result.data])  
@@ -78,14 +77,14 @@ const usePagenation = (fetchData, enabled = true) =>{
                 counterRef.current += 1;
 
                 console.log(`fetching from cursor: ${nextCursor.current}`)
-                getNextChunk(nextCursor.current)                
+                getNextChunk(nextCursor.current) 
             };
         },{
             root: contextRef.current,
             threshold: 0.1
         });
         if(dataType) observer.current.observe(dataType)
-    },[loadData, nextCursor])// may not wortk 
+    },[loadData, nextCursor])
     useEffect(()=>{
         if(!enabled) return
         getFirstChunk()

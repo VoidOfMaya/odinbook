@@ -52,17 +52,12 @@ const Search =({})=>{
         lastRecordRef
     } = usePagenation(getData)
     //populate screen
+    useEffect(()=>{
+
+    },[data])
     const populateResults = (data)=>{
-        //if(searchInput === ''){
-        //    return(
-        //        <div className={style.scrollContainer}> 
-        //            <div style={{alignSelf: 'center', margin: 'auto'}}>
-        //                Empty
-        //            </div>
-        //       </div>
-        //    )
-        //}
-        if(loading){
+
+        if(!data && loading){
             return(
                 <div className={style.scrollContainer}> 
                     <div style={{alignSelf: 'center', margin: 'auto'}}>
@@ -86,14 +81,25 @@ const Search =({})=>{
                         if(user.id === auth.user.id)return
                         return(
                             <div key={user.id}>
-                                {data.length === index +1 && (
-                                    <div ref={lastRecordRef} />  
+                                {data.length -  1 === index  && (
+                                    <div ref={lastRecordRef} 
+                                    style={{border: '1px solid red'}}/>  
                                 )}
                                 <Card  data={user} />
                             </div>
+
                         )
-                    })}                      
-                <div ref={lastRecordRef}></div>
+                    })}   
+                    {!hasMore  && (
+                        <div style={{display: 'flex',justifyContent: 'center'}}>
+                            No more posts! 
+                        </div>   
+                    )}
+                    {loadData && (
+                        <div>
+                            <Icon.Spinner />
+                        </div>
+                    )}                   
             </div>
         )
     }
