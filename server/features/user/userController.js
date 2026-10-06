@@ -64,7 +64,7 @@ const getUser = async(req,res, next)=>{
         console.log('accessing user data')
         // validate if user is private
         
-        const userData = await service.getUser(data.id);
+        const userData = await service.getUser(data.id, req.user.id);
         return res.status(200).json({user: userData});     
     }catch(err){
         next(err);

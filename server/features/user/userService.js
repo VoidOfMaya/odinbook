@@ -1,6 +1,32 @@
 import {prisma} from "../../lib/prisma.js"
-const getUser = async(id)=>{
+const getUser = async(id, myId)=>{
     //{id, name, bio. photo, isOnline,lastOnline, createdAt}
+    /*
+    this fetches the users connection status to the
+    requesting user and returns the connection status 
+    and "NONE" if none exists
+    const friends = await prisma.user.findUnique({
+        where:{
+            OR:[
+                {userId}
+            ]
+        },
+            select:{
+                friendSent:{
+                    where:{status: String(status)},
+                    include:{
+                        friend: true,
+                    }
+                },
+                friendsRecieved:{
+                    where:{status: String(status)},
+
+                    include:{
+                        user: true,
+                    }
+                }
+            }
+        })*/
     return await prisma.user.findUnique({
         where: {id: Number(id)},
         select: {
@@ -11,6 +37,7 @@ const getUser = async(id)=>{
             isOnline: true,
             lastOnline: true,
             createdAt: true
+            
         }
     })
 }
