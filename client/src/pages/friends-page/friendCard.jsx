@@ -57,20 +57,10 @@ const  Card = ({user, meta}) =>{
                 )} 
                 {meta.status === 'PENDING' &&(
                     <>
-                        <div
-                            className={style.interactBtn}
-                            onClick={()=>{
-                                updateConnection(meta.connectionId, "ACTIVE");
-                            }}
-                        >Accept</div>
-                        <div
-                            className={style.interactBtn}
-                            onClick={()=>{
-                                updateConnection(meta.connectionId, "DECLINED");
-                            }}
-                        >Decline</div>        
+                        {userIsSender(meta.isInitiator)}
                     </>
-                )} 
+                )}
+
                 {meta.status === 'BLOCKED' &&(
                     <div
                         className={style.interactBtn}
@@ -82,6 +72,30 @@ const  Card = ({user, meta}) =>{
                 )} 
             </div> 
         )
+    }
+    const userIsSender= (data)=>{
+        if(meta.status === 'PENDING' && data.isInitiator){
+            return(
+                <>
+                    <div
+                        className={style.interactBtn}
+                        onClick={()=>{
+                            updateConnection(meta.connectionId, "ACTIVE");
+                        }}
+                    >Accept</div>
+                    <div
+                        className={style.interactBtn}
+                        onClick={()=>{
+                            updateConnection(meta.connectionId, "DECLINED");
+                        }}
+                    >Decline</div>        
+                </>
+            )
+        }else{
+            return(
+                <div>PENDING</div>                
+            )
+        }
     }
     return(
         <>

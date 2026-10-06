@@ -36,6 +36,11 @@ const FriendsList = ({}) =>{
         getFriends()
     },[]);
     useEffect(()=>{
+        if(!data) return;
+        console.log(data)
+        
+    },[data]);
+    useEffect(()=>{
         getFriends()
     },[typeOption]);
     return(
