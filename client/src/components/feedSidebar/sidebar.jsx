@@ -53,7 +53,7 @@ const SideBar = ({user, redirect, callApi})=>{
                     }}
                 />
             </div>
-            {screenWidth < 780 && 
+            {screenWidth >780 && 
                 <div style={{marginTop:'auto',alignSelf: 'center'}}>
                     <Icon.Logout size={30} color="#646363"  focusColor="rgb(30, 29, 30)"/>
                 </div>

@@ -176,8 +176,7 @@
 }
 @media (max-width: 780px){
     .postContainer{
-        outline: 1px solid red;
-        outline-offset: -50px;
+
     }
     .postCard{
        

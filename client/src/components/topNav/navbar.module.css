@@ -1,6 +1,8 @@
 .topNav{
     display: flex;
     justify-content: space-between;
+    --window-width: 100%;
+    position: relative;
 }
 .navOptions{
     align-self: center;
@@ -14,3 +16,27 @@
     justify-self: start;
     cursor: pointer;
 }
+.userDisplay{
+    position: relative;
+}
+.userOptions{
+    position: absolute;
+    bottom: -80px;
+    width: 100%;
+    background-color: #e8e8e8;
+    border-radius: 10px;
+    outline: 1px solid #c7c5c5;
+    padding: 5px;
+}
+.userOptions div:first-child{
+    border-bottom: 1px solid #c7c5c5;
+}
+.userOptions div{
+    color: black;
+    font-weight: bolder;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 15px;
+    cursor: pointer;
+}
+
