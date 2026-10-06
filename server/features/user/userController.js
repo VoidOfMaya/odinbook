@@ -112,11 +112,15 @@ const searchUsers = async(req, res, next)=>{
             }
             return sanUser
         })
+        let hasMore= true;
+        if(usersList.chunk.length < limit) hasMore = false;
         return res.status(200).json({
             data: sanitizedUsers,
             nextCursor: usersList.nextCursor !== null
                 ? usersList.nextCursor.id
                 : null
+            ,
+            hasMore: hasMore
         })
     }catch(err){
         next(err);

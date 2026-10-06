@@ -13,7 +13,11 @@ const userId =[
 ]
 const search=[
     query('name').trim().optional({values:'falsy'}).isLength({max:25, min:0}).withMessage('name must be 0-25 characters in length')
-    .matches(/^[a-zA-Z ]+$/).withMessage('name can have letters and spaces')
+    .matches(/^[a-zA-Z ]+$/).withMessage('name can have letters and spaces'),
+    query('cursor').optional({values: 'falsy'})
+    .isInt().withMessage('limit must be a number and atleast 3 or greater'),
+    query('limit').optional({values: 'falsy'})
+    .isInt().withMessage('limit must be a number and atleast 3 or greater')
 ]
 const validate ={
     userId,
