@@ -68,18 +68,7 @@ const  Card = ({user, meta}) =>{
                             onClick={()=>{
                                 updateConnection(meta.connectionId, "DECLINED");
                             }}
-                        >Decline</div>
-                        <div
-                            className={style.interactBtn}
-                            onClick={()=>{
-                                const confirm = window.confirm(' this actioin will BLOCK user')
-                                if(!confirm) return
-                                updateConnection(meta.connectionId, "DECLINED");
-                                updateConnection(meta.connectionId, "BLOCKED");
-                            }}
-                        >
-                            Block 
-                        </div>             
+                        >Decline</div>        
                     </>
                 )} 
                 {meta.status === 'BLOCKED' &&(
@@ -106,7 +95,18 @@ const  Card = ({user, meta}) =>{
                         <title>view profile</title>
                         < ShowPfp photo={user.photo} size={70}/>
                     </div>  
-                    <div>@{user.name}</div>                                             
+                    <div>
+                        {window.innerWidth < 780?(
+                            <>
+                                @{user.name.slice(0,6)}...
+                            </>
+                        ):(
+                            <>
+                                @{user.name}
+                            </>
+                        )}
+                        
+                    </div>                                             
                 </div>
                 <div></div>
                 <div>

@@ -92,10 +92,14 @@
 }
 @media (max-width: 780px){
     .dialogWindow{
-        min-width: 450px;        
+        min-width: 350px; 
+        width: 100%;       
     }
     .postCard{
-        
-        min-width: 450px;
+
+        min-width: 350px;
+    }
+    .Comments{
+        height: 80%;
     }
 }

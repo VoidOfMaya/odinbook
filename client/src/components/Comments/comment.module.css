@@ -59,7 +59,6 @@
     background-color: #bcbcbc;
 
 } 
-
 .commentTabBtn{
     
     border-radius: 35px;
@@ -91,7 +90,7 @@
         margin: 0px;
     }
     .commentForm textarea{
-        width: 100%;
+        min-width: 80%;
     }
 
 }
