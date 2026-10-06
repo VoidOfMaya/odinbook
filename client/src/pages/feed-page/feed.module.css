@@ -45,3 +45,8 @@
     align-items: center;
 
 }
+@media (max-width: 780px){
+    .postContainer{
+        width: 100%;
+    }
+}

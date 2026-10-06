@@ -26,7 +26,8 @@
     margin: 10px;
     border-radius: 20px;
     width: 80%;
-    min-width: 600px;
+    min-width: 300px;
+    max-width: 750px;
     color: rgb(31, 31, 31);
 
     justify-self: center;
@@ -88,4 +89,13 @@
     flex-direction: column;
     
     overflow-y: auto;
+}
+@media (max-width: 780px){
+    .dialogWindow{
+        min-width: 450px;        
+    }
+    .postCard{
+        
+        min-width: 450px;
+    }
 }

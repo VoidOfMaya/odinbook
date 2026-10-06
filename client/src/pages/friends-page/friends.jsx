@@ -90,6 +90,7 @@ const FriendsList = ({}) =>{
                     ):(
                         <>no friendships found</>
                     )}
+
                 </div>
             )}                                  
             </div> 

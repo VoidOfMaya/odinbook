@@ -380,7 +380,7 @@ const AddPhoto = ({fn = null, color ='#27282c', focusColor='#62646b', size=25, t
     )
 }
 //website logo
-const Haaki = ({fn = null, color ='#27282c', focusColor='#62646b', size=25, title='home'})=>{
+const Feed = ({fn = null, color ='#27282c', focusColor='#62646b', size=25, title='home'})=>{
     const [focuse, setFocus]= useState(false);
     return(
         <svg 
@@ -429,7 +429,7 @@ const Icon ={
     Inbox,
     AddPhoto,
     Spinner,
-    Haaki
+    Feed
 
 }
 export{

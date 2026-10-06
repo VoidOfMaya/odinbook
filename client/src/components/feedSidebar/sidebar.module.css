@@ -23,3 +23,16 @@
     gap: 10px;
 
 }
+@media (max-width: 780px) {
+    .mainContainer{
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .options{
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+
+
+}
+}

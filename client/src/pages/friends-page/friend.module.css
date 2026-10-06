@@ -103,3 +103,8 @@
     background-color: #b7b7b7;
     color: #fefefe;
 }
+@media (max-width: 780px){
+    .cardsContainer{
+    width: 100%;
+    }
+}

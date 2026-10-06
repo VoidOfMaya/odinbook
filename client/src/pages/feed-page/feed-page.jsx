@@ -46,7 +46,7 @@ const FeedPage = ({})=>{
         loadData, 
         contextRef, 
         lastRecordRef
-    } = usePagenation(getData)
+    } = usePagenation(getData, auth.accessToken)
     // local post state management
     const [posts, setPosts]= useState([]);
     //post view dialog
@@ -95,7 +95,15 @@ const FeedPage = ({})=>{
                                
                                 return(
                                     <div key={post.id}>
-                                        <div key={'last_post'} style={{display: "flex", justifyContent: 'center'}}>
+                                        <div 
+                                            key={'last_post'} 
+                                            style={{
+                                                display: "flex", 
+                                                justifyContent: 'center',
+                                                width: '100%'
+                                            }}
+                                        >
+                                            
                                             <div ref={lastRecordRef} />  
                                             <PostCard key={post.id}  
                                             post={post} 

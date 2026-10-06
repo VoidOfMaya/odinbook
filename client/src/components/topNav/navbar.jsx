@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import style from './navbar.module.css'
 import { Link, useOutletContext } from "react-router-dom";
 import { Icon } from "../iconhelper/icons";
+import { ShowPfp } from "../../helpers/pfpDisplay";
 
 const TopNav = ({auth, redirect})=>{
 
@@ -15,7 +16,7 @@ const TopNav = ({auth, redirect})=>{
         {auth === null ?(
             <main className={style.topNav}>
                 <h1>
-                    Haaki
+                    2talk
                 </h1>   
                 
             </main>
@@ -24,7 +25,7 @@ const TopNav = ({auth, redirect})=>{
                     <div className={style.title}
                         aria-label="Haaki Logo"
                     >  
-                        <h1>Haaki</h1> 
+                        <h1>2talk</h1> 
                     </div>             
                     {/* enable when in small screen mode
                     <ul className={style.navOptions}>
@@ -46,7 +47,16 @@ const TopNav = ({auth, redirect})=>{
 
                         </Link>
                     </ul>
-                    */}        
+                    */}  
+                    {window.innerWidth< 780 &&
+                        <div className={style.userDisplay}
+                            onClick={()=>{        
+                                redirect('/profile/me')
+                            }}
+                        >
+                            <ShowPfp size={40} photo={auth.user.photo} />
+                        </div> 
+                    }
                 </main>
 
         )}
