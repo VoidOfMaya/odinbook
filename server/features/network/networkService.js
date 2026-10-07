@@ -3,7 +3,7 @@ import { prisma } from "../../lib/prisma.js"
 
 
 const createConnection = async(senderId, recipientId, status = "PENDING")=>{
-    
+
     //validate connection!
     const friends = await prisma.userFriends.findFirst({
         where:{

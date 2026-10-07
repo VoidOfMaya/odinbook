@@ -13,15 +13,12 @@ const statusUpdate= [
     .isAlpha().withMessage('status must be alphabetic only')
     .custom((status)=>isValidStatus(status))
 ]
-const recipientId = [
-    body('recipiantId').trim().notEmpty().withMessage('recipiantId must be defined')
-    .isInt().withMessage('recipiantId can only be an int number'),
-]
-const statusState = [
-    body('status').optional({values: 'falsy'})
-    .isAlpha().withMessage('status must be alphabetic only')
+const newConenction = [
+    body('recipientId').notEmpty().withMessage('recipiantId can only be an int number'),
+    body('status').optional({values: 'falsy'}).isAlpha().withMessage('status must be alphabetic only')
     .custom((status)=>isValidStatus(status))
 ]
+
 //define custom validation functions:
 const isValidStatus=(status)=>{
     if(status === 'PENDING') return true;
@@ -34,6 +31,5 @@ const isValidStatus=(status)=>{
 export const validate ={
     status,
     statusUpdate,
-    recipientId,
-    statusState
+    newConenction
 }
