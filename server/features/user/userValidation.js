@@ -1,11 +1,12 @@
 import { body,param,query } from 'express-validator';
 
 const userEdit = [
-    body('name').optional({ values: 'falsy' }).trim().isLength({max:25, min: 3}).withMessage('name must be 3 - 25 characters in length')
+    body('name').trim().isLength({max:25, min: 3}).withMessage('name must be 3 - 25 characters in length')
     .matches(/^[a-zA-Z ]+$/).withMessage('name can have letters and spaces'),
-    body('bio').optional({ values: 'falsy' }).trim().isLength({max:150}).withMessage('bio limit is 250 characters in length')
+    body('bio').trim().isLength({max:150}).withMessage('bio limit is 250 characters in length')
     .withMessage('bio can only be letters, spaces and numbers'),
-    body('photo').optional({ values: 'falsy' }).trim()
+    body('photo').trim(),
+    body('privacy').isBoolean().withMessage('privacy can only be a boolean value')
 ]
 const userId =[
     param('id').trim().notEmpty().withMessage('no user id provided')

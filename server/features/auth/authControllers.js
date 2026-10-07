@@ -217,7 +217,8 @@ const token = async (req, res, next)=>{
                 photo: user.photo,
                 lastOnline: user.lastOnline,
                 isOnline: user.isOnline,
-                createdAt: user.createdAt
+                createdAt: user.createdAt,
+                isPrivate: user.isPrivate
             } ,
             accessToken: newAToken, 
         })

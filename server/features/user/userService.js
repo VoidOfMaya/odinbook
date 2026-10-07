@@ -47,14 +47,17 @@ const updateMyData= async(id, data, photo = null)=>{
     return prisma.user.update({
         where: {id: Number(id)},
         data:{
-            name: data.name ===''? user.name: data.name,
-            bio:   data.bio === ''? user.bio : data.bio,
-            photo: photo
+            name: String(data.name),
+            bio:   String(data.bio),
+            photo: String(photo),
+            isPrivate: Boolean(data.privacy)
+
         },
         select:{
             name: true,
             bio: true,
-            photo: true
+            photo: true,
+            isPrivate: true
         }
     })
 

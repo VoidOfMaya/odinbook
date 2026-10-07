@@ -91,7 +91,7 @@ const gitUserHandler = async (userId)=>{
             photo: true,
             createdAt: true,
             lastOnline:true,
-
+            isPrivate:  true
         }
     })
     //handele registry with the custom tokens system
