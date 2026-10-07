@@ -3,7 +3,7 @@ import style from './sidebar.module.css'
 import { usePagenation } from "../../customhooks/usePagination"
 import { ShowPfp } from "../../helpers/pfpDisplay"
 import { useState } from "react"
-const SideBar = ({user, redirect, callApi})=>{
+const SideBar = ({user, redirect, logout})=>{
     const [screenWidth, setScreenWidth]= useState(window.innerWidth );
     return(
         <main className={style.mainContainer}>
@@ -46,7 +46,16 @@ const SideBar = ({user, redirect, callApi})=>{
             </div>
             {screenWidth >780 && 
                 <div style={{marginTop:'auto',alignSelf: 'center'}}>
-                    <Icon.Logout size={30} color="#646363"  focusColor="rgb(30, 29, 30)"/>
+                    <Icon.Logout 
+                        size={30} 
+                        color="#646363"  
+                        focusColor="rgb(30, 29, 30)" 
+                        title="Logout"
+                        fn={()=>{
+                                console.log('logging out')
+                                logout()
+                            }
+                        }/>
                 </div>
             }
 

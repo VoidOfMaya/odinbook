@@ -414,8 +414,8 @@ const Lock = ({fn = null, color ='#27282c', focusColor='#62646b', size=25, title
     return(
         <svg 
             xmlns="http://www.w3.org/2000/svg" 
-            viewBox="10 0 110 110"
-            role="img"
+            viewBox="0 0 640 640"
+            r
             style={{cursor: 'pointer'}} 
             height={`${size}px`}
             width={`${size}px`}

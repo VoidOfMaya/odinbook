@@ -27,11 +27,11 @@ const ProfilePage =({})=>{
     const [loadingUserMeta, setLoadingUserMEta] = useState(false);
     //state where user is different then Auth.user
     const [user, setUser]= useState({});
-
     const [ userMeta, setUserMeta] = useState({
         name: auth.user.name,
         bio: auth.user.bio,
         photo:auth.user.photo,
+        privacy: auth.user.isPrivate
     })
     //post states
     const dialogRef = useRef(null);
@@ -129,8 +129,14 @@ const ProfilePage =({})=>{
                             {<ShowPfp photo={auth.user.photo} size={200}/>}
                         </div>
                         <div className={style.userInfo}>
-                            <h3 style={{color: 'rgb(93, 93, 93)', textAlign:'start'}}>
+                            <h3 style={{
+                                    color: 'rgb(93, 93, 93)', 
+                                    textAlign:'start',
+                                    display: 'flex',
+                                    alignItems: 'center'
+                                }}>
                                 @{auth.user.name}
+                                {userMeta.privacy &&(<Icon.Lock size={20} color='red'/>)}
                             </h3>
                             <h4 style={{color: 'rgb(93, 93, 93)', textAlign:'start'}}>
                                 Bio:
@@ -203,11 +209,11 @@ const ProfilePage =({})=>{
         setIsSending(true)
         console.log(userMeta)
         try{  
-            //turning newpost to formData
-            updateData.append('name', userMeta.name === auth.user.name? '': userMeta.name);
-            updateData.append('bio', userMeta.bio === auth.user.bio? '': userMeta.bio);
-            updateData.append('photo', userMeta.photo === auth.user.photo? '': userMeta.photo);
-            console.log(updateData)
+            //turning changed user data to formData
+            updateData.append('name', userMeta.name);
+            updateData.append('bio', userMeta.bio);
+            updateData.append('photo', userMeta.photo);
+            updateData.append('privacy', userMeta.privacy)
             //sending call to server
             const response = await callApi({
                 method: 'PATCH',
@@ -347,15 +353,32 @@ const ProfilePage =({})=>{
                             </div>
                             <div className={style.userInfo}>
 
-                            <h3 style={{color: 'rgb(93, 93, 93)', textAlign:'start'}}>
+                            <h3 style={{
+                                color: 'rgb(93, 93, 93)', 
+                                textAlign:'start',
+                                display: 'flex',
+                                alignItems: 'center'
+                                }}>
                                 @<input value={userMeta.name}
                                     onChange={(e)=>{
-                                        setUserMeta(prev=>({...prev,name: e.target.value}))
+                                        setUserMeta(prev=>({...prev, name: e.target.value}))
                                 }}>   
                                 </input>
-                                <div>
-                                    {console.log(user)}
-                                    <Icon.Unlock />  
+                                <div 
+                                    style={{padding: '10px'}}
+                                    onClick={()=>{
+                                        setUserMeta(prev =>({...prev, privacy: !userMeta.privacy}))
+                                    }}
+                                >
+                                    {userMeta.privacy?(
+                                        <>
+                                            <Icon.Unlock title='set profile to Public'/> 
+                                        </>
+                                    ):(
+                                        <>
+                                            <Icon.Lock title='set profile to Private'/>
+                                        </>
+                                    )} 
                                 </div>
                                 
                             </h3>

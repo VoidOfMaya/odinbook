@@ -46,6 +46,30 @@ function App() {
     setAuth({user: user, accessToken: token})
     localStorage.setItem('has_session', 'true');
   }
+  const logout = async()=>{
+      try{
+          const response = await callApi({
+              method: 'DELETE',
+              path: `auth/logout`,
+              requiresAuth: true,
+              //body: options.body,
+              token: auth.accessToken,
+              retry: true,
+              includeCred:true
+          })
+          if(!response.ok)throw new Error('callApi error could not retrieve data');
+          //const result = await  response.json()
+          setAuth(null);
+          setLoadingAuth(true);
+          setFeed(null);
+          setDataLoading(true);
+          setActivePost(null);
+      }
+      catch(err){
+          console.log(`Could not logout`)
+          console.log(err.message)
+      }
+  }
   //PROTECT RESOURCE ON INIT
   const isAuthenticated = () =>{
     if(!auth) goTo('/')
@@ -245,7 +269,7 @@ function App() {
         {auth
           ?(
             <div className={style.sidebarContainer}>
-                <SideBar user={auth.user} redirect={goTo} callApi={callApi}/>
+                <SideBar user={auth.user} redirect={goTo} callApi={callApi} logout={logout}/>
             </div>
           ):(
             <div className={style.sidebarContainer}>
