@@ -111,7 +111,7 @@ const ProfilePage =({})=>{
                         <h4 style={{color: 'rgb(93, 93, 93)', textAlign:'start'}}>
                             Bio:
                         </h4>
-                        <p><Icon.Spinner /></p>
+                        <div><Icon.Spinner /></div>
                         <div className={style.userOptions}>
                         </div>
                     </div>      
@@ -148,6 +148,7 @@ const ProfilePage =({})=>{
                         <div className={style.userPhoto}>
                             <ShowPfp photo={user?.photo} size={200}/>
                         </div>
+                        
                         <div className={style.userInfo}>
                             <h3 style={{color: 'rgb(93, 93, 93)', textAlign:'start'}}>
                                 @{user.name}
@@ -156,18 +157,39 @@ const ProfilePage =({})=>{
                                 Bio:
                             </h4>
                             <p>{user.bio}</p>
-                            <div className={style.userOptions}>
-                                <div style={{display: 'flex'}}>+<Icon.Friends /></div>
-                                <div style={{display: 'flex'}}>-<Icon.Friends /></div>       
-                            </div>
-                        </div>      
+                            {handelUserMetaOptions(user.relationStatus, user)}
+                        </div> 
                     </>
                 )}
             </>
         )
 
     }
-    const populateUserPost =() =>{
+    const handelUserMetaOptions =(status, user) =>{
+        if(status === 'ACTIVE'){
+            return(
+                <div className={style.userOptions}>
+                    <div style={{display: 'flex'}}>-<Icon.Friends /></div>
+                    <div style={{display: 'flex'}}><Icon.Block /></div>       
+                </div>
+            ) 
+        }
+        if(status === 'PENDING'){
+            return(
+                <div className={style.userOptions}>
+                    <div style={{display: 'flex'}}><Icon.Block /></div>       
+                </div>
+            ) 
+        }
+        if(status === 'NONE' || status === 'NONE'){
+            return(
+                <div className={style.userOptions}>
+                    <div style={{display: 'flex'}}>+<Icon.Friends /></div>
+                    <div style={{display: 'flex'}}>-<Icon.Friends /></div>
+                    <div style={{display: 'flex'}}>-<Icon.Block /></div>       
+                </div>
+            )            
+        }
 
     }
     //handle edit user profile 
@@ -331,6 +353,11 @@ const ProfilePage =({})=>{
                                         setUserMeta(prev=>({...prev,name: e.target.value}))
                                 }}>   
                                 </input>
+                                <div>
+                                    {console.log(user)}
+                                    <Icon.Unlock />  
+                                </div>
+                                
                             </h3>
                             <h4 style={{color: 'rgb(93, 93, 93)', textAlign:'start', position: 'relative'}}>
                                 Bio:
@@ -347,12 +374,6 @@ const ProfilePage =({})=>{
                                         </div>
                                     ):(
                                         <>
-                                            {/*<Icon.Send 
-                                            size={30} color="#646363"  focusColor="#fff" title='Create Post'
-                                            fn={()= >{
-                                                uploadPost()
-                                                setPreviewUrl(null);
-                                            }}/>*/}  
                                             <button type='button'
                                                 onClick={()=>{
                                                     handleUserEdit()

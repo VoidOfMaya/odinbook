@@ -409,6 +409,56 @@ const Spinner = ({color ='#7d7d7d',size=20})=>{
         <div className={style.loading} style={{padding:`${size}px`}}></div>
     )
 }
+const Lock = ({fn = null, color ='#27282c', focusColor='#62646b', size=25, title='Lock'})=>{
+    const [focuse, setFocus]= useState(false);
+    return(
+        <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            viewBox="10 0 110 110"
+            role="img"
+            style={{cursor: 'pointer'}} 
+            height={`${size}px`}
+            width={`${size}px`}
+            fill={focuse? focusColor : color}
+                    onMouseEnter={()=>setFocus(true)}
+                    onMouseLeave={()=>setFocus(false)}
+            onClick={()=> fn? fn(): null}
+            >
+                <title>{title}</title>
+            <path d="M256 160L256 224L384 224L384 160C384 124.7 355.3 96 320 96C284.7 
+                    96 256 124.7 256 160zM192 224L192 160C192 89.3 249.3 32 320 32C390.7 32 
+                    448 89.3 448 160L448 224C483.3 224 512 252.7 512 288L512 512C512 547.3 
+                    483.3 576 448 576L192 576C156.7 576 128 547.3 128 512L128 288C128 252.7 
+                    156.7 224 192 224z"
+            />
+        </svg>
+    )
+}
+const Unlock = ({fn = null, color ='#27282c', focusColor='#62646b', size=25, title='Unlock'})=>{
+    const [focuse, setFocus]= useState(false);
+    return(
+        <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            viewBox="0 0 640 640"
+            style={{cursor: 'pointer'}} 
+            height={`${size}px`}
+            width={`${size}px`}
+            fill={focuse? focusColor : color}
+                    onMouseEnter={()=>setFocus(true)}
+                    onMouseLeave={()=>setFocus(false)}
+            onClick={()=> fn? fn(): null}
+            >
+                <title>{title}</title>
+                <path d="M256 160C256 124.7 284.7 96 320 96C351.7 96 378 119 383.1 
+                        149.3C386 166.7 402.5 178.5 420 175.6C437.5 172.7 449.2 156.2 446.3 
+                        138.7C436.1 78.1 383.5 32 320 32C249.3 32 192 89.3 192 160L192 224C156.7 
+                        224 128 252.7 128 288L128 512C128 547.3 156.7 576 192 576L448 576C483.3 
+                        576 512 547.3 512 512L512 288C512 252.7 483.3 224 448 224L256 224L256 160z"
+                />      
+        </svg>
+    )
+}
+
 const Icon ={
     User,
     Friends,
@@ -429,7 +479,9 @@ const Icon ={
     Inbox,
     AddPhoto,
     Spinner,
-    Feed
+    Feed,
+    Lock,
+    Unlock
 
 }
 export{

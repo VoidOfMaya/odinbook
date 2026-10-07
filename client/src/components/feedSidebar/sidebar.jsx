@@ -25,15 +25,6 @@ const SideBar = ({user, redirect, callApi})=>{
                     title="feed" 
                     fn={()=> redirect('/feed')}
                 />                    
-                {/*<Icon.Inbox     
-                    size={30} 
-                    color="#646363"  
-                    focusColor="rgb(30, 29, 30)" 
-                    title="inbox" 
-                    fn={()=>{
-                        alert('Feature currently unavailable')
-                    }}
-                />*/}
                 <Icon.Search    
                     size={30} 
                     color="#646363"  
