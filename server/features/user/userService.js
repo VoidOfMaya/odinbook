@@ -4,30 +4,19 @@ const getUser = async(id, myId)=>{
     /*
     this fetches the users connection status to the
     requesting user and returns the connection status 
-    and "NONE" if none exists
-    const friends = await prisma.user.findUnique({
+    and "NONE" if none exists*/
+    const friends = await prisma.userFriends.findFirst({
         where:{
             OR:[
-                {userId}
+                {AND:[{userId: id},{friendId: myId}]},
+                {AND:[{userId: myId},{friendId: id}]}
             ]
         },
             select:{
-                friendSent:{
-                    where:{status: String(status)},
-                    include:{
-                        friend: true,
-                    }
-                },
-                friendsRecieved:{
-                    where:{status: String(status)},
-
-                    include:{
-                        user: true,
-                    }
-                }
+                status: true
             }
-        })*/
-    return await prisma.user.findUnique({
+        })
+    const user = await prisma.user.findUnique({
         where: {id: Number(id)},
         select: {
             id: true,
@@ -36,10 +25,22 @@ const getUser = async(id, myId)=>{
             bio: true,
             isOnline: true,
             lastOnline: true,
-            createdAt: true
-            
+            createdAt: true,
+            isPrivate: true
         }
-    })
+    });
+    const outBoundData ={
+            id: user.id,
+            name: user.name,
+            photo: user.photo,
+            bio: user.bio,
+            isOnline: user.isOnline,
+            lastOnline: user.lastOnline,
+            createdAt: user.createdAt,
+            isPrivate: user.isPrivate,
+            relationStatus: friends? friends.status : 'NONE'
+    };
+    return outBoundData;
 }
 const updateMyData= async(id, data, photo = null)=>{
     const user = await prisma.user.findUnique({where:{id: Number(id)}})
