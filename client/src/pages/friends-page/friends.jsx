@@ -4,7 +4,7 @@ import style from './friend.module.css';
 import { useEffect, useState } from 'react';
 import { Icon } from '../../components/iconhelper/icons';
 const FriendsList = ({}) =>{
-    const {auth, callApi}= useOutletContext();
+    const {auth, callApi, isAuthenticated}= useOutletContext();
 
     const [typeOption, setTypeOption] = useState("ACTIVE");
     const [data, setData]= useState({});
@@ -33,6 +33,7 @@ const FriendsList = ({}) =>{
         }
     }
     useEffect(()=>{
+        isAuthenticated();
         getFriends()
     },[]);
     useEffect(()=>{

@@ -54,6 +54,7 @@ const SideBar = ({user, redirect, logout})=>{
                         fn={()=>{
                                 console.log('logging out')
                                 logout()
+                                redirect('/')
                             }
                         }/>
                 </div>

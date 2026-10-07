@@ -26,7 +26,7 @@ const FeedPage = ({})=>{
                 path: `feed/?limit=${limit}${cursor ? `&cursor=${cursor}`: ''}`,
                 requiresAuth: true,
                 //body: options.body,
-                token: auth.accessToken,
+                token: auth?.accessToken,
                 retry: true,
                 includeCred:true
             })
@@ -46,7 +46,7 @@ const FeedPage = ({})=>{
         loadData, 
         contextRef, 
         lastRecordRef
-    } = usePagenation(getData, auth.accessToken)
+    } = usePagenation(getData, auth?.accessToken? auth.accessToken: false)
     // local post state management
     const [posts, setPosts]= useState([]);
     //post view dialog
@@ -60,12 +60,10 @@ const FeedPage = ({})=>{
         updateData(data)
     }
 
-    useEffect(()=>{
-        
-        isAuthenticated();
+    useEffect(()=>{  
         contextRef.current.scrollTop = 0;
         //SETS USER
-        if(auth){
+        if(auth.accessToken){
             setUser(auth.user);
             
         }else{

@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
-import{Outlet, useParams, useNavigate} from 'react-router-dom'
+import{Outlet, useParams, useNavigate, redirect} from 'react-router-dom'
 import { Login } from './components/login.jsx'
 import { TopNav } from './components/topNav/navbar.jsx'
 import { SideBar } from './components/feedSidebar/sidebar.jsx'
@@ -60,9 +60,7 @@ function App() {
           if(!response.ok)throw new Error('callApi error could not retrieve data');
           //const result = await  response.json()
           setAuth(null);
-          setLoadingAuth(true);
           setFeed(null);
-          setDataLoading(true);
           setActivePost(null);
       }
       catch(err){
@@ -72,7 +70,7 @@ function App() {
   }
   //PROTECT RESOURCE ON INIT
   const isAuthenticated = () =>{
-    if(!auth) goTo('/')
+    if(!auth) return goTo('/')
   }
   // AUTHENTICATION API
   const refresh = async ()=>{
@@ -212,6 +210,8 @@ function App() {
     }
     return response
   }
+  //HANDLE AND PROTECT OUTLET ROUTES
+
 
   //AUTH EFFECT
   useEffect(()=>{
@@ -255,10 +255,7 @@ function App() {
       return;
     }
   },[auth?.user])
-  // render while loading
-  if(loadingAuth || dataLoading){
-    return <div><Icon.Spinner /> Loading ...</div>
-  }
+
 //main render 
   return (
     <main className={style.appContainer}>
@@ -279,21 +276,26 @@ function App() {
           <div className={style.feedOverlay} />    
         )}
         {/*conditionally rendering*/}
+        {auth && (
+          <>
+          
+          </>
+        )}
         {loadingAuth || dataLoading? (
-          <div><Icon.Spinner /> Loading ...</div>
+          <div style={{justifySelf: 'center', alignSelf: 'center'}}><Icon.Spinner /> Loading ...</div>
         ):(
-          <Outlet context={{
-            auth,
-            updateAuthUser,
-            isAuthenticated,
-            saveFeed,
-            onLoginSuccess,
-            goTo,
-            callApi,
-            activePost,
-            selectPost,
-            resetPost
-          }}/>   
+            <Outlet context={{
+              auth,
+              updateAuthUser,
+              isAuthenticated,
+              saveFeed,
+              onLoginSuccess,
+              goTo,
+              callApi,
+              activePost,
+              selectPost,
+              resetPost
+            }}/>  
         )}
    
       </div>

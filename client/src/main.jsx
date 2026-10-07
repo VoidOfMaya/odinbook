@@ -10,6 +10,7 @@ import { WelcomePage } from './pages/welcome-page/welcome.jsx'
 import { ProfilePage } from './pages/user-profile/profile.jsx'
 import { Search } from './pages/search-page/search.jsx'
 import { FriendsList } from './pages/friends-page/friends.jsx'
+import { ProtectedRoute } from './ProtectedRoute.jsx'
 
 
 //page routing
@@ -17,11 +18,17 @@ const router = createBrowserRouter([
   {path:'/', element: <App />,
     children: [
       {path: '/', element: <WelcomePage />},
-      {path:'/feed', element: <FeedPage />},
-      {path:'/profile/:userId', element: <ProfilePage/>},
-      {path:'/myFriends', element: <FriendsList />},
-      {path:'/search', element: <Search/>},
-      {path:'/login/github', element: <GitLogin />}
+      {path:'/login/github', element: <GitLogin />},
+      {element: <ProtectedRoute />,
+        children:[
+          {path:'/feed', element: <FeedPage />},
+          {path:'/profile/:userId', element: <ProfilePage/>},
+          {path:'/myFriends', element: <FriendsList />},
+          {path:'/search', element: <Search/>},          
+        ]
+      }
+
+      
     ],
     errorElement:<div>Page not found</div>
   },

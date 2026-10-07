@@ -82,8 +82,7 @@ const Search =({})=>{
                         return(
                             <div key={user.id}>
                                 {data.length -  1 === index  && (
-                                    <div ref={lastRecordRef} 
-                                    style={{border: '1px solid red'}}/>  
+                                    <div ref={lastRecordRef}/>  
                                 )}
                                 <Card  data={user} />
                             </div>
