@@ -136,7 +136,13 @@ const ProfilePage =({})=>{
                                     alignItems: 'center'
                                 }}>
                                 @{auth.user.name}
-                                {userMeta.privacy &&(<Icon.Lock size={20} color='red'/>)}
+                                {userMeta.privacy &&(
+                                    <Icon.Lock s
+                                        ize={10} 
+                                        color='rgb(244, 117, 117)'
+                                        focusColor='rgb(244, 117, 117)'
+                                        title='Profile is set to Private'/>
+                                    )}
                             </h3>
                             <h4 style={{color: 'rgb(93, 93, 93)', textAlign:'start'}}>
                                 Bio:
@@ -202,10 +208,6 @@ const ProfilePage =({})=>{
     const handleUserEdit = async(data) =>{
         //check if edit info is different then authenticated user data
         const updateData = new FormData();
-
-        //if no change found assign field as empty string else 
-        //assign changed data to upload object
-        //handle photo upload
         setIsSending(true)
         console.log(userMeta)
         try{  

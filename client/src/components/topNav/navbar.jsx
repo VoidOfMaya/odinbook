@@ -16,39 +16,15 @@ const TopNav = ({auth, redirect})=>{
         <>
         {auth === null ?(
             <main className={style.topNav}>
-                <h1>
-                    2talk
-                </h1>   
-                
+                <h2 style={{display: 'flex', alignItems: 'end'}}>2<Icon.Logo size={60} color="white"/></h2>    
             </main>
             ):(
                 <main className={style.topNav}>
                     <div className={style.title}
                         aria-label="Haaki Logo"
                     >  
-                        <h1>2talk</h1> 
+                        <h2 style={{display: 'flex', alignItems: 'end'}}>2<Icon.Logo size={60} color="white"/></h2> 
                     </div>             
-                    {/* enable when in small screen mode
-                    <ul className={style.navOptions}>
-                        <Link to={'/feed'}>Feed</Link>
-                        <Icon.Search 
-                            color="#5e5e5e" 
-                            focusColor="white"
-                            title="search users"
-                        />
-                        <Link to={'/profile/me'}>
-                            {auth?.user?.photo?(
-                                <img src={auth.user.photo}
-                                 height={40}
-                                 width={40}
-                                 style={{borderRadius: '25px'}} />
-                            ):(
-                                <Icon.User size={40} />
-                            )}
-
-                        </Link>
-                    </ul>
-                    */}  
                     {window.innerWidth< 780 &&
                         <div className={style.userDisplay}>
                             <ShowPfp 
