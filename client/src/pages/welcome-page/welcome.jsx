@@ -7,12 +7,9 @@ import { SvgBackground } from '../../helpers/svgBack';
 const WelcomePage =({})=>{
     const{auth ,initAuthHandler} = useOutletContext();
     const [ hidePasswprd, setHidePassword] = useState(true);
-    const goTo = useNavigate();
-
-    return(
-        <main className={style.mainContainer}>
-            <div className={style.registerForm}>
-                
+    const signupForm = () =>{
+        return(
+            <div className={style.registerForm}>   
                 <form className={style.localRegisterForm}>
                     {/*EMAIL*/}
                     <label style={{gridArea: 'emailLabel'}} htmlFor='email'> 
@@ -51,6 +48,10 @@ const WelcomePage =({})=>{
                     
                 </form>    
             </div>
+        )
+    }
+    const loginForm = () =>{
+        return(
             <div className={style.formContainer}>
                 <SvgBackground /> 
                 <form className={style.loginform}>
@@ -84,8 +85,43 @@ const WelcomePage =({})=>{
                         <p>or <b>Log in as a Guest</b></p>
                         <Icon.User size={45}/> 
                     </div>
-                </form>                
-            </div>
+                </form>
+                {window.innerWidth < 780 &&(
+                    <div style={{
+                        position: 'absolute',
+                        bottom: '0px',
+                        width: '100%',
+                        height: '20%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        flexDirection: 'column'
+                        }}
+                    >
+                        <Icon.DownArrow size={50}/>
+                        scroll down to signup
+                    </div> 
+                )}
+                  
+            </div>            
+        )
+    }
+
+    return(
+        <main className={style.mainContainer}>
+            {window.innerWidth < 780 ?(
+                <>
+                    {loginForm()}             
+                    {signupForm()}
+                </>
+            ):(
+                <>
+                    {signupForm()}
+                    {loginForm()}
+                </>
+            )}
+
+
         </main>
     )
 }
