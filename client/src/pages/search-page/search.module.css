@@ -61,10 +61,10 @@
     grid-template-columns: 2fr 2fr 1fr;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
+    width: 99%;
     border-radius: 10px;
-    padding: 10px;
-    margin: 10px 0px 10px 0px;
+    padding: 5px;
+    margin: 10px 5px;
     background-color: #f4f4f4;
     outline: 1px solid #c7c5c5;
 }
@@ -87,5 +87,14 @@
     }
     .searchResults{
         width: 100%;
+        padding: 1px;
+    }
+    .userCard{
+        width: 99%;
+        padding: 10px 0px;
+        margin: 5px 0px;
+    }
+    .lastElement{
+        margin-bottom: 150px;
     }
 }

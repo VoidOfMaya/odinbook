@@ -446,7 +446,7 @@ const ProfilePage =({})=>{
                                             /> 
                                                                             
                                         {!hasMore  && (
-                                            <div style={{display: 'flex',justifyContent: 'center'}}>
+                                            <div className={style.lastElement} style={{display: 'flex',justifyContent: 'center'}}>
                                                 No more posts! 
                                             </div>   
                                         )}
@@ -458,21 +458,23 @@ const ProfilePage =({})=>{
                                     </div>                                          
                                 )
                             }else{
-                                return(             
-                                    <PostCard key={post.id}  
-                                        post={post} 
-                                        user={auth.user} 
-                                        dialog={dialogRef}
-                                        selectPost={selectPost}
-                                        updatePost={updateData}
-                                    />
+                                return(  
+                                    <div className={style.regularPost}>
+                                        <PostCard key={post.id}  
+                                                post={post} 
+                                                user={auth.user} 
+                                                dialog={dialogRef}
+                                                selectPost={selectPost}
+                                                updatePost={updateData}
+                                        />
+                                    </div>           
                                 )  
                             }                          
                         })
                     ):(
-                        <h2 style={{color:"#aeaeae"}}>No Posts Found!</h2>
+                        <h2  style={{color:"#aeaeae"}}>No Posts Found!</h2>
                     )}
-                    {loadPosts &&(
+                    {loadData &&(
                         <>
                             <Icon.Spinner />
                             LOADING POSTS ...

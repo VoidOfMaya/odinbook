@@ -59,8 +59,13 @@ const Search =({})=>{
 
         if(!data && loading){
             return(
-                <div className={style.scrollContainer}> 
-                    <div style={{alignSelf: 'center', margin: 'auto'}}>
+                <div className={style.scrollContainer} style={{border: '1px solid red'}}> 
+                    <div style={{
+                        display: 'flex',
+                        alignContent: 'center',
+                        justifyContent: 'center',
+                        outline: '4px solid red'
+                        }}>
                         <Icon.Spinner color='rgb(56, 56, 56)'/>
                     </div>
                 </div>
@@ -90,12 +95,18 @@ const Search =({})=>{
                         )
                     })}   
                     {!hasMore  && (
-                        <div style={{display: 'flex',justifyContent: 'center'}}>
-                            No more posts! 
+                        <div className={style.lastElement} style={{display: 'flex',justifyContent: 'center'}}>
+                            No more users! 
                         </div>   
                     )}
                     {loadData && (
-                        <div>
+                        <div
+                            style={{
+                                display: 'flex',
+                                alignContent: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
                             <Icon.Spinner />
                         </div>
                     )}                   

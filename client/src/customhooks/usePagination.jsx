@@ -51,7 +51,7 @@ const usePagenation = (fetchData, enabled = true) =>{
         loadRef.current = true;
         setLoadData(true);
         try{
-            console.log(`next cursor is: ${nextCursor.current} of type ${typeof nextCursor.current}`)
+            //console.log(`next cursor is: ${nextCursor.current} of type ${typeof nextCursor.current}`)
             const result  = await fetchData(nextCursor.current);
             nextCursor.current = result.nextCursor
             hasMore.current = result.hasMore
@@ -76,7 +76,7 @@ const usePagenation = (fetchData, enabled = true) =>{
             if(entry.isIntersecting){
                 counterRef.current += 1;
 
-                console.log(`fetching from cursor: ${nextCursor.current}`)
+                //console.log(`fetching from cursor: ${nextCursor.current}`)
                 getNextChunk(nextCursor.current) 
             };
         },{

@@ -76,8 +76,19 @@
     padding-top: 250px;
 
 }
+.regularPost{
+    display: flex;
+    flex-direction: column;
+    align-items: center;  
+}
 .lastPost{
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+@media (max-width: 780px){
+    .lastElement{
+        margin-bottom: 150px;
+    }
 }

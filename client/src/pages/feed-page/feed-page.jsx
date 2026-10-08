@@ -83,6 +83,7 @@ const FeedPage = ({})=>{
             <div className={style.contentContainer} 
                  ref={contextRef}
                  >
+                
                 <div className={style.postCreate}>
                     <CreatePost updatePost={dataUpdateHandler}/>
                 </div>
@@ -113,7 +114,11 @@ const FeedPage = ({})=>{
                             
                                         </div>                                    
                                         {!hasMore  && (
-                                            <div style={{display: 'flex',justifyContent: 'center'}}>
+                                            <div style={{
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                marginBottom: '150px'
+                                                }}>
                                                 No more posts! 
                                             </div>   
                                         )}
@@ -140,7 +145,7 @@ const FeedPage = ({})=>{
                     ):(
                         <h2 style={{color:"#aeaeae"}}>No Posts Found!</h2>
                     )}
-                    {loadPosts &&(
+                    {loadData &&(
                         <>
                             <Icon.Spinner />
                             LOADING POSTS ...
