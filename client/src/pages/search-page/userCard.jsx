@@ -1,15 +1,12 @@
 import style from './search.module.css';
 import { Icon } from '../../components/iconhelper/icons';
-import {useOutletContext } from 'react-router-dom';
+import {Link, useOutletContext } from 'react-router-dom';
 import { useEffect } from 'react';
 import { ShowPfp } from '../../helpers/pfpDisplay';
 const  Card = ({data}) =>{
     const {auth ,goTo,callApi} = useOutletContext();
     // FRIENDSHIP FUNCTIONS
     const updateConnection = async(id, status)=>{
-        //handle state updates after preforming action
-        //send an event to update the firendslist channel
-        //send event to refresh  list of search users
         try{
             const response = await callApi({
                 method: 'PATCH',
@@ -26,17 +23,15 @@ const  Card = ({data}) =>{
             console.log(err.message);
         }
     }
+
     const sendConnectionReq =async(userId, status)=>{
-        //handle state updates after preforming action
-        //send an event to update the inbox channel
-        //send event to refresh  list of search users
         try{
             const response = await callApi({
                 method: 'POST',
                 path: 'network/connection',
                 requiresAuth: true,
                 body: {
-                    recipiantId: userId,
+                    recipientId: userId,
                     status: status
                 },
                 token: auth.accessToken,
@@ -89,27 +84,8 @@ const  Card = ({data}) =>{
                         />              
                     </>
                 )}   
-                {status === 'PENDING' &&(
-                    <>
-                        <Icon.Plus title='accept friend request' 
-                            fn={()=>{
-                                updateConnection(id, "ACTIVE")
-                            }}
-                        />
-                        <Icon.Delete title='decline friend request'
-                            fn={()=>{
-                                updateConnection(id, "DECLINED")
-                            }}
-                        />  
-                        <Icon.Block title='block'
-                            fn={()=>{
-                                const confirm = window.confirm(' this actioin will BLOCK user')
-                                if(!confirm) return
-                                updateConnection(id, "BLOCKED");
-
-                            }}
-                        />              
-                    </>
+                {status === 'PENDING' &&( 
+                    <Link to={'/myFriends'}>view Connections</Link>                
                 )} 
                 {(status === 'DECLINED' || status === 'NONE') &&(
                     <>
@@ -122,7 +98,8 @@ const  Card = ({data}) =>{
                                 const confirm = window.confirm(' this action will BLOCK user')
                                 if(!confirm) return
                                 if(status === 'NONE'){
-                                   return sendConnectionReq(id, "BLOCKED");
+                                    console.log('creating Blocked record')
+                                   return sendConnectionReq(userId, "BLOCKED");
                                 }
                                 updateConnection(id, "BLOCKED");
 
