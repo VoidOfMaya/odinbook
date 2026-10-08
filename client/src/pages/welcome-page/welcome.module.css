@@ -8,17 +8,7 @@
     justify-content: center;
 }
 /* ====== LOGIN =====*/
-/*
-.formContainer{
-    flex: 1;
-    display: flex;
-    align-self: center;
 
-    width: fit-content;
-    padding: 20px;
-    border-radius: 15px;
-
-}*/
 .formContainer{
     flex: 1;
     border-left: 1px solid #c7c5c5;
@@ -50,10 +40,14 @@
 }
 
 .eye{
+    /*border: 1px solid red;*/
+    height: 100%;
     grid-area: eye;
     position: absolute;
     left: -30px;
-    top: 3px;
+    
+    display: flex;
+    align-items: center;
 }
 .github{
     grid-area: github;
@@ -124,8 +118,28 @@
         margin-top: 70%;
         flex: 0 0 auto;
         width: 100%;
+        justify-content: center;
         min-height: 100svh;
         border-left: none;
+    }
+    .formContainer input{
+        padding: 20px;
+    }
+    .loginform{
+        width: 90%;
+        text-align: center;
+        grid-template-columns: 1fr 2fr 8fr 1fr;
+        grid-template-rows: 1fr 2fr 1fr 2fr 2fr;
+        grid-template-areas:
+        '. emailLabel emailLabel  .'
+        '. EmailField EmailField  .'
+        '. passwordLabel passwordLabel .'
+        '. passwordField passwordField eye'
+        '. login login .'
+        '. github github .'
+        '. guest guest .'
+        '. register register register'
+        ;
     }
     .registerForm{
         width: 100%;
