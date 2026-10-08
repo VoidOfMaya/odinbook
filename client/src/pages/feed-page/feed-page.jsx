@@ -1,7 +1,6 @@
 import { redirect, useOutletContext } from 'react-router-dom';
-import { SideBar } from '../../components/feedSidebar/sidebar';
 import style from './feed.module.css';
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState} from 'react';
 import { CreatePost } from '../../components/post/createPost';
 import { PostCard } from '../../components/post/postCard';
 import { PostDialog } from '../../components/post/activePost/postDialog';
