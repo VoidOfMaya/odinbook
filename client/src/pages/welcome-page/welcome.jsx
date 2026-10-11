@@ -5,8 +5,36 @@ import { useOutletContext, useNavigate } from "react-router-dom"
 import { Icon } from '../../components/iconhelper/icons';
 import { SvgBackground } from '../../helpers/svgBack';
 const WelcomePage =({})=>{
-    const{auth ,initAuthHandler} = useOutletContext();
+
+    const {onLoginSuccess,initAuthHandler, callApi} = useOutletContext();
     const [ hidePasswprd, setHidePassword] = useState(true);
+    const [newUser, setNewUser] = useState ({email:'',name:'',password:'',confirmPassword:''});
+    const [loginData, setLoginData]= useState({email:'', password:''});
+    //ENDPOINT FUNCTIONS
+    const createNewUser = ()=>{
+        console.log(newUser)
+    }
+    const localLogIn = async(data) =>{
+        console.log(data)
+        try{
+            const response = await callApi({
+                method: 'POST',
+                path: `auth/login/local`,
+                requiresAuth: false,
+                body: data,
+                token:'',
+                retry: true,
+                //includeCred:true
+            })
+            if(!response.ok)throw new Error('callApi error could not retrieve data');
+            return await response.json()
+        }
+        catch(err){
+            console.log(`Could not get data`)
+            console.log(err.message)
+        }
+    }
+    //RENDER FUNCTIONS
     const signupForm = () =>{
         return(
             <div className={style.registerForm}>   
@@ -15,20 +43,32 @@ const WelcomePage =({})=>{
                     <label style={{gridArea: 'emailLabel'}} htmlFor='email'> 
                         <b>Email</b> 
                     </label>
-                    <input style={{gridArea: 'EmailField '}} name='email' id='email'>
+                    <input style={{gridArea: 'EmailField '}} name='email' id='email' value={newUser.email}
+                        onChange={(e)=>{
+                            setNewUser(prev=>({...prev, email: e.target.value}))
+                        }}
+                    >
                     </input> 
                     {/*NAME*/} 
                     <label style={{gridArea: 'nameLabel'}} htmlFor='name'> 
                         <b>Full Name</b> 
                     </label>
-                    <input style={{gridArea: 'nameField '}} name='name' id='name'>
+                    <input style={{gridArea: 'nameField '}} name='name' id='name' value={newUser.name}
+                        onChange={(e)=>{
+                            setNewUser(prev=>({...prev, name: e.target.value}))
+                        }}
+                    >
                     </input>                       
                     {/*PASSWORD*/}
                     <label style={{gridArea:'passwordLabel'}} htmlFor='password'>
                         <b>Password </b>
                     </label>
                     <input style={{gridArea:'passwordField'}} name='password' 
-                        type={hidePasswprd? 'password': 'text'} id='password'>
+                        type={hidePasswprd? 'password': 'text'} id='password' value={newUser.password}
+                        onChange={(e)=>{
+                            setNewUser(prev=>({...prev, password: e.target.value}))
+                        }}    
+                    >
                     </input>
                     <div  className={style.eye}>
                         <Icon.Eye   size={20} fn={()=>{
@@ -40,10 +80,17 @@ const WelcomePage =({})=>{
                         <b>Confirm-Password </b>
                     </label>
                     <input style={{gridArea:'confpasswordField'}} name='password' 
-                        type={hidePasswprd? 'password': 'text'} id='password'>
+                        type={hidePasswprd? 'password': 'text'} id='password' value={newUser.confirmPassword}
+                        onChange={(e)=>{
+                            setNewUser(prev=>({...prev, confirmPassword: e.target.value}))
+                        }}    
+                    >
                     </input>
                                   
-                    <button style={{gridArea: 'login',cursor: 'pointer'}}>Create Acount</button>
+                    <button style={{gridArea: 'login',cursor: 'pointer'}}
+                        type='button'
+                        onClick={()=> createNewUser()}
+                    >Create Acount</button>
 
                     
                 </form>    
@@ -58,14 +105,40 @@ const WelcomePage =({})=>{
                     <label style={{gridArea: 'emailLabel'}} htmlFor='email'> 
                         <b>Email</b> 
                     </label>
-                    <input style={{gridArea: 'EmailField '}} name='email' id='email'>
+                    <input 
+                        style={{
+                            gridArea: 'EmailField ',
+                            borderRight:loginData.email.length < 1? '4px solid rgb(255, 0, 0)' : 'none'
+                        }} 
+                        name='email' 
+                        id='email' 
+                        placeholder='example.@example.com'
+                        required
+                        value={loginData.email}
+                        onChange={(e)=>{
+                            setLoginData(prev=>({...prev, email: e.target.value}))
+                        }}
+                    >
                     </input>                        
                   
                     <label style={{gridArea:'passwordLabel'}} htmlFor='password'>
                         <b>Password </b>
                     </label>
-                    <input style={{gridArea:'passwordField'}} name='password' 
-                        type={hidePasswprd? 'password': 'text'} id='password'>
+                    <input 
+                        style={{
+                            gridArea:'passwordField',
+                            borderRight: loginData.password.length < 8? '4px solid rgb(255, 0, 0)' : 'none'
+                        }} 
+                        name='password' 
+                        type={hidePasswprd? 'password': 'text'} 
+                        id='password'
+                        placeholder='password@123'
+                        required
+                        value={loginData.password}
+                        onChange={(e)=>{
+                            setLoginData(prev=>({...prev, password: e.target.value}))
+                        }}   
+                    >
                     </input>
                     <div  className={style.eye}>
                         <Icon.Eye   size={20} fn={()=>{
@@ -74,14 +147,22 @@ const WelcomePage =({})=>{
                     </div>
                                           
                     
-                    <button style={{gridArea: 'login',cursor: 'pointer'}}>Sign in</button>
+                    <button type='button' style={{gridArea: 'login',cursor: 'pointer'}}
+                        onClick={()=> localLogIn()}
+                    >Sign in</button>
 
                     <div className={style.github}>
                         <p>or <b>Log in with Github </b></p>
                         <Login initAuthHandler={initAuthHandler}/>   
                         
                     </div>
-                    <div className={style.guestOpt}>
+                    <div className={style.guestOpt}
+                        onClick={async()=>{
+                            //setLoginData(prev =>({...prev, email:'GuestUser@guest.com',password:'Guest@us3r'}))
+                            const result = await localLogIn({email:'GuestUser@guest.com',password:'Guest@us3r'})
+                            onLoginSuccess(result.user, result.accessToken)
+                        }}
+                    >
                         <p>or <b>Log in as a Guest</b></p>
                         <Icon.User size={45}/> 
                     </div>
