@@ -1,5 +1,4 @@
 import passport from 'passport';
-import GitHubStrategy from 'passport-github'
 import {ExtractJwt, Strategy} from 'passport-jwt';
 import {prisma} from '../../lib/prisma.js';
 import 'dotenv/config';
@@ -11,6 +10,10 @@ const passportConfig=()=>{
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
         secretOrKey: process.env.APIKEY,
     }
+    console.log('JWT configuration:', {
+        hasSecret: Boolean(options.secretOrKey),
+        optionKeys: Object.keys(options)
+    });
     //local strategy
     passport.use(new Strategy(options, async( payload, done)=>{
         try{

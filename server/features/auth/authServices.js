@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import 'dotenv/config'
 import { threadId } from 'worker_threads';
 import { ApiError } from '../../errorhelper.js';
+import { equal } from 'assert';
 
 //A basic register and  login!
 //takes {email, password, name}
@@ -26,10 +27,14 @@ const register = async (data) =>{
 const login = async (data) =>{
     const {email, password} = data
     const user = await prisma.user.findUnique({
-        where: {email: email}
+        where: {email: String(email)},
+        select: {
+            id: true,
+            email: true,
+            password: true
+        }
     })
     if(!user) throw new Error("invalid login");
-
     const match = await bcrypt.compare(password, user.password);
     if(!match) throw new Error("invalid login");
     //update last online date
