@@ -17,7 +17,7 @@ const Search =({})=>{
     const [searchInput, setSearchInput] = useState('');
     const [loading, setLoading] = useState(false);
     //usePagination Hook:
-    const getData = async(cursor= null, limit= 10) =>{
+    const getData = async(cursor= null, limit= 15) =>{
         setLoading(true);
         try{
             const response = await callApi({
@@ -53,7 +53,7 @@ const Search =({})=>{
     } = usePagenation(getData)
     //populate screen
     useEffect(()=>{
-
+        console.log(data);
     },[data])
     const populateResults = (data)=>{
 
@@ -91,7 +91,6 @@ const Search =({})=>{
                                 )}
                                 <Card  data={user} />
                             </div>
-
                         )
                     })}   
                     {!hasMore  && (
