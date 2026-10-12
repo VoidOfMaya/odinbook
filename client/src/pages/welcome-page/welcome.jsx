@@ -11,8 +11,34 @@ const WelcomePage =({})=>{
     const [newUser, setNewUser] = useState ({email:'',name:'',password:'',confirmPassword:''});
     const [loginData, setLoginData]= useState({email:'', password:''});
     //ENDPOINT FUNCTIONS
-    const createNewUser = ()=>{
+    const createNewUser = async(newAccount)=>{
         console.log(newUser)
+            try{
+            const response = await callApi({
+                method: 'POST',
+                path: `auth/register`,
+                requiresAuth: false,
+                body: newAccount,
+                token:'',
+                retry: true,
+                //includeCred:true
+            })
+            if(!response.ok)throw new Error('callApi error could not retrieve data');
+            const result = await response.json()
+            if(!result)
+            if(result.message) console.log(result.message);
+            setNewUser(prev=>({
+                ...prev,
+                email: '',
+                name: '',
+                password: '',
+                confirmPassword: ''
+            }))
+        }
+        catch(err){
+            console.log(`Could not get data`)
+            console.log(err.message)
+        }
     }
     const localLogIn = async(data) =>{
         console.log(data)
@@ -34,16 +60,39 @@ const WelcomePage =({})=>{
             console.log(err.message)
         }
     }
+    const validatePasswordMatch = (password, confirmPassword) =>{
+        if(password === '' || confirmPassword === '') return false
+        if( password === confirmPassword) return true
+        return false
+    }
     //RENDER FUNCTIONS
     const signupForm = () =>{
         return(
             <div className={style.registerForm}>   
+                
                 <form className={style.localRegisterForm}>
+                    <h6 style={{
+                        gridArea: 'requirments',
+                        display: 'flex',
+                        alignItems: 'center',
+                        color: '#eb0c0c',
+                        }}
+                    >
+                        all fields marked with a red line  are required
+                    </h6>
                     {/*EMAIL*/}
                     <label style={{gridArea: 'emailLabel'}} htmlFor='email'> 
                         <b>Email</b> 
                     </label>
-                    <input style={{gridArea: 'EmailField '}} name='email' id='email' value={newUser.email}
+                    <input
+                        style={{
+                            gridArea: 'EmailField ',
+                            borderRight: newUser.email === ''? '4px solid rgb(255, 0, 0)' : 'none'
+                        }} 
+                    required
+                    name='email' 
+                    id='email' 
+                    value={newUser.email}
                         onChange={(e)=>{
                             setNewUser(prev=>({...prev, email: e.target.value}))
                         }}
@@ -53,7 +102,14 @@ const WelcomePage =({})=>{
                     <label style={{gridArea: 'nameLabel'}} htmlFor='name'> 
                         <b>Full Name</b> 
                     </label>
-                    <input style={{gridArea: 'nameField '}} name='name' id='name' value={newUser.name}
+                    <input 
+                        style={{
+                            gridArea: 'nameField ',
+                            borderRight: newUser.name.length < 3? '4px solid rgb(255, 0, 0)' : 'none'
+                        }} 
+                        name='name' 
+                        id='name' 
+                        value={newUser.name}
                         onChange={(e)=>{
                             setNewUser(prev=>({...prev, name: e.target.value}))
                         }}
@@ -63,8 +119,17 @@ const WelcomePage =({})=>{
                     <label style={{gridArea:'passwordLabel'}} htmlFor='password'>
                         <b>Password </b>
                     </label>
-                    <input style={{gridArea:'passwordField'}} name='password' 
-                        type={hidePasswprd? 'password': 'text'} id='password' value={newUser.password}
+                    <input 
+                        style={{
+                            gridArea:'passwordField',
+                            borderRight: newUser.password.length < 8? '4px solid rgb(255, 0, 0)' : 'none'
+                        }} 
+                        name='password' 
+                        type={hidePasswprd? 'password': 'text'} 
+                        id='password' 
+                        value={newUser.password}
+                        placeholder='atleast 8 characters'
+                        required
                         onChange={(e)=>{
                             setNewUser(prev=>({...prev, password: e.target.value}))
                         }}    
@@ -79,17 +144,36 @@ const WelcomePage =({})=>{
                     <label style={{gridArea:'confpasswordLabel'}} htmlFor='password'>
                         <b>Confirm-Password </b>
                     </label>
-                    <input style={{gridArea:'confpasswordField'}} name='password' 
-                        type={hidePasswprd? 'password': 'text'} id='password' value={newUser.confirmPassword}
+                    <input 
+                        style={{
+                            gridArea:'confpasswordField',
+                            borderRight: 
+                                !validatePasswordMatch(newUser.password, newUser.confirmPassword)
+                                ? '4px solid rgb(255, 0, 0)' 
+                                : '4px solid rgb(40, 216, 13)',
+                        }}
+                        name='password' 
+                        type={hidePasswprd? 'password': 'text'} 
+                        id='password' 
+                        value={newUser.confirmPassword}
+                        required
                         onChange={(e)=>{
                             setNewUser(prev=>({...prev, confirmPassword: e.target.value}))
                         }}    
                     >
                     </input>
                                   
-                    <button style={{gridArea: 'login',cursor: 'pointer'}}
+                    <button 
+                        style={{gridArea: 'login',cursor: 'pointer'}}
                         type='button'
-                        onClick={()=> createNewUser()}
+                        onClick={async()=>{
+                            //validate that form is filled out
+                            if(newUser.email === '') return alert('please fill out your email')
+                            if(newUser.name === '') return alert('please fill out your name')
+                            if(newUser.password === '') return alert('please fill out your password')
+                            if(newUser.confirmPassword === '') return alert('please fill out your confirm password')
+                            const result = await createNewUser(newUser);
+                        }}
                     >Create Acount</button>
 
                     

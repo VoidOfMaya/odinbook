@@ -95,8 +95,9 @@
     display: grid;
     position: relative; /* to allow for absolute positioning for child elements such as eye*/
     grid-template-columns: 1fr 2fr 8fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr 2fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 2fr;
     grid-template-areas:
+    '. requirments requirments .'
     '. emailLabel EmailField .'
     '.   nameLabel nameField .'
     '. passwordLabel passwordField eye'
