@@ -12,7 +12,6 @@ const WelcomePage =({})=>{
     const [loginData, setLoginData]= useState({email:'', password:''});
     //ENDPOINT FUNCTIONS
     const createNewUser = async(newAccount)=>{
-        console.log(newUser)
             try{
             const response = await callApi({
                 method: 'POST',
@@ -232,7 +231,10 @@ const WelcomePage =({})=>{
                                           
                     
                     <button type='button' style={{gridArea: 'login',cursor: 'pointer'}}
-                        onClick={()=> localLogIn()}
+                        onClick={async()=>{
+                            const result = await localLogIn(loginData);
+                            onLoginSuccess(result.user, result.accessToken)
+                        }}
                     >Sign in</button>
 
                     <div className={style.github}>
