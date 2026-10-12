@@ -434,17 +434,17 @@ const ProfilePage =({})=>{
                             if(Number(data.length - 1) === Number(index)){                            
                                 return(
                                     <div className={style.lastPost} key={post.id}>
-                                       
-                                            <div ref={lastRecordRef} />  
-                                            <PostCard key={post.id}  
+ 
+                                        <div ref={lastRecordRef} />  
+                                        <PostCard key={post.id}  
                                             post={post} 
                                             user={auth.user} 
                                             dialog={dialogRef}
                                             selectPost={selectPost}
                                             updatePost={updateData}
                                             isLast = {true}
-                                            /> 
-                                                                            
+                                        />                             
+                                                                                                                    
                                         {!hasMore  && (
                                             <div className={style.lastElement} style={{display: 'flex',justifyContent: 'center'}}>
                                                 No more posts! 
@@ -455,12 +455,12 @@ const ProfilePage =({})=>{
                                                 <Icon.Spinner />
                                             </div>
                                         )}
-                                    </div>                                          
+                                    </div>                             
                                 )
                             }else{
                                 return(  
-                                    <div className={style.regularPost}>
-                                        <PostCard key={post.id}  
+                                    <div className={style.regularPost} key={post.id}>
+                                        <PostCard  
                                                 post={post} 
                                                 user={auth.user} 
                                                 dialog={dialogRef}

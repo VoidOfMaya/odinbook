@@ -52,9 +52,6 @@ const Search =({})=>{
         lastRecordRef
     } = usePagenation(getData)
     //populate screen
-    useEffect(()=>{
-        console.log(data);
-    },[data])
     const populateResults = (data)=>{
 
         if(!data && loading){

@@ -40,7 +40,6 @@ const WelcomePage =({})=>{
         }
     }
     const localLogIn = async(data) =>{
-        console.log(data)
         try{
             const response = await callApi({
                 method: 'POST',

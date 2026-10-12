@@ -96,7 +96,7 @@ const PostCard = ({
         <main 
         className={style.postCard}
         ref={lastCardRef && lastCardRef}
-        style={{width: isLast? '100%': '100%'}}
+        style={{width:'100%'}}
         >
             <div className={style.postMeta}>
                 <div 

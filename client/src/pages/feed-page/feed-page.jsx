@@ -58,7 +58,6 @@ const FeedPage = ({})=>{
     const dataUpdateHandler = (data)=>{
         updateData(data)
     }
-
     useEffect(()=>{  
         contextRef.current.scrollTop = 0;
         //SETS USER
