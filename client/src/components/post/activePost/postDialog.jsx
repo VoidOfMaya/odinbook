@@ -207,11 +207,6 @@ const PostDialog = ({ref, postId, isActive, reset,deactivate, update})=> {
             console.log(err.message)
         }
     }
-    const createCommentById = async(postId)=>{
-
-    }
-
-
 
     //RENDER FUNCTIONS
     const populateComments = () =>{

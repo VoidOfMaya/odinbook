@@ -93,6 +93,7 @@ const usePagenation = (fetchData, enabled = true) =>{
         return{ 
             issue,
             trigger,
+            updateData,
             loadData, 
             contextRef, 
             lastRecordRef,

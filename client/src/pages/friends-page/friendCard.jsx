@@ -74,7 +74,8 @@ const  Card = ({user, meta}) =>{
         )
     }
     const userIsSender= (data)=>{
-        if(meta.status === 'PENDING' && data.isInitiator){
+        console.log(`is pending: ${meta.status} , im who sent request ${data}`)
+        if(meta.status === 'PENDING' && !data){
             return(
                 <>
                     <div
