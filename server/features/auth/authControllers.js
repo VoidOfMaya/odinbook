@@ -47,7 +47,21 @@ const localLogin = async (req, res, next)=>{
             path:'/',
             maxAge: 1000 * 60 * 60 * 24 * 7,
         });
-        res.status(200).json({user: result.user, accessToken: result.accessToken});
+        console.log('debug local authentication');
+        res.status(200).json({
+            user:{
+                id: result.user.id,
+                email: result.user.email,
+                name: result.user.name,
+                bio: result.user.bio,
+                photo: result.user.photo,
+                lastOnline: result.user.lastOnline,
+                isOnline: result.user.isOnline,
+                createdAt: result.user.createdAt,
+                isPrivate: result.user.isPrivate
+            }, 
+            accessToken: result.accessToken
+        });
     }catch(err){
         console.error({
             message: err.message,

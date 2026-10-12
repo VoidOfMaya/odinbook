@@ -31,7 +31,13 @@ const login = async (data) =>{
         select: {
             id: true,
             email: true,
-            password: true
+            password: true,
+            name: true,
+            bio: true,
+            photo: true,
+            createdAt: true,
+            lastOnline: true,
+            isPrivate: true
         }
     })
     if(!user) throw new Error("invalid login");
@@ -61,7 +67,9 @@ const login = async (data) =>{
             bio: user.bio,
             photo: user.photo,
             createdAt: user.createdAt,
-            lastOnline: user.lastOnline
+            lastOnline: user.lastOnline,
+            isPrivate: user.isPrivate
+            
         },
         accessToken,
         refreshToken
