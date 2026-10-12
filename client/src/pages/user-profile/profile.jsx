@@ -35,8 +35,6 @@ const ProfilePage =({})=>{
     })
     //post states
     const dialogRef = useRef(null);
-    const [loadPosts, setLoadPosts]= useState(false);
-
     //post pagination per user: 
     //required for usePAgenation hook
     const getData = async(cursor= null, limit= 10)=>{

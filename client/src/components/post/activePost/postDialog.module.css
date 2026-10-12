@@ -25,16 +25,13 @@
     padding: 10px;
     margin: 10px;
     border-radius: 20px;
-    width: 80%;
-    min-width: 300px;
+    width: 700px;
     max-width: 750px;
     color: rgb(31, 31, 31);
 
     justify-self: center;
     align-self: center;
     outline: none;
-    border: none;
-
 
 }
 
