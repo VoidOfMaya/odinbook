@@ -16,7 +16,7 @@
 }
 .userMeta{
     position: absolute;
-    z-index: 1;
+    z-index: 2;
     padding: 10px;
 
     
@@ -68,6 +68,7 @@
     align-items: center;
 }
 .userPosts{
+    z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: center;

@@ -6,6 +6,7 @@ import { PostCard } from '../../components/post/postCard';
 import { PostDialog } from '../../components/post/activePost/postDialog';
 import { Icon } from '../../components/iconhelper/icons';
 import { usePagenation } from '../../customhooks/usePagination';
+import { SvgBackground } from '../../helpers/svgBack';
 const FeedPage = ({})=>{
     const {
         saveFeed, 
@@ -161,8 +162,10 @@ const FeedPage = ({})=>{
                     deactivate = {selectPost}
                     update={updateData}/>     
             )}
+        <div style={{zIndex: '0'}}>
+            <SvgBackground />            
+        </div>
 
-            
         </main>
     )
 }

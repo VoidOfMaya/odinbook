@@ -4,6 +4,7 @@ import { usePagenation } from '../../customhooks/usePagination'
 import { Icon } from '../../components/iconhelper/icons'
 import style from './search.module.css'
 import { Card } from './userCard'
+import { SvgBackground } from '../../helpers/svgBack'
 
 const Search =({})=>{
 
@@ -140,6 +141,7 @@ const Search =({})=>{
                     </div>
                     {populateResults(data)}
                 </div>
+                <SvgBackground />
             </div>
         </>
     )

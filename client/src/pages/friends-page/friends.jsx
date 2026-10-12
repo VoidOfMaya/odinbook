@@ -3,6 +3,7 @@ import { Card } from './friendCard';
 import style from './friend.module.css';
 import { useEffect, useState } from 'react';
 import { Icon } from '../../components/iconhelper/icons';
+import { SvgBackground } from '../../helpers/svgBack';
 const FriendsList = ({}) =>{
     const {auth, callApi, isAuthenticated}= useOutletContext();
 
@@ -41,7 +42,7 @@ const FriendsList = ({}) =>{
     },[typeOption]);
     return(
         <div className={style.mainContainer}>
-            <div>
+            <div className={style.contentContainer}>
                 <div className={style.statusType}>
                     <h3 
                         className={typeOption === 'ACTIVE'? style.optionOn : style.optionOff}
@@ -96,7 +97,8 @@ const FriendsList = ({}) =>{
                 </div>
             )}                                  
             </div> 
-            
+    
+        <SvgBackground />            
         </div>
     )
 }

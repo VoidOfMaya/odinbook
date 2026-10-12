@@ -6,6 +6,7 @@ import { SideBar } from './components/feedSidebar/sidebar.jsx'
 import { WelcomePage } from './pages/welcome-page/welcome.jsx'
 import style from './App.module.css'
 import { Icon } from './components/iconhelper/icons.jsx'
+import { SvgBackground } from './helpers/svgBack.jsx'
 
 function App() {
   const [auth, setAuth] = useState(null);
@@ -262,6 +263,7 @@ function App() {
       <div className={style.topnavContainer}>
         <TopNav  auth={auth} redirect={goTo}/>  
       </div>
+      
       <div className={style.pageContainer}>
         {auth
           ?(
@@ -282,7 +284,7 @@ function App() {
           </>
         )}
         {loadingAuth || dataLoading? (
-          <div style={{justifySelf: 'center', alignSelf: 'center'}}><Icon.Spinner /> Loading ...</div>
+        <div style={{justifySelf: 'center', alignSelf: 'center'}}><Icon.Spinner /> Loading ...</div>
         ):(
             <Outlet context={{
               auth,
@@ -297,9 +299,8 @@ function App() {
               resetPost
             }}/>  
         )}
-   
-      </div>
 
+      </div>
     </main>
   )
 }

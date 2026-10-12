@@ -16,6 +16,7 @@
     position: relative; 
 }
 .searchBar{
+    z-index: 1;
     margin-top: 10px;
     padding: 5px;
     display: flex;
@@ -30,6 +31,7 @@
     border-radius: 25px 0px 0px 25px;
 }
 .searchResults{
+    z-index: 1;
     margin-top: 10px;
     background-color: #e8e8e8;
     padding: 10px;

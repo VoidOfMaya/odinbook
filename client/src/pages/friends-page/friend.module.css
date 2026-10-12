@@ -15,8 +15,11 @@
     width: 100%;
     position: relative; 
 }
-
+.contentContainer{
+    z-index: 1;
+}
 .statusType{
+    z-index: 1;
     display: flex;
     margin-top: 20px;
     justify-content: space-around;

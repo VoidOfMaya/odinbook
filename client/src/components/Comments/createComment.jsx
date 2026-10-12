@@ -93,7 +93,6 @@ const CreateComment = ({
         }
     }
     useEffect(()=>{
-        console.log(editComment.id)
         editComment.id
         ? setContent(editComment.content)
         : setContent('')

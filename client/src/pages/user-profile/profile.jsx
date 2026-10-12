@@ -6,6 +6,7 @@ import { usePagenation } from '../../customhooks/usePagination';
 import { PostCard } from '../../components/post/postCard';
 import { PostDialog } from '../../components/post/activePost/postDialog';
 import { ShowPfp } from '../../helpers/pfpDisplay';
+import { SvgBackground } from '../../helpers/svgBack';
 
 const ProfilePage =({})=>{
     const {userId}= useParams();
@@ -479,6 +480,7 @@ const ProfilePage =({})=>{
                         </>
                     )}
                 </div>
+                <SvgBackground />
             </div>
             {activePost && (
                 <PostDialog 
