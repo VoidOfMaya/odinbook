@@ -21,15 +21,17 @@ const seedDemo = async()=>{
     data:{
       email: 'GuestUser@guest.com',
       name: 'Guest User',
-      password: await bcrypt.hash('Guest@us3r', 10)
+      photo: faker.image.avatar(),
+      password: await bcrypt.hash('Guest@us3r', 10),
+      bio: 'This is a guest acount for demo purposes'
     }
   })
   console.log('Complete: Creating guest account')
   console.log('start: populate demo accounts')
   const userData = [];
-  //loads 8 VIEWABLE ACCOUNTS
+  //loads 20 VIEWABLE ACCOUNTS
   for(let i = 0 ; i < 20 ; i++){
-    if(i >= 8){
+    if(i >= 10){
       userData.push({
           email: faker.internet.email(),
           name: faker.person.fullName(),
@@ -83,29 +85,29 @@ const seedDemo = async()=>{
 
   const friendships = [];
 
-  for(let i = 0; i < 7; i++){
-    if(i < 3){
+  for(let i = 0; i < 15; i++){
+    if(i < 6){
       friendships.push({
         status: 'ACTIVE',
         userId: guest.id,
         friendId: demoUsers[i].id
       })
     }
-    if(i >= 3 && i < 6){
+    if(i >= 6 && i < 12){
       friendships.push({
         status: 'PENDING',
         userId: guest.id,
         friendId: demoUsers[i].id
       })   
     }
-      if(i === 6){
+      if(i === 12){
       friendships.push({
         status: 'BLOCKED',
         userId: guest.id,
         friendId: demoUsers[i].id
       })   
     }
-    if( i > 6){
+    if( i > 12){
       friendships.push({
         status: 'DECLINED',
         userId: guest.id,
@@ -121,6 +123,8 @@ const seedDemo = async()=>{
   console.log('start: setting dev friendships')
   //define connection: 4 active {one user is private}/ 2 pending / 1 blocked   
   // for devuser : where email => MayaOfTheVoid@gmail.com
+
+  /*
   const devUser = await prisma.user.findFirst({
     where: {
       githubId: {not: null}
@@ -132,29 +136,29 @@ const seedDemo = async()=>{
   })
     const devFriendships = [];
 
-  for(let i = 0; i < 10; i++){
-    if(i >= 3 && i < 6){
+  for(let i = 0; i < 20; i++){
+    if(i >= 6 && i < 12){
       devFriendships.push({
         status: 'ACTIVE',
         userId: devUser.id,
         friendId: demoUsers[i].id
       })
     }
-    if(i >= 6 && i < 8){
+    if(i >= 12 && i < 16){
       devFriendships.push({
         status: 'PENDING',
         userId: devUser.id,
         friendId: demoUsers[i].id
       })   
     }
-      if(i === 8){
+      if(i === 16){
       devFriendships.push({
         status: 'BLOCKED',
         userId: devUser.id,
         friendId: demoUsers[i].id
       })   
     }
-    if( i === 9){
+    if( i === 15){
       devFriendships.push({
         status: 'ACTIVE',
         userId: devUser.id,
@@ -167,7 +171,7 @@ const seedDemo = async()=>{
     data: devFriendships
   })
   console.log('finish: setting dev friendships')
-  console.log('finish:intialize friendship data')
+  console.log('finish:intialize friendship data') */
   //define random fake friendships between fake users
   //create 8 visible posts per user + 3 hidden of which 5 are with photos
   const postData = [];

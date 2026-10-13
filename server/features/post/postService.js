@@ -1,4 +1,4 @@
-import { ne } from "@faker-js/faker";
+
 import { prisma } from "../../lib/prisma.js";
 
 const getPost = async(postId)=>{
