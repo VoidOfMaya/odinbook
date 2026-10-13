@@ -285,6 +285,7 @@ const PostDialog = ({ref, postId, isActive, reset,deactivate, update})=> {
             </>
         )
     }
+
     useEffect(()=>{
         
         if(!deleteComment) return
@@ -301,6 +302,7 @@ const PostDialog = ({ref, postId, isActive, reset,deactivate, update})=> {
         }
         
     },[postId])
+
     useEffect(()=>{
         if(!post)return
         setContent(post.content)

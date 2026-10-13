@@ -33,7 +33,7 @@ const usePagenation = (fetchData, enabled = true) =>{
             if(result === undefined) throw new Error('Upstream error in provided fetch data callback functions')
             nextCursor.current = result.nextCursor
             hasMore.current = result.hasMore
-            setData(result.data)
+            setData(result.data? result.data : [])
             setLoadData(false)  
                 
         }catch(err){
