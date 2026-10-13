@@ -154,7 +154,7 @@ describe('/network',()=>{
             })
             response = await request(app).post('/network/connection')
             .set('Authorization', `Bearer ${userToken}`)
-            .send({recipiantId : record.id}) //last position
+            .send({recipientId : record.id}) //last position
             
             expect(response.status).toBe(201);
             expect(response.body.connectionId).toBeDefined();
@@ -164,7 +164,7 @@ describe('/network',()=>{
         test('return 409 for already existing connections',async()=>{
             response = await request(app).post('/network/connection')
             .set('Authorization', `Bearer ${userToken}`)
-            .send({recipiantId : records[1].id})
+            .send({recipientId : records[1].id})
             expect(response.status).toBe(409);
         })
 

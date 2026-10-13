@@ -94,7 +94,8 @@ describe('/user',()=>{
             .send({
                 name:'mark clark',
                 bio:'edited in new bio',
-                photo: ''
+                photo: '',
+                privacy: false
             })
         })
         test('returns newlly edited data',async()=>{
@@ -194,8 +195,7 @@ describe('/user',()=>{
             .query({name: 'a'})
 
             expect(response.status).toBe(200);
-
-            const matchingUsers = response.body.users;
+            const matchingUsers = response.body.data;
             console.log(matchingUsers);
             
             matchingUsers.forEach(user=>{
@@ -207,9 +207,9 @@ describe('/user',()=>{
             response = await request(app).get('/user/search')
             .set('Authorization', `Bearer ${userToken}`)
             .query({
-                name: 'mark'
+                name: 'markousla'
             })
-
+            console.log(response.body)
             expect(response.status).toBe(404);
             expect(response.body.message).toEqual('User not found')
 

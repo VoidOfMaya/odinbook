@@ -210,7 +210,7 @@ describe('/feed',()=>{
                     cursor: nextCursor || null
                 })
                 nextCursor = response.body.nextCursor
-                response.body.feed.forEach(post=>{
+                response.body.data.forEach(post=>{
                     postArray.push(post)
                 })                
             }
