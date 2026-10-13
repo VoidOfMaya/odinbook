@@ -35,7 +35,7 @@ const PostDialog = ({ref, postId, isActive, reset,deactivate, update})=> {
     const {     
         data,
         updateData,
-        cursor, 
+        cursor,
         hasMore,
         loadData, 
         contextRef, 
@@ -207,7 +207,6 @@ const PostDialog = ({ref, postId, isActive, reset,deactivate, update})=> {
             console.log(err.message)
         }
     }
-
     //RENDER FUNCTIONS
     const populateComments = () =>{
         return(

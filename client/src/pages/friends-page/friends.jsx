@@ -80,7 +80,6 @@ const FriendsList = ({}) =>{
                 <div className={style.cardsContainer}> 
                     {data.friends?(
                         <>
-                            {console.log(data)}
                             {data?.friends.map((connection) =>{
                                 if(connection.user.id === auth.user.id)return
                                 return(

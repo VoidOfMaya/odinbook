@@ -19,6 +19,7 @@ const CreateComment = ({
     const [content, setContent]= useState('')
 
     const shiftFeedComment =(postId, newComment)=>{
+        /* 
         editComment.id
         ?   updateFeed(prev =>
                 prev.map(post =>
@@ -40,7 +41,24 @@ const CreateComment = ({
                     ? {...post, comments:[newComment, ...post.comments].slice(0, 3)}
                     : post
                 )    
-            )
+            )*/
+        updateFeed(prev =>
+            prev.map(post =>{
+                if (post.id !== postId) return post;
+                const comments = post.comments ?? []; //validates if post has comments array, else inits a new array
+                if(editComment.id){
+                    return{
+                        ...post, 
+                        comments: comments.map(comment =>
+                            comment.id === editComment.id
+                            ? {...comment, content: content}
+                            : comment
+                        )
+                    }
+                }
+                return{...post, comments:[newComment, ...comments].slice(0, 3)}
+            })
+        )
     }
     const createComment = async (postId)=>{
         try{
@@ -55,8 +73,10 @@ const CreateComment = ({
             })
             if(!response.ok) throw new Error('Could not preform action')
             const result = await response.json();
-            //updates  pagination data for comments
-            updateActive(prev =>[result.comment, ...prev])
+            //updates  pagination data for comments 
+            updateActive(prev =>{
+                return prev.length === 0? [result.comment] : [result.comment, ...prev]
+            })
             //insures feed data only has 3 comments
             shiftFeedComment(postId, result.comment)
 

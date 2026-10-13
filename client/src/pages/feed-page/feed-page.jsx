@@ -121,11 +121,7 @@ const FeedPage = ({})=>{
                                                 No more posts! 
                                             </div>   
                                         )}
-                                        {loadData && (
-                                            <div>
-                                                <Icon.Spinner />
-                                            </div>
-                                        )}
+
                                     </div>                                          
                                 )
                             }else{

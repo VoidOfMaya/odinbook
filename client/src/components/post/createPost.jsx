@@ -19,7 +19,6 @@ const CreatePost = ({updatePost}) =>{
             const formData = new FormData();
             formData.append('content', newPost.content);
             formData.append('photo', newPost.photo);
-            console.log(formData)
             //sending call to server
             const response = await callApi({
                 method: 'POST',
