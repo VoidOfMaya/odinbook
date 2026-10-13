@@ -59,7 +59,11 @@ const deletePost = async( req, res, next)=>{
     const {id} = matchedData(req); 
     try{
         const post = await service.deletePost(id);
-        if(!post) throw new ApiError(404, 'Could not find post')
+
+        if(!post){
+            throw new ApiError(404, 'Could not find post')
+        }
+        console.log(` post deleted ${post.id}`)
         res.status(200).json({message: 'Post Deleted', post: post})
     }catch(err){
         next(err)

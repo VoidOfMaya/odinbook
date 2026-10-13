@@ -66,9 +66,25 @@ const dislike = async(id)=>{
     })
 }
 const deletePost = async(postId)=>{
-    return await prisma.post.delete({
-        where:{id: Number(postId)}
+    //check if post has comments
+    const hasComments = await prisma.comment.count({
+        where:{postId: Number(postId)}
     })
+    console.log(`deleting post: validating comment count: ${hasComments}`)
+    if(hasComments > 0){
+        await prisma.comment.deleteMany({
+            where:{postId: Number(postId)},
+        })        
+    }
+
+    return await prisma.post.delete({
+        where:{id: Number(postId)},
+        select:{
+            id:true,
+        }
+    })
+
+
 }
 const service={
     getPost,

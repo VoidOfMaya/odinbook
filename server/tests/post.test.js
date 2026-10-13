@@ -151,6 +151,44 @@ describe('/post',()=>{
             })
             expect(deletedPost).toBe(null);
         })
+        test('delete post with comments',async()=>{
+            //create post
+            response = await request(app).post('/post')
+            .set("Authorization", `Bearer ${userToken}`)
+            .send({
+                photo: null,
+                content: faker.lorem.paragraph()
+            });
+            const postWithComment = response.body.post;
+            //create comment with postId = postWithComment.id
+            const comment = await prisma.comment.create({
+                data:{
+                    content: 'test string content',
+                    postId: Number(postWithComment.id),
+                    authorId: Number(user.id)
+                },
+                select:{
+                    id: true
+                }
+            })
+            response = await request(app).delete(`/post/${postWithComment.id}`)
+            .set('Authorization', `Bearer ${userToken}`)
+
+            const commentExists = await prisma.comment.findUnique({where:{id: Number(comment.id)}})
+            const postExists = await prisma.post.findUnique({where:{id: Number(postWithComment.id)}})
+            
+            expect(commentExists).toBeNull();
+            expect(postExists).toBeNull();
+            expect(response.status).toBe(200);
+            expect(response.body.message).toEqual('Post Deleted');
+
+            const deletedPost = await prisma.post.findUnique({
+                where:{id: Number(post.id)}
+            })
+            expect(deletedPost).toBe(null);
+
+
+        })
     })
     //NESTED ROUTES
     //- GET/user/{id}/posts             >get users posts

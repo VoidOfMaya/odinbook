@@ -4,7 +4,6 @@ import { service } from "./commentService.js";
 
 const getComments = async(req, res, next)=>{
     
-    console.log(req.params)
     const postId = (req.params.id);
     const errors = validationResult(req);
     if(!errors.isEmpty()) {
@@ -14,7 +13,7 @@ const getComments = async(req, res, next)=>{
     const {limit, cursor} = matchedData(req); 
     try{
         const hascomments = await service.hasComments(postId);
-        if(!hascomments)return res.status(404).json({message: 'No comments found'})
+        if(!hascomments)return res.status(404).json({message: 'No comments found', data: []})
         //if limit is not available get only 1 comment
         const postComments = await service.getComments(postId, limit, cursor);
         if(!postComments)throw new ApiError(500, "Could not find comments");
