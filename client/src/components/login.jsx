@@ -9,7 +9,7 @@ const Login = ({initAuthHandler})=>{
         size={40} 
         title='Login with Github' 
         fn={async()=>{
-          const response = await fetch('http://localhost:3000/auth/login/github/state',{
+          const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login/github/state`,{
             method: 'GET',
             header:{
               'Content-Type': 'application/json',

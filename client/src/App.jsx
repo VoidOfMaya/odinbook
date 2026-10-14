@@ -1,12 +1,10 @@
 import { useEffect, useState, useRef } from 'react'
-import{Outlet, useParams, useNavigate, redirect} from 'react-router-dom'
-import { Login } from './components/login.jsx'
+import{Outlet, useNavigate,} from 'react-router-dom'
 import { TopNav } from './components/topNav/navbar.jsx'
 import { SideBar } from './components/feedSidebar/sidebar.jsx'
-import { WelcomePage } from './pages/welcome-page/welcome.jsx'
 import style from './App.module.css'
 import { Icon } from './components/iconhelper/icons.jsx'
-import { SvgBackground } from './helpers/svgBack.jsx'
+
 
 function App() {
   const [auth, setAuth] = useState(null);
