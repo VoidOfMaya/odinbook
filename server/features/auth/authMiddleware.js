@@ -104,6 +104,7 @@ const isValidGitReq = async(req,res,next)=>{
     try{
         const {code, state} = req.query
         const cookieState = req.signedCookies.state
+
         //clear cookie
         const production = process.env.NODE_ENV === 'production'
         res.clearCookie('state',{
@@ -118,6 +119,11 @@ const isValidGitReq = async(req,res,next)=>{
             cookieStatePresent: typeof cookieState === 'string',
             cookieSignatureInvalid: cookieState === false,
             statesMatch: state === cookieState
+        });
+        console.log('Cookie diagnostics:', {
+            cookieHeaderPresent: Boolean(req.headers.cookie),
+            signedCookieNames: Object.keys(req.signedCookies ?? {}),
+            stateCookieParsed: typeof req.signedCookies?.state === 'string'
         });
         if(state !== cookieState)throw new Error('Unauthorized state')   
         
