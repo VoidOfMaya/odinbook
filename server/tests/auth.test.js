@@ -229,6 +229,7 @@ describe('/auth router',()=>{
                 response = await request(app).get('/auth/login/github/cb')
                 cookies = response.headers["set-cookie"]
             })
+            console.log(cookies);
             test('validate user id in signedCookie',async()=>{
                 const userCookie = cookies.find(c=>c.startsWith('userId='));
                 const cleanUserId = testHelper.decodeSignedCookie(userCookie)

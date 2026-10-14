@@ -113,6 +113,12 @@ const isValidGitReq = async(req,res,next)=>{
             sameSite: production? 'none': 'lax',
         })
         //validate  state 
+        console.log('OAuth state diagnostics:', {
+            queryStatePresent: typeof state === 'string',
+            cookieStatePresent: typeof cookieState === 'string',
+            cookieSignatureInvalid: cookieState === false,
+            statesMatch: state === cookieState
+        });
         if(state !== cookieState)throw new Error('Unauthorized state')   
         
         next()  
