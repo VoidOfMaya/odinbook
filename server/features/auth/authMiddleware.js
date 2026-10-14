@@ -104,28 +104,19 @@ const isValidGitReq = async(req,res,next)=>{
     try{
         const {code, state} = req.query
         const cookieState = req.signedCookies.state
-
+        if(state !== cookieState)throw new Error('Unauthorized state') 
         //clear cookie
         const production = process.env.NODE_ENV === 'production'
-        res.clearCookie('state',{
-            httpOnly: true,
-            secure: production,
-            path:'/',
-            sameSite: production? 'none': 'lax',
-        })
-        //validate  state 
-        console.log('OAuth state diagnostics:', {
-            queryStatePresent: typeof state === 'string',
-            cookieStatePresent: typeof cookieState === 'string',
-            cookieSignatureInvalid: cookieState === false,
-            statesMatch: state === cookieState
-        });
-        console.log('Cookie diagnostics:', {
-            cookieHeaderPresent: Boolean(req.headers.cookie),
-            signedCookieNames: Object.keys(req.signedCookies ?? {}),
-            stateCookieParsed: typeof req.signedCookies?.state === 'string'
-        });
-        if(state !== cookieState)throw new Error('Unauthorized state')   
+        if(cookieState){
+            res.clearCookie('state',{
+                httpOnly: true,
+                secure: production,
+                path:'/',
+                sameSite: production? 'none': 'lax',
+            })            
+        }
+
+        //if(state !== cookieState)throw new Error('Unauthorized state')   
         
         next()  
     }catch(err){
