@@ -18,7 +18,7 @@ const router = createBrowserRouter([
   {path:'/', element: <App />,
     children: [
       {path: '/', element: <WelcomePage />},
-      {path:'/login/github', element: <GitLogin />},
+      {path:'/login/github/:gitId', element: <GitLogin />},
       {element: <ProtectedRoute />,
         children:[
           {path:'/feed', element: <FeedPage />},

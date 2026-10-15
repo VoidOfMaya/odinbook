@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom"
+import { useNavigate, useOutletContext, useParams } from "react-router-dom"
 const GitLogin= ({})=>{
     //this is a transtionall componenet for handelling Oauth user flow only
     const{      
@@ -7,11 +7,12 @@ const GitLogin= ({})=>{
         setAuthHandler,
         onLoginSuccess
     } = useOutletContext();
+    const {gitId} = useParams();
     const[loading, setLoading]= useState(false);
     
     //fetches user data 
     const fetchUser = async()=>{
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login/github`,
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login/github/${gitId}`,
         {
           method: 'GET',
           headers:{

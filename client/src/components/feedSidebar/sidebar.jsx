@@ -1,6 +1,5 @@
 import { Icon } from "../iconhelper/icons"
 import style from './sidebar.module.css'
-import { usePagenation } from "../../customhooks/usePagination"
 import { ShowPfp } from "../../helpers/pfpDisplay"
 import { useState } from "react"
 const SideBar = ({user, redirect, logout})=>{
