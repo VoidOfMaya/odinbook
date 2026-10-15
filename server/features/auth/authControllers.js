@@ -108,22 +108,10 @@ const githubUserManager =async (req,res,next)=>{
     const accessToken = await gitOauth.gitAccessToken(code)
     // record or create user return users internal id 
     const userId = await gitOauth.gitUserData(accessToken.access_token) 
-    //clear state cookie
-    res.clearCookie('state',{
-        httpOnly: true,
-        secure: production,
-        path:'/',
-        sameSite: production? 'none': 'lax',
-    })
     // define temporary secure user id
-    res.cookie('userId', userId, {
-        httpOnly: true,
-        secure: production,
-        signed: true,
-        sameSite: production ? "none" : "lax",
-        path:'/',
-        maxAge: 1000 * 60 * 15, // 15 minute shortlived
-    });
+    await service.setGitId(userId)
+    console.log(r`redirecting to frontend`)
+    console.log(`sending to ${process.env.CLIENT_URL}`)
     res.redirect(`${process.env.CLIENT_URL}/login/github`)
 }
 //  - logs in user and returns relevant user data   !
@@ -131,6 +119,8 @@ const githubLogin = async(req, res, next)=>{
     console.log(`accessed main login sequence `)
     
   try{
+        console.log('githubLogin')
+        console.log(req.body)
         const gitId = req.signedCookies.userId
         if(!gitId)throw new Error('Github user id not defined!')
         //validate or create user
