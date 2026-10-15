@@ -124,7 +124,7 @@ const githubUserManager =async (req,res,next)=>{
         path:'/',
         maxAge: 1000 * 60 * 15, // 15 minute shortlived
     });
-    res.redirect(`http://localhost:5173/login/github`)
+    res.redirect(`${process.env.CLIENT_URL}/login/github`)
 }
 //  - logs in user and returns relevant user data   !
 const githubLogin = async(req, res, next)=>{
