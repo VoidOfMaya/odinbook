@@ -3,9 +3,9 @@ import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import 'dotenv/config'
-import { threadId } from 'worker_threads';
+
 import { ApiError } from '../../errorhelper.js';
-import { equal } from 'assert';
+
 
 //A basic register and  login!
 //takes {email, password, name}
@@ -74,6 +74,24 @@ const login = async (data) =>{
         accessToken,
         refreshToken
     }
+}
+const setState = async (data)=>{
+    await prisma.git.create({
+        data:{
+            state: String(data)
+        }
+    })
+}
+
+const getState = async(data)=>{
+    return await prisma.git.findUnique({
+        where:{state: String(data) }
+    })
+}
+const deleteState = async(id)=>{
+    await prisma.git.delete({
+        where:{id: id }
+    })  
 }
 //CUSTOM AUTH 
 const createAToken = async (userId)=>{
@@ -237,6 +255,9 @@ const service ={
     revokeRtoken,
     removeTokenThread ,
     lastLoginUpdate,
+    setState,
+    getState,
+    deleteState
 }
 export{
     service

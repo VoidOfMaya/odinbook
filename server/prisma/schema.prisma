@@ -11,6 +11,10 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+model git{
+    id              String            @id @default(uuid())           
+    state           String?         @unique  //state is a volitile string with the soul purpose of authentication with github
+}
 // security
 model RefreshToken{
   id              String            @id @default(uuid())

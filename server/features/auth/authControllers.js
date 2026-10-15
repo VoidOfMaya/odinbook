@@ -84,6 +84,7 @@ const generateState = async (req, res, next)=>{
     const query = 
     `client_id=${githubClient.clientId}&redirect_uri=${githubClient.redirectUrl}&state=${state}&scope=${githubClient.scope}`
     //Setting state to a httpOnly cookie
+    /*
     const production = process.env.NODE_ENV === 'production'
     res.cookie('state', state, {
         httpOnly: true,
@@ -93,6 +94,8 @@ const generateState = async (req, res, next)=>{
         path:'/',
         maxAge: 1000 * 60 * 15, // 15 minute shortlived
     });
+    */
+    await service.setState(state);
     res.status(200).json({query: query})
 }
 //  -manages creation or validation of user existance in database

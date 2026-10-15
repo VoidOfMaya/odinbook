@@ -3,6 +3,7 @@ import {ExtractJwt, Strategy} from 'passport-jwt';
 import {prisma} from '../../lib/prisma.js';
 import 'dotenv/config';
 import { ApiError } from '../../errorhelper.js';
+import { service } from './authServices.js';
 
 const passportConfig=()=>{
     //create jwt
@@ -103,10 +104,11 @@ const isAuthenticated = passport.authenticate('jwt',{session:false});
 const isValidGitReq = async(req,res,next)=>{
     try{
         const {code, state} = req.query
+        /*
         const cookieState = req.signedCookies.state
         console.log(`========== LOGGING COOKIES ==========`)
         console.log(req.signedCookies)
-        //validate state
+        //validate  state 
         if(state !== cookieState)throw new ApiError(
             500, 
             'Unauthorized state', 
@@ -120,7 +122,19 @@ const isValidGitReq = async(req,res,next)=>{
             secure: production,
             path:'/',
             sameSite: production? 'none': 'lax',
-        })
+        })*/
+       //get and validate that state exists in db by the state provided from the callback
+       console.log('calidating agains database')
+       const stateExists = await service.getState(state);
+       if(!stateExists) throw new ApiError(
+            500, 
+            'Unauthorized state', 
+            {expectedState: cookieState, recievedState: state},
+            true
+        )
+        console.log('match in database found')
+        await service.deleteState(stateExists.id);
+        console.log('delte volitile state and proceed ')
 
         next()  
     }catch(err){
