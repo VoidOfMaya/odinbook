@@ -83,18 +83,6 @@ const generateState = async (req, res, next)=>{
     }
     const query = 
     `client_id=${githubClient.clientId}&redirect_uri=${githubClient.redirectUrl}&state=${state}&scope=${githubClient.scope}`
-    //Setting state to a httpOnly cookie
-    /*
-    const production = process.env.NODE_ENV === 'production'
-    res.cookie('state', state, {
-        httpOnly: true,
-        secure: production,
-        sameSite: production ? "none" : "lax",
-        signed: true,
-        path:'/',
-        maxAge: 1000 * 60 * 15, // 15 minute shortlived
-    });
-    */
     await service.setState(state);
     res.status(200).json({query: query})
 }
@@ -107,12 +95,10 @@ const githubUserManager =async (req,res,next)=>{
     //retrive access token
     const accessToken = await gitOauth.gitAccessToken(code)
     // record or create user return users internal id 
-    const userId = await gitOauth.gitUserData(accessToken.access_token) 
-    // define temporary secure user id
-    await service.setGitId(userId)
-    console.log(r`redirecting to frontend`)
+    const userId = await gitOauth.gitUserData(accessToken.access_token) //returns record.id of github user
+    console.log(`redirecting to frontend`)
     console.log(`sending to ${process.env.CLIENT_URL}`)
-    res.redirect(`${process.env.CLIENT_URL}/login/github`)
+    res.redirect(`${process.env.CLIENT_URL}/login/github/${userId}`)
 }
 //  - logs in user and returns relevant user data   !
 const githubLogin = async(req, res, next)=>{
@@ -120,11 +106,13 @@ const githubLogin = async(req, res, next)=>{
     
   try{
         console.log('githubLogin')
-        console.log(req.body)
-        const gitId = req.signedCookies.userId
-        if(!gitId)throw new Error('Github user id not defined!')
+        console.log(req.params.gitId);
+        const searchId = req.params.gitId;
+        const userRecord= await service.getGitId(searchId);
+        
+        if(!userRecord)throw new Error('Github user id not defined!')
         //validate or create user
-        const userSession = await gitOauth.gitUserHandler(gitId)
+        const userSession = await gitOauth.gitUserHandler(userRecord.id)
         //pushes threadID and refreshToken to cookies as an httpOnly 
         const production = process.env.NODE_ENV === 'production'
 
@@ -145,14 +133,6 @@ const githubLogin = async(req, res, next)=>{
             path:'/',
             maxAge: 1000 * 60 * 60 * 24 * 7,
         });
-        //remove temporary id token:
-        res.clearCookie('userId',{
-            httpOnly: true,
-            secure: production,
-            path:'/',
-            sameSite: production? 'none': 'lax',
-        })
-            
         res.status(200).json({user: userSession.user, accessToken: userSession.accessToken});
     }catch(err){
         next(err)

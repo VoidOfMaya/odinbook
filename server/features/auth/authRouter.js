@@ -8,7 +8,7 @@ authRouter.post('/login/local', validate.Login, controller.localLogin);
 //github Oauth2.0 flow
 authRouter.get('/login/github/state',controller.generateState)
 authRouter.get('/login/github/cb', isValidGitReq, controller.githubUserManager)
-authRouter.get('/login/github',controller.githubLogin)
+authRouter.get('/login/github/:gitId',validate.userId,controller.githubLogin)
 
 //logout revokes token on backend, delets  access token from frontend
 authRouter.delete('/logout',isAuthenticated,controller.logout)

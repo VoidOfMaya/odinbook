@@ -93,23 +93,15 @@ const deleteState = async(id)=>{
         where:{id: id }
     })  
 }
-const setGitId = async (data)=>{
-    await prisma.git.create({
-        data:{
-            gitId: String(data)
+
+const getGitId  = async(id)=>{
+    const result =  await prisma.user.findUnique({
+        where:{id: Number(id)},
+        select:{
+            id: true
         }
     })
-}
-
-const getGitId  = async(data)=>{
-    return await prisma.git.findUnique({
-        where:{gitId: String(data) }
-    })
-}
-const deleteGitId = async(id)=>{
-    await prisma.git.delete({
-        where:{id: id }
-    })  
+    return result
 }
 //CUSTOM AUTH 
 const createAToken = async (userId)=>{
@@ -276,9 +268,8 @@ const service ={
     setState,
     getState,
     deleteState,
-    setGitId,
     getGitId,
-    deleteGitId
+
 }
 export{
     service
