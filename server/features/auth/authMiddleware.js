@@ -113,7 +113,12 @@ const isValidGitReq = async(req,res,next)=>{
             sameSite: production? 'none': 'lax',
         })
         //validate  state 
-        if(state !== cookieState)throw new Error('Unauthorized state')   
+        if(state !== cookieState)throw new ApiError(
+            500, 
+            'Unauthorized state', 
+            {expectedState: cookieState, recievedState: state},
+            true
+        )
         
         next()  
     }catch(err){
