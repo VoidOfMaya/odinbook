@@ -106,7 +106,13 @@ const isValidGitReq = async(req,res,next)=>{
         const cookieState = req.signedCookies.state
         console.log(`========== LOGGING COOKIES ==========`)
         console.log(req.signedCookies)
-        if(state !== cookieState)throw new Error('Unauthorized state') 
+        //validate state
+        if(state !== cookieState)throw new ApiError(
+            500, 
+            'Unauthorized state', 
+            {expectedState: cookieState, recievedState: state},
+            true
+        )
         //clear cookie
         const production = process.env.NODE_ENV === 'production'
         res.clearCookie('state',{
@@ -115,13 +121,6 @@ const isValidGitReq = async(req,res,next)=>{
             path:'/',
             sameSite: production? 'none': 'lax',
         })
-        //validate  state 
-        if(state !== cookieState)throw new ApiError(
-            500, 
-            'Unauthorized state', 
-            {expectedState: cookieState, recievedState: state},
-            true
-        )
 
         next()  
     }catch(err){
