@@ -11,7 +11,7 @@ const GitLogin= ({})=>{
     
     //fetches user data 
     const fetchUser = async()=>{
-    const response = await fetch(`http://localhost:3000/auth/login/github`,
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login/github`,
         {
           method: 'GET',
           headers:{
