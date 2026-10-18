@@ -37,6 +37,7 @@ const localLogin = async (req, res, next)=>{
             sameSite: production ? "none" : "lax",
             path:'/',
             maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+            partitioned: true
         });
 
         res.cookie('threadId', result.threadId, {
@@ -46,6 +47,7 @@ const localLogin = async (req, res, next)=>{
             sameSite: production ? "none" : "lax",
             path:'/',
             maxAge: 1000 * 60 * 60 * 24 * 7,
+            partitioned: true
         });
         console.log('debug local authentication');
         res.status(200).json({
@@ -123,6 +125,7 @@ const githubLogin = async(req, res, next)=>{
             sameSite: production ? "none" : "lax",
             path:'/',
             maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+            partitioned: true
         });
 
         res.cookie('threadId', userSession.threadId, {
@@ -132,6 +135,7 @@ const githubLogin = async(req, res, next)=>{
             sameSite: production ? "none" : "lax",
             path:'/',
             maxAge: 1000 * 60 * 60 * 24 * 7,
+            partitioned: true
         });
         res.status(200).json({user: userSession.user, accessToken: userSession.accessToken});
     }catch(err){
@@ -182,6 +186,7 @@ const token = async (req, res, next)=>{
                 sameSite: production ? "none" : "lax",
                 path:'/',
                 maxAge:1000 *60 *60 *24 *7,
+                partitioned: true
             }
         );
         res.cookie(
@@ -192,6 +197,7 @@ const token = async (req, res, next)=>{
                 sameSite: production ? "none" : "lax",
                 path:'/',
                 maxAge:1000 *60 *60 *24 *7,
+                partitioned: true
             }
         );
         //returns user and new access token
