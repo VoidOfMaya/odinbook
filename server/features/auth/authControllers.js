@@ -34,7 +34,7 @@ const localLogin = async (req, res, next)=>{
             httpOnly: true,
             secure: production,
             signed: true,
-            sameSite: production ? "none" : "lax",
+            sameSite: "lax",
             path:'/',
             maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
             partitioned: true
@@ -44,7 +44,7 @@ const localLogin = async (req, res, next)=>{
             httpOnly: true,
             secure: production,
             signed: true,
-            sameSite: production ? "none" : "lax",
+            sameSite:"lax",
             path:'/',
             maxAge: 1000 * 60 * 60 * 24 * 7,
             partitioned: true
@@ -122,7 +122,7 @@ const githubLogin = async(req, res, next)=>{
             httpOnly: true,
             secure: production,
             signed: true,
-            sameSite: production ? "none" : "lax",
+            sameSite: "lax",
             path:'/',
             maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
             partitioned: true
@@ -132,7 +132,7 @@ const githubLogin = async(req, res, next)=>{
             httpOnly: true,
             secure: production,
             signed: true,
-            sameSite: production ? "none" : "lax",
+            sameSite: "lax",
             path:'/',
             maxAge: 1000 * 60 * 60 * 24 * 7,
             partitioned: true
@@ -183,7 +183,7 @@ const token = async (req, res, next)=>{
                 httpOnly: true,
                 secure: production,
                 signed: true,
-                sameSite: production ? "none" : "lax",
+                sameSite: "lax",
                 path:'/',
                 maxAge:1000 *60 *60 *24 *7,
                 partitioned: true
@@ -194,7 +194,7 @@ const token = async (req, res, next)=>{
                 httpOnly: true,
                 secure: production,
                 signed: true,
-                sameSite: production ? "none" : "lax",
+                sameSite: "lax",
                 path:'/',
                 maxAge:1000 *60 *60 *24 *7,
                 partitioned: true
