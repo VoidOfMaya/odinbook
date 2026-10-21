@@ -34,7 +34,7 @@ const localLogin = async (req, res, next)=>{
             httpOnly: true,
             secure: production,
             signed: true,
-            sameSite: "lax",
+            sameSite: production ? "none" : "lax",
             path:'/',
             maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
             partitioned: true
@@ -44,7 +44,7 @@ const localLogin = async (req, res, next)=>{
             httpOnly: true,
             secure: production,
             signed: true,
-            sameSite:"lax",
+            sameSite:production ? "none" : "lax",
             path:'/',
             maxAge: 1000 * 60 * 60 * 24 * 7,
             partitioned: true
@@ -122,7 +122,7 @@ const githubLogin = async(req, res, next)=>{
             httpOnly: true,
             secure: production,
             signed: true,
-            sameSite: "lax",
+            sameSite: production ? "none" : "lax",
             path:'/',
             maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
             partitioned: true
@@ -132,14 +132,20 @@ const githubLogin = async(req, res, next)=>{
             httpOnly: true,
             secure: production,
             signed: true,
-            sameSite: "lax",
+            sameSite: production ? "none" : "lax",
             path:'/',
             maxAge: 1000 * 60 * 60 * 24 * 7,
             partitioned: true
         });
         res.status(200).json({user: userSession.user, accessToken: userSession.accessToken});
     }catch(err){
-        next(err)
+        console.error({
+            message: err.message,
+            method: req.method,
+            path: req.originalUrl,
+            stack: err.stack,
+        });
+        res.status(500).json({error: err.message || 'Internal Server Error'})  
     }
 }
 // accepts Refresh token string,if valid derives user by token string
@@ -183,7 +189,7 @@ const token = async (req, res, next)=>{
                 httpOnly: true,
                 secure: production,
                 signed: true,
-                sameSite: "lax",
+                sameSite: production ? "none" : "lax",
                 path:'/',
                 maxAge:1000 *60 *60 *24 *7,
                 partitioned: true
@@ -194,7 +200,7 @@ const token = async (req, res, next)=>{
                 httpOnly: true,
                 secure: production,
                 signed: true,
-                sameSite: "lax",
+                sameSite: production ? "none" : "lax",
                 path:'/',
                 maxAge:1000 *60 *60 *24 *7,
                 partitioned: true
