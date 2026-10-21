@@ -48,7 +48,7 @@ const WelcomePage =({})=>{
                 body: data,
                 token:'',
                 retry: true,
-                //includeCred:true
+                includeCred:true
             })
             if(!response.ok)throw new Error('callApi error could not retrieve data');
             return await response.json()
