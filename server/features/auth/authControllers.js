@@ -125,7 +125,7 @@ const githubLogin = async(req, res, next)=>{
             sameSite: production ? "none" : "lax",
             path:'/',
             maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-            partitioned: true
+            //partitioned: true
         });
 
         res.cookie('threadId', userSession.threadId, {
@@ -135,7 +135,7 @@ const githubLogin = async(req, res, next)=>{
             sameSite: production ? "none" : "lax",
             path:'/',
             maxAge: 1000 * 60 * 60 * 24 * 7,
-            partitioned: true
+            //partitioned: true
         });
         res.status(200).json({user: userSession.user, accessToken: userSession.accessToken});
     }catch(err){
@@ -192,7 +192,7 @@ const token = async (req, res, next)=>{
                 sameSite: production ? "none" : "lax",
                 path:'/',
                 maxAge:1000 *60 *60 *24 *7,
-                partitioned: true
+                //partitioned: true
             }
         );
         res.cookie(
@@ -203,7 +203,7 @@ const token = async (req, res, next)=>{
                 sameSite: production ? "none" : "lax",
                 path:'/',
                 maxAge:1000 *60 *60 *24 *7,
-                partitioned: true
+                //partitioned: true
             }
         );
         //returns user and new access token
