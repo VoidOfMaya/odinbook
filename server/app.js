@@ -14,7 +14,7 @@ import { ApiError } from './errorhelper.js';
 //import { requestsInbox } from './features/sockets/inbox.js';
 
 const app = express();
-
+app.set("trust proxy", 1); // for render
 app.use(cors(corsOpts));
 //debugging:
 console.log({
