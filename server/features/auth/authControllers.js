@@ -37,7 +37,7 @@ const localLogin = async (req, res, next)=>{
             sameSite: production ? "none" : "lax",
             path:'/',
             maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-            partitioned: true
+            //partitioned: true
         });
 
         res.cookie('threadId', result.threadId, {
@@ -47,7 +47,7 @@ const localLogin = async (req, res, next)=>{
             sameSite:production ? "none" : "lax",
             path:'/',
             maxAge: 1000 * 60 * 60 * 24 * 7,
-            partitioned: true
+            //partitioned: true
         });
         console.log('debug local authentication');
         res.status(200).json({
