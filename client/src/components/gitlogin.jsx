@@ -5,24 +5,37 @@ const GitLogin= ({})=>{
     const{      
         auth,
         setAuthHandler,
-        onLoginSuccess
+        onLoginSuccess,
+        callApi
     } = useOutletContext();
     const {gitId} = useParams();
     const[loading, setLoading]= useState(false);
     
     //fetches user data 
     const fetchUser = async()=>{
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login/github/${gitId}`,
-        {
-          method: 'GET',
-          headers:{
-            'Content-Type': 'application/json'
-          },
-          credentials: 'include'
-        }
-      )
-    const result = await response.json()
-    onLoginSuccess(result.user, result.accessToken)
+        /*
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login/github/${gitId}`,
+            {
+            method: 'GET',
+            headers:{
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+            }
+        )
+            */
+        const response = await callApi({
+            method: 'GET',
+            path: `auth/login/github/${gitId}`,
+            requiresAuth: false,
+            body: {data:1},
+            token:'',
+            includeCred:true
+        })
+        if(!response.ok)throw new Error('callApi error could not retrieve data');
+            
+        const result = await response.json()
+        onLoginSuccess(result.user, result.accessToken)
 
     }
     //redirect user to home once authenticated
