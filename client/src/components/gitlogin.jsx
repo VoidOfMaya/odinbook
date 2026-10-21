@@ -28,7 +28,7 @@ const GitLogin= ({})=>{
             method: 'GET',
             path: `auth/login/github/${gitId}`,
             requiresAuth: false,
-            body: {data:1},
+            //body: {data:1},
             token:'',
             includeCred:true
         })
